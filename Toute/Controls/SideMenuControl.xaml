@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="Toute.SideMenuControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Toute"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="250">
+    <!--Border on whole control-->
+    <Border>
+        <!--Grid that splits a control-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <!--Tab controls-->
+                <RowDefinition Height="auto" />
+                <!--The content of tab control-->
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!--Tab controls-->
+            <Border Grid.Row="0">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource Gray}" Offset="0" />
+                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="2" />
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <!--Programs tab-->
+                        <ColumnDefinition Width="*" />
+                        <!--Contacts tab-->
+                        <ColumnDefinition Width="*" />
+                        <!--Settings tab-->
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--Programs tab-->
+                    <Button Grid.Column="0" 
+                            Style="{StaticResource SideMenuButton}"
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="{StaticResource FontAwesomeGamePadIcon}"/>
+
+                    <!--Contacts tab-->
+                    <Button Grid.Column="1" 
+                            Style="{StaticResource SideMenuButton}"
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="{StaticResource FontAwesomeUserIcon}"/>
+
+                    <!--Settings tab-->
+                    <Button Grid.Column="2" 
+                            Style="{StaticResource SideMenuButton}"
+                            FontFamily="{StaticResource FontAwesome}"
+                            Content="{StaticResource FontAwesomeCogIcon}"/>
+
+
+                </Grid>
+            </Border>
+            <!--The content of tab control-->
+            <Border Grid.Row="1">
+
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
+                        <GradientStop Color="{StaticResource Gray}" Offset="2" />
+                    </LinearGradientBrush>
+                </Border.Background>
+
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

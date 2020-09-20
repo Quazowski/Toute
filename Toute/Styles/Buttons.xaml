@@ -1,0 +1,152 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Toute">
+
+    <!--A base style for all buttons, must be applied for BaseButton-->
+    <Style x:Key="Hoverless" TargetType="{x:Type Button}">
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+    </Style>
+
+    <!--Base Button Style that must be applied on style of button type,-->
+    <!--where there is no key value provided-->
+    <Style x:Key="BaseButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{StaticResource BackgroundLightRedBrush}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Name="border">
+                        <TextBlock Text="{TemplateBinding Content}"/>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Red" Duration="0:0:0.5" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Blue" Duration="0:0:0.5" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--BaseButton Style that is applied on all buttons-->
+    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}" >
+        
+    </Style>
+
+    <!--System Button style-->
+    <Style x:Key="SystemButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="Transparent"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Padding="5"
+                            x:Name="border">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   VerticalAlignment="Top"
+                                   />
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightGray}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SystemCloseButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="Transparent"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Padding="5"
+                            x:Name="border">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   VerticalAlignment="Top"
+                                   />
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SideMenuButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="Transparent"
+                            Padding="5"
+                            x:Name="border">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   HorizontalAlignment="Center"
+                                   Padding="0 13 0 13"
+                                   />
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightGray}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
