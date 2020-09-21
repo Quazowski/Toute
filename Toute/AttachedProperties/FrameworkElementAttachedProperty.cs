@@ -9,7 +9,7 @@ namespace Toute
     public abstract class BaseAnimationAttachedProperty<T> : BaseAttachedProperty<T, bool> 
         where T : BaseAttachedProperty<T, bool>, new()
     {
-        Dictionary<DependencyObject, bool>
+        
         public override void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             Storyboard sb = new Storyboard();
