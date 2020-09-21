@@ -132,13 +132,13 @@
             <Border  Grid.Column="0">
                 <local:SideMenuControl
                     Width="300"
-                    local:SlideFromLeftAttachedProperty.Value="{Binding Tes}"
+                    local:LeftSlideAttachedProperty.Value="{Binding Tes}"
                     />
             </Border>
             
             <!--Main Content-->
-            <Border Grid.Column="1" Background="Red">
-                
+            <Border Grid.Column="1" Background="Red" Margin="200">
+                <local:SideMenuControl />
             </Border>
         </Grid>
         

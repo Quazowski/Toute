@@ -1,53 +1,37 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Animation;
 
 namespace Toute
 {
+    /// <summary>
+    /// Animation Extensions for storyboard animation
+    /// </summary>
     public static class AnimationExtensions
     {
         /// <summary>
-        /// Animation that will start animation from left to the right
-        /// to the right and fade in at the same moment
+        /// Add Slide and fade animation at the same time
         /// </summary>
-        /// <param name="storyboard">The storyboard on which u want animation</param>
-        /// <param name="element">Element that should be animated</param>
+        /// <param name="storyboard">Storyboard to which animation should be added</param>
+        /// <param name="element">Element on which animation should go on</param>
+        /// <param name="direction">Direction of animation</param>
+        /// <param name="vanish">True if animation should hide, false if should appear</param>
         /// <returns></returns>
-        public static Storyboard AddSlideAndFadeInFromLeftAnimation(this Storyboard storyboard, FrameworkElement element)
-        {
-            //Add slide from left to right animation
-            storyboard.AddSlideFromLeft((int)element.ActualWidth);
-
-            //Add Fade in Animation
-            storyboard.AddFadeIn();
-
-            //Start animating the animation
-            storyboard.Begin(element);
-
-            //return the Storyboard
-            return storyboard;
-        }
-
-        /// <summary>
-        /// Animation will start hiding element to the left
-        /// and at the same moment fading out him
-        /// </summary>
-        /// <param name="storyboard">The storyboard on which u want animation</param>
-        /// <param name="element">Element that should be animated</param>
-        /// <returns></returns>
-        public static Storyboard AddSlideAndFadeOutToLeftAnimation(this Storyboard storyboard, FrameworkElement element)
+        public static async Task AddSlideAndFadeAnimation(this Storyboard storyboard, FrameworkElement element, PageAnimation direction, bool vanish, int seconds = 1, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
 
-            //Add slide to left
-            storyboard.AddSlideToLeft((int)element.ActualWidth);
+            //Add slide to right
+            storyboard.AddSlideAnimation(direction, vanish, (int)element.ActualWidth, seconds, decelerationRatio, keepMargin);
 
             //Add Fade out Animation
-            storyboard.AddFadeOut();
+            storyboard.AddFadeAnimation(vanish, seconds, decelerationRatio);
 
             //Start animating the animation
             storyboard.Begin(element);
 
             //return the Storyboard
-            return storyboard;
+            await Task.Delay(10000);
         }
+
     }
 }

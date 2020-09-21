@@ -1,25 +1,29 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Animation;
 
 namespace Toute
 {
-    public class SlideFromLeftAttachedProperty : BaseAttachedProperty<SlideFromLeftAttachedProperty, bool>
+    public abstract class BaseAnimationAttachedProperty<T> : BaseAttachedProperty<T, bool> 
+        where T : BaseAttachedProperty<T, bool>, new()
     {
+        Dictionary<DependencyObject, bool>
         public override void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var sb = new Storyboard();
+            Storyboard sb = new Storyboard();
 
-            if((bool)e.NewValue == true)
-            {
-                sb.AddSlideAndFadeInFromLeftAnimation((FrameworkElement)d);
+            DoAnimation(sb, (FrameworkElement)d, (bool)e.NewValue);
+        }
 
-            }
-            else
-            {
-                sb.AddSlideAndFadeOutToLeftAnimation((FrameworkElement)d);
-            }
-
-            
+        protected virtual void DoAnimation(Storyboard sb, FrameworkElement element, bool vanish) { }
+    }
+    public class LeftSlideAttachedProperty : BaseAnimationAttachedProperty<LeftSlideAttachedProperty>
+    {
+        protected override async void DoAnimation(Storyboard sb, FrameworkElement element, bool vanish)
+        {
+            await sb.AddSlideAndFadeAnimation(element, PageAnimation.LeftSlides, vanish);
         }
     }
 }
