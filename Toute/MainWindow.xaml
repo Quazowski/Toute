@@ -131,8 +131,8 @@
             <!--Side menu control-->
             <Border  Grid.Column="0">
                 <local:SideMenuControl
+                    local:LeftFadeSlideAttachedProperty.Value="{Binding Tes}"
                     Width="300"
-                    local:LeftSlideAttachedProperty.Value="{Binding Tes}"
                     />
             </Border>
             

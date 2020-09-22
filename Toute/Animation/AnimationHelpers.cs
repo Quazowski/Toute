@@ -24,7 +24,7 @@ namespace Toute
         /// <param name="decelerationRatio">Deceleration of animation</param>
         /// <param name="keepMargin">True if margin should not be moved, false if whole content should be moved</param>
         /// <returns></returns>
-        public static Storyboard AddSlideAnimation(this Storyboard storyboard, PageAnimation direction, bool hide, int width, int seconds = 1, float decelerationRatio = 0.9f, bool keepMargin = true)
+        public static Storyboard AddSlideAnimation(this Storyboard storyboard, PageAnimation direction, bool hide, int width, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
             // Create a thickness animation
             var animation = new ThicknessAnimation();
@@ -47,8 +47,8 @@ namespace Toute
                             DecelerationRatio = decelerationRatio
                         };
                         break;
-                    //Animation will hide to the top
-                    case PageAnimation.TopSlides:
+                    //Animation will hide to the bottom
+                    case PageAnimation.BottomSlides:
                         //Add animation
                         animation = new ThicknessAnimation
                         {
@@ -69,8 +69,8 @@ namespace Toute
                             DecelerationRatio = decelerationRatio
                         };
                         break;
-                    //Animation will hide to the bottom
-                    case PageAnimation.BottomSlides:
+                    //Animation will hide to the top
+                    case PageAnimation.TopSlides:
                         //Add animation
                         animation = new ThicknessAnimation
                         {
@@ -102,8 +102,8 @@ namespace Toute
                             DecelerationRatio = decelerationRatio
                         };
                         break;
-                    //Animation will appear from the top
-                    case PageAnimation.TopSlides:
+                    //Animation will appear from the bottom
+                    case PageAnimation.BottomSlides:
                         //Add animation
                         animation = new ThicknessAnimation
                         {
@@ -124,8 +124,8 @@ namespace Toute
                             DecelerationRatio = decelerationRatio
                         };
                         break;
-                    //Animation will appear from the bottom
-                    case PageAnimation.BottomSlides:
+                    //Animation will appear from the top
+                    case PageAnimation.TopSlides:
                         //Add animation
                         animation = new ThicknessAnimation
                         {
@@ -163,7 +163,7 @@ namespace Toute
         /// <param name="seconds">Duration of fade effect</param>
         /// <param name="decelerationRatio">deceleration ratio of animation</param>
         /// <returns></returns>
-        public static Storyboard AddFadeAnimation(this Storyboard storyboard, bool Vanish, int seconds = 1, float decelerationRatio = 0.9f)
+        public static Storyboard AddFadeAnimation(this Storyboard storyboard, bool Vanish, float seconds = 0.3f, float decelerationRatio = 0.9f)
         {
             //Create double animation
             var animation = new DoubleAnimation();

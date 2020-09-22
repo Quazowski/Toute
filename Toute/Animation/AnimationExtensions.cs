@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -17,8 +18,10 @@ namespace Toute
         /// <param name="direction">Direction of animation</param>
         /// <param name="vanish">True if animation should hide, false if should appear</param>
         /// <returns></returns>
-        public static async Task AddSlideAndFadeAnimation(this Storyboard storyboard, FrameworkElement element, PageAnimation direction, bool vanish, int seconds = 1, float decelerationRatio = 0.9f, bool keepMargin = true)
+        public static async Task AddSlideAndFadeAnimation(this FrameworkElement element, PageAnimation direction, bool vanish, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
+            //Create a storyboard
+            Storyboard storyboard = new Storyboard();
 
             //Add slide to right
             storyboard.AddSlideAnimation(direction, vanish, (int)element.ActualWidth, seconds, decelerationRatio, keepMargin);
@@ -28,10 +31,9 @@ namespace Toute
 
             //Start animating the animation
             storyboard.Begin(element);
-
+            
             //return the Storyboard
-            await Task.Delay(10000);
+            await Task.Delay((int)(seconds * 1000));
         }
-
     }
 }
