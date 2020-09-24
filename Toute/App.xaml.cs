@@ -20,6 +20,7 @@ namespace Toute
             //Set up IoC for our application
             IoC.Setup();
 
+            //On start go to LoginPage
             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
 
             //Create a new MainWindow

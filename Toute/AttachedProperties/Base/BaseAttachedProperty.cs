@@ -32,9 +32,10 @@ namespace Toute
         /// Gets the value
         /// </summary>
         /// <param name="obj"></param>
-        /// <returns></returns>
+        /// <returns>Value of object of given type</returns>
         public static T GetValue(DependencyObject obj)
         {
+            //returns value of object of given type
             return (T)obj.GetValue(ValueProperty);
         }
 
@@ -72,7 +73,7 @@ namespace Toute
         /// </summary>
         /// <param name="d"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
+        /// <returns>Value</returns>
         private static object OnValuePropertyUpdated(DependencyObject d, object value)
         {
             //Instance of class is calling OnValueUpdated

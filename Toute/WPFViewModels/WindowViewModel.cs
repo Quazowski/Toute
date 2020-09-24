@@ -8,12 +8,11 @@ namespace Toute
     /// </summary>
     public class WindowViewModel : BaseViewModel
     {
-
         #region Private members
         /// <summary>
         /// Main Window
         /// </summary>
-        private Window _window;
+        private readonly Window _window;
 
         /// <summary>
         /// Private thickness of <see cref="DropShadowBorderPadding"/>
@@ -113,9 +112,8 @@ namespace Toute
         /// </summary>
         private void Minimize()
         {
-            IoC.Get<ApplicationViewModel>().SideMenuHidden ^= true;
             //Minimize window
-            //_window.WindowState = WindowState.Minimized;
+            _window.WindowState = WindowState.Minimized;
         }
 
         /// <summary>
@@ -137,6 +135,5 @@ namespace Toute
         }
 
         #endregion
-
     }
 }

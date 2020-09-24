@@ -1,33 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Security;
 
 namespace Toute
 {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
+    /// Using <see cref="LoginPageViewModel"/> as ViewModel,
+    /// <see cref="BasePage"/> as base page, and 
+    /// <see cref="IHavePassword"/> to handle password sending to VM
     /// </summary>
     public partial class LoginPage : BasePage<LoginPageViewModel>, IHavePassword
     {
+        #region Public Members
+
+        /// <summary>
+        /// Secure string to handle sending password to ViewModel
+        /// </summary>
+        public SecureString SecureString => MyPassword.SecurePassword;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LoginPage()
         {
 
         }
+
+        /// <summary>
+        /// Constructor that accept view model as a parameter
+        /// </summary>
+        /// <param name="vm"></param>
         public LoginPage(LoginPageViewModel vm) : base(vm)
         {
+            //Prepares Components for MainWindow
             InitializeComponent();
         }
 
-        public SecureString SecureString => MyPassword.SecurePassword;
+        #endregion
+
     }
 }

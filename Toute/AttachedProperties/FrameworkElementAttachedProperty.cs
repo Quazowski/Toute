@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 
 namespace Toute
 {
+    #region Base Animation
+
     /// <summary>
     /// Base animation attached property that help handle animations
     ///     NOTE: Before using <see cref="BaseAnimationAttachedProperty{T}"/>
@@ -25,32 +25,41 @@ namespace Toute
         /// <param name="e">Value</param>
         public override async void OnValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-        //Sender must be framework element, and new value have to be different that old value
-        if (!(sender is FrameworkElement) || ((bool)e.OldValue == (bool)e.NewValue))
-            //otherwise return
-            return;
+            //Sender must be framework element, and new value have to be different that old value
+            if (!(sender is FrameworkElement) || ((bool)e.OldValue == (bool)e.NewValue))
+                //otherwise return
+                return;
 
+            //If it is first load...
             if (IsFirstLoad == false)
             {
+                //Sets first load to true
                 IsFirstLoad = true;
 
+                //Do animation with first load property set on true.
+                //Element Visibility will be collapsed
                 await DoAnimation((FrameworkElement)sender, (bool)e.NewValue, true);
             }
+            //Otherwise...
             else
             {
-                //Run a animation
+                //Run a animation with first load property set on false.
                 await DoAnimation((FrameworkElement)sender, (bool)e.NewValue, false);
             }
+
         }
 
         /// <summary>
-        /// Virtual method that should be overridden, and used on own purpose
+        /// Abstract method that have to be overridden, and used on own purpose
         /// </summary>
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen</param>
-        /// <returns></returns>
-        protected virtual async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad) { await Task.Delay(1); }
+        protected abstract Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad);
     }
+
+    #endregion
+
+    #region Slide And Fade Animations
 
     /// <summary>
     /// Attached property that are responsible for handling left slide and fade status animations
@@ -62,11 +71,10 @@ namespace Toute
         /// </summary>
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to left</param>
-        /// <returns></returns>
         protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.LeftSlides, vanish, keepMargin: false, isFirstLoad:isFirstLoad);
+            await element.AddSlideAndFadeAnimation(PageAnimation.LeftSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
         }
     }
 
@@ -80,7 +88,6 @@ namespace Toute
         /// </summary>
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to top</param>
-        /// <returns></returns>
         protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
@@ -98,7 +105,6 @@ namespace Toute
         /// </summary>
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to the right</param>
-        /// <returns></returns>
         protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
@@ -116,11 +122,13 @@ namespace Toute
         /// </summary>
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to the bottom</param>
-        /// <returns></returns>
         protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
             await element.AddSlideAndFadeAnimation(PageAnimation.BottomSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
         }
     }
+
+    #endregion
+
 }

@@ -10,23 +10,36 @@
       Height="360"
       Title="LoginPage">
 
+    <!--Border for whole Page-->
     <Border CornerRadius="15"
             Background="{StaticResource BackgroundOrangeBrush}">
+        <!--Drop shadow effect for a page-->
         <Border.Effect>
             <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.5" Color="Black"/>
         </Border.Effect>
+        
+        <!--Main content-->
         <Grid>
             <Grid.RowDefinitions>
+                <!--Label on the top-->
                 <RowDefinition Height="auto" />
+                <!--First Line for UI purpose-->
                 <RowDefinition Height="auto" />
+                <!--Second Line for UI purpose-->
                 <RowDefinition Height="auto" />
+                <!--Login TextBox-->
                 <RowDefinition Height="auto" />
+                <!--Password TextBox-->
                 <RowDefinition Height="auto" />
+                <!--Sign in Button-->
                 <RowDefinition Height="auto" />
+                <!--Bottom Line for UI purpose-->
                 <RowDefinition Height="auto" />
+                <!--Sing Up button-->
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
+            <!--Label on the top-->
             <TextBlock Grid.Row="0"
                        Text="Toute"
                        HorizontalAlignment="Center"
@@ -34,16 +47,19 @@
                        Foreground="{StaticResource BackgroundWhiteBrush}"
                        FontSize="{StaticResource FontSizeXXLarge}"/>
 
+            <!--First Line for UI purpose-->
             <Border Grid.Row="1" 
                     BorderBrush="White" 
                     BorderThickness="1"
                     Margin="60 5"/>
-            
+
+            <!--Second Line for UI purpose-->
             <Border Grid.Row="2" 
                     BorderBrush="White" 
                     BorderThickness="1"
                     Margin="20 3 20 10"/>
 
+            <!--Login TextBox-->
             <TextBox Grid.Row="3"
                      Tag="Username"
                      Text="{Binding Username}"
@@ -52,9 +68,9 @@
                      Padding="20 5"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
-                     FontSize="{StaticResource FontSizeXLarge}"
-                     />
+                     FontSize="{StaticResource FontSizeXLarge}"/>
 
+            <!--Password TextBox-->
             <PasswordBox Grid.Row="4"
                          Tag="Password"
                          Margin="20 5"
@@ -62,20 +78,22 @@
                          x:Name="MyPassword"
                          FontSize="{StaticResource FontSizeXLarge}"
                          HorizontalContentAlignment="Center"
-                         VerticalContentAlignment="Center"
-                     />
+                         VerticalContentAlignment="Center"/>
 
+            <!--Sign in Button-->
             <Button Grid.Row="5"
                     Content="Sign in"
                     IsDefault="True"
-                    Command="{Binding Testow}"
+                    Command="{Binding LoginCommand}"
                     CommandParameter="{Binding ElementName=LoginPageName}"/>
 
+            <!--Bottom Line for UI purpose-->
             <Border Grid.Row="6"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BackgroundWhiteBrush}"
                     Margin="20 0"/>
-           
+
+            <!--Sing Up button-->
             <Button Grid.Row="7"
                     Content="Sign up"
                     Margin="0"

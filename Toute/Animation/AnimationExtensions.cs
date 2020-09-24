@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -11,37 +10,137 @@ namespace Toute
     public static class AnimationExtensions
     {
         /// <summary>
-        /// Add Slide and fade animation at the same time
+        /// Add Slide and Fade animation to the given element
         /// </summary>
-        /// <param name="storyboard">Storyboard to which animation should be added</param>
-        /// <param name="element">Element on which animation should go on</param>
-        /// <param name="direction">Direction of animation</param>
-        /// <param name="vanish">True if animation should hide, false if should appear</param>
-        /// <returns></returns>
-        public static async Task AddSlideAndFadeAnimation(this FrameworkElement element, PageAnimation direction, bool vanish, bool isFirstLoad = false, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
+        /// <param name="element">The element on which animation will happen</param>
+        /// <param name="direction">Direction of the slide animation</param>
+        /// <param name="vanish">True if animation should slide to the given direction, and fade out.
+        /// False if animation should slide from given direction and Fade In</param>
+        /// <param name="isFirstLoad">If it is first animation, element Visibility will be collapsed</param>
+        /// <param name="seconds">Duration of animation in seconds</param>
+        /// <param name="decelerationRatio">Deceleration ratio of animation</param>
+        /// <param name="keepMargin">True if margin should stay. False if whole content should move</param>
+        public static async Task AddSlideAndFadeAnimation(this FrameworkElement element, PageAnimation direction,
+            bool vanish, bool isFirstLoad = false, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
-            //Create a storyboard
+            //Creates a storyboard
             Storyboard storyboard = new Storyboard();
 
-            //Add slide to right
-            storyboard.AddSlideAnimation(direction, vanish, (int)element.ActualWidth, seconds, decelerationRatio, keepMargin);
+            //If the element ActualWidth is 0, for example on start of application
+            //use element.Width property instead of element.ActualWith
+            int width = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
 
-            //Add Fade out Animation
+            //Adds slide animation to right. 
+            storyboard.AddSlideAnimation(direction, vanish, width,
+                seconds, decelerationRatio, keepMargin);
+
+            //Adds Fade out Animation
             storyboard.AddFadeAnimation(vanish, seconds, decelerationRatio);
 
+            //Sets the element Visibility to Visible before
+            //doing the animation
             element.Visibility = Visibility.Visible;
 
             //Start animating the animation
             storyboard.Begin(element);
 
+            //If it is first load, set element Visibility to collapsed
+            //to prevent flickering on start of application
             if (isFirstLoad)
                 element.Visibility = Visibility.Collapsed;
             
-
-            //return the Storyboard
+            //Wait for animation to happen before
+            //doing anything
             await Task.Delay((int)(seconds * 1000));
 
+            //If element is about to hide, set Visibility to Collapsed
+            if (vanish)
+                element.Visibility = Visibility.Collapsed;
+        }
 
+        /// <summary>
+        /// Add Slide animation to the given element
+        /// </summary>
+        /// <param name="element">The element on which animation will happen</param>
+        /// <param name="direction">Direction of the slide animation</param>
+        /// <param name="vanish">True if animation should slide to the given direction.
+        /// False if animation should slide from given direction.</param>
+        /// <param name="isFirstLoad">If it is first animation, element Visibility will be collapsed</param>
+        /// <param name="seconds">Duration of animation in seconds</param>
+        /// <param name="decelerationRatio">Deceleration ratio of animation</param>
+        /// <param name="keepMargin">True if margin should stay. False if whole content should move</param>
+        public static async Task AddSlideAnimation(this FrameworkElement element, PageAnimation direction, bool vanish,
+            bool isFirstLoad = false, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
+        {
+            //Create a storyboard
+            Storyboard storyboard = new Storyboard();
+
+            //If the element ActualWidth is 0, for example on start of application
+            //use element.Width property instead of element.ActualWith
+            int width = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
+
+            //Adds slide animation to right. 
+            storyboard.AddSlideAnimation(direction, vanish, width,
+                seconds, decelerationRatio, keepMargin);
+
+            //Sets the element Visibility to Visible before
+            //doing the animation
+            element.Visibility = Visibility.Visible;
+
+            //Start animating the animation
+            storyboard.Begin(element);
+
+            //If it is first load, set element Visibility to collapsed
+            //to prevent flickering on start of application
+            if (isFirstLoad)
+                element.Visibility = Visibility.Collapsed;
+
+            //Wait for animation to happen before
+            //doing anything
+            await Task.Delay((int)(seconds * 1000));
+
+            //If element is about to hide, set Visibility to Collapsed
+            if (vanish)
+                element.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Add Fade animation to the given element
+        /// </summary>
+        /// <param name="element">The element on which animation will happen</param>
+        /// <param name="vanish">True if animation should fade out.
+        /// False if animation should Fade In</param>
+        /// <param name="isFirstLoad">If it is first animation, element Visibility will be collapsed</param>
+        /// <param name="seconds">Duration of animation in seconds</param>
+        /// <param name="decelerationRatio">Deceleration ratio of animation</param>
+        public static async Task AddFadeAnimation(this FrameworkElement element, bool vanish, bool isFirstLoad = false, float seconds = 0.3f,
+            float decelerationRatio = 0.9f)
+        {
+            //Creates a storyboard
+            Storyboard storyboard = new Storyboard();
+
+            //Adds Fade out Animation
+            storyboard.AddFadeAnimation(vanish, seconds, decelerationRatio);
+
+            //Sets the element Visibility to Visible before
+            //doing the animation
+            element.Visibility = Visibility.Visible;
+
+            //Start animating the animation
+            storyboard.Begin(element);
+
+            //If it is first load, set element Visibility to collapsed
+            //to prevent flickering on start of application
+            if (isFirstLoad)
+                element.Visibility = Visibility.Collapsed;
+
+            //Wait for animation to happen before
+            //doing anything
+            await Task.Delay((int)(seconds * 1000));
+
+            //If element is about to hide, set Visibility to Collapsed
+            if (vanish)
+                element.Visibility = Visibility.Collapsed;
         }
     }
 }

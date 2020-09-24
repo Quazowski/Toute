@@ -4,20 +4,29 @@ using System.Windows.Input;
 namespace Toute
 {
     /// <summary>
-    /// A relay command class, that helps handle
-    /// all relay commands in application
+    /// A parametrized relay command class, that helps handle
+    /// parametrized commands in application
     /// </summary>
-    public class RelayCommand : ICommand
+    public class ParametrizedRelayCommand : ICommand
     {
         /// <summary>
-        /// A action thats will be fired
+        /// A action of type object thats will be fired
         /// </summary>
-        private Action Action { get; set; }
+        private readonly Action<object> action;
 
         /// <summary>
-        /// A event handler of RelayCommand
+        /// A event handler of ParametrizedRelayCommand
         /// </summary>
         public event EventHandler CanExecuteChanged = (sender, e) => { };
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        /// <param name="action">Action will be sent with object parameter</param>
+        public ParametrizedRelayCommand(Action<object> action)
+        {
+            this.action = action;
+        }
 
         /// <summary>
         /// Command is always fired
@@ -27,21 +36,12 @@ namespace Toute
         public bool CanExecute(object parameter) => true;
 
         /// <summary>
-        /// Constructor of relay command, and action is passed
-        /// </summary>
-        /// <param name="action"></param>
-        public RelayCommand(Action action)
-        {
-            this.Action = action;
-        }
-
-        /// <summary>
         /// A action is executed
         /// </summary>
         /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
-            Action();
+            action(parameter);
         }
     }
 }

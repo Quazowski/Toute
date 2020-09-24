@@ -23,7 +23,6 @@ namespace Toute
         /// <param name="seconds">Duration of animation</param>
         /// <param name="decelerationRatio">Deceleration of animation</param>
         /// <param name="keepMargin">True if margin should not be moved, false if whole content should be moved</param>
-        /// <returns></returns>
         public static Storyboard AddSlideAnimation(this Storyboard storyboard, PageAnimation direction, bool hide, int width, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
             // Create a thickness animation
@@ -152,7 +151,6 @@ namespace Toute
 
         #endregion
 
-
         #region Fade animations
 
         /// <summary>
@@ -162,7 +160,7 @@ namespace Toute
         /// <param name="Vanish">True if animation should Fade Out, false if animation should Fade In</param>
         /// <param name="seconds">Duration of fade effect</param>
         /// <param name="decelerationRatio">deceleration ratio of animation</param>
-        /// <returns></returns>
+        /// <returns>returns storyboard</returns>
         public static Storyboard AddFadeAnimation(this Storyboard storyboard, bool Vanish, float seconds = 0.3f, float decelerationRatio = 0.9f)
         {
             //Create double animation
@@ -199,6 +197,7 @@ namespace Toute
             //Add animation to storyboard
             storyboard.Children.Add(animation);
 
+            //returns storyboard
             return storyboard;
         }
 

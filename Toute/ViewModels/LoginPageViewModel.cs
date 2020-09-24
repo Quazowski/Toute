@@ -1,28 +1,70 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace Toute
 {
+    /// <summary>
+    /// A ViewModel for LoginPage
+    /// </summary>
     public class LoginPageViewModel : BaseViewModel
     {
-        public ICommand Testow { get; set; }
+        #region Public properties
+
+        /// <summary>
+        /// Username of user
+        /// </summary>
+        public string Username { get; set; }
+
+        #endregion
+        #region Commands
+        /// <summary>
+        /// Command that handle login
+        /// </summary>
+        public ICommand LoginCommand { get; set; }
+        /// <summary>
+        /// Command that handle going to register page
+        /// </summary>
         public ICommand GoToRegister { get; set; }
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LoginPageViewModel()
         {
-            Testow = new ParamizedRelayCommand((parameter) => Test(parameter));
-            GoToRegister = new ParamizedRelayCommand(GoToRegisterPage);
+            //Command that handle login
+            LoginCommand = new ParametrizedRelayCommand((parameter) => Login(parameter));
 
+            //Command that handle going to register page
+            GoToRegister = new RelayCommand(GoToRegisterPage);
         }
 
-        private void GoToRegisterPage(object obj)
+        #endregion
+
+        #region Helper methods
+
+        /// <summary>
+        /// Method that handle login
+        /// </summary>
+        private void GoToRegisterPage()
         {
+            //Go to register page
             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.RegisterPage);
         }
 
-        public void Test(object parameter)
+        /// <summary>
+        /// Method that handle going to register page
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void Login(object parameter)
         {
-            var Test = (parameter as IHavePassword).SecureString.Unsecure();
+            //NOTE: It is only for testing, should be replaced with properly register
+            //Password should not be hold in variables
+            var password = (parameter as IHavePassword).SecureString.Unsecure();
         }
+
+        #endregion
     }
 }
