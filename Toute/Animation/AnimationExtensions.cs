@@ -18,7 +18,7 @@ namespace Toute
         /// <param name="direction">Direction of animation</param>
         /// <param name="vanish">True if animation should hide, false if should appear</param>
         /// <returns></returns>
-        public static async Task AddSlideAndFadeAnimation(this FrameworkElement element, PageAnimation direction, bool vanish, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
+        public static async Task AddSlideAndFadeAnimation(this FrameworkElement element, PageAnimation direction, bool vanish, bool isFirstLoad = false, float seconds = 0.3f, float decelerationRatio = 0.9f, bool keepMargin = true)
         {
             //Create a storyboard
             Storyboard storyboard = new Storyboard();
@@ -29,11 +29,19 @@ namespace Toute
             //Add Fade out Animation
             storyboard.AddFadeAnimation(vanish, seconds, decelerationRatio);
 
+            element.Visibility = Visibility.Visible;
+
             //Start animating the animation
             storyboard.Begin(element);
+
+            if (isFirstLoad)
+                element.Visibility = Visibility.Collapsed;
             
+
             //return the Storyboard
             await Task.Delay((int)(seconds * 1000));
+
+
         }
     }
 }

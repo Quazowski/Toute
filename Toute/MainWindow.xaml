@@ -131,14 +131,16 @@
             <!--Side menu control-->
             <Border  Grid.Column="0">
                 <local:SideMenuControl
-                    local:LeftFadeSlideAttachedProperty.Value="{Binding Tes}"
-                    Width="300"
-                    />
+                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}"
+                    local:LeftFadeSlideAttachedProperty.Value="{Binding SideMenuHidden}"  
+                    Width="300" />
             </Border>
             
             <!--Main Content-->
-            <Border Grid.Column="1" Background="Red" Margin="200">
-                <local:SideMenuControl />
+            <Border Grid.Column="1" 
+                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
+                <Frame Content="{Binding CurrentPage}"
+                       local:NavigationHistoryAttachedProperty.Value="True"/>
             </Border>
         </Grid>
         

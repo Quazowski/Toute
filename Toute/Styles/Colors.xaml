@@ -23,6 +23,24 @@
     <Color x:Key="Red">#d21313</Color>
     <SolidColorBrush x:Key="BackgroundRedBrush" Color="{StaticResource Red}"/>
 
+    <Color x:Key="VeryLightGreen">#c7f3c4</Color>
+    <SolidColorBrush x:Key="BackgroundVeryLightGreenBrush" Color="{StaticResource VeryLightGreen}"/>
+
+    <Color x:Key="Green">#44ff44</Color>
+    <SolidColorBrush x:Key="BackgroundGreenBrush" Color="{StaticResource Green}"/>
+
+    <Color x:Key="DarkGreen">#55aa55</Color>
+    <SolidColorBrush x:Key="BackgroundDarkGreenBrush" Color="{StaticResource DarkGreen}"/>
+
+    <Color x:Key="DarkOrange">#fe7f0f</Color>
+    <SolidColorBrush x:Key="BackgroundDarkOrangeBrush" Color="{StaticResource DarkOrange}"/>
+
+    <Color x:Key="Orange">#fe9c0f</Color>
+    <SolidColorBrush x:Key="BackgroundOrangeBrush" Color="{StaticResource Orange}"/>
+
+    <Color x:Key="LightOrange">#ffb74f</Color>
+    <SolidColorBrush x:Key="BackgroundLightOrangeBrush" Color="{StaticResource LightOrange}"/>
+
     <Color x:Key="Black">#000000</Color>
     <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource Black}"/>
 

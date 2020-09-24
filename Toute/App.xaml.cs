@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Toute
 {
@@ -13,5 +7,26 @@ namespace Toute
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// Override <see cref="OnStartup(StartupEventArgs)"/> to implement
+        /// own function etc. before application start
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            //Start application as normal...
+            base.OnStartup(e);
+
+            //Set up IoC for our application
+            IoC.Setup();
+
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+
+            //Create a new MainWindow
+            Current.MainWindow = new MainWindow();
+
+            //Show MainWindow
+            Current.MainWindow.Show();
+        }
     }
 }

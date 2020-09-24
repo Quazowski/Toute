@@ -24,11 +24,12 @@ namespace Toute
         #endregion
 
         #region Public members
+
         /// <summary>
         /// Padding of the Toute Title text box
         /// </summary>
         public Thickness HeaderTitlePadding { get; set; } = new Thickness(25, 10, 25, 10);
-
+        
         /// <summary>
         /// Padding of drop shadow border
         /// Changes when windowState is changed
@@ -81,7 +82,7 @@ namespace Toute
         #endregion
 
         #region Constructor
-        public bool Tes { get; set; }
+        
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -96,7 +97,7 @@ namespace Toute
             {
                 OnPropertyChanged(nameof(DropShadowBorderPadding));
             };
-
+            
             //Create commands
             MinimizeCommand = new RelayCommand(Minimize);
             MaximizeCommand = new RelayCommand(Maximize);
@@ -112,8 +113,9 @@ namespace Toute
         /// </summary>
         private void Minimize()
         {
+            IoC.Get<ApplicationViewModel>().SideMenuHidden ^= true;
+            //Minimize window
             //_window.WindowState = WindowState.Minimized;
-            Tes ^= true;
         }
 
         /// <summary>
@@ -121,6 +123,7 @@ namespace Toute
         /// </summary>
         private void Maximize()
         {
+            //Maximize window
             _window.WindowState ^= WindowState.Maximized;
         }
 
@@ -129,6 +132,7 @@ namespace Toute
         /// </summary>
         private void Close()
         {
+            //Close application
             _window.Close();
         }
 

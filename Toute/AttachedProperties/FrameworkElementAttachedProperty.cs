@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace Toute
@@ -13,6 +15,9 @@ namespace Toute
     public abstract class BaseAnimationAttachedProperty<T> : BaseAttachedProperty<T, bool>
         where T : BaseAttachedProperty<T, bool>, new()
     {
+
+        bool IsFirstLoad = false;
+
         /// <summary>
         /// Fires when the value of attached property is changed
         /// </summary>
@@ -25,8 +30,17 @@ namespace Toute
             //otherwise return
             return;
 
-            //Run a animation
-            await DoAnimation((FrameworkElement)sender, (bool)e.NewValue);
+            if (IsFirstLoad == false)
+            {
+                IsFirstLoad = true;
+
+                await DoAnimation((FrameworkElement)sender, (bool)e.NewValue, true);
+            }
+            else
+            {
+                //Run a animation
+                await DoAnimation((FrameworkElement)sender, (bool)e.NewValue, false);
+            }
         }
 
         /// <summary>
@@ -35,7 +49,7 @@ namespace Toute
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen</param>
         /// <returns></returns>
-        protected virtual async Task DoAnimation(FrameworkElement element, bool vanish) { await Task.Delay(1); }
+        protected virtual async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad) { await Task.Delay(1); }
     }
 
     /// <summary>
@@ -49,10 +63,10 @@ namespace Toute
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to left</param>
         /// <returns></returns>
-        protected override async Task DoAnimation(FrameworkElement element, bool vanish)
+        protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.LeftSlides, vanish);
+            await element.AddSlideAndFadeAnimation(PageAnimation.LeftSlides, vanish, keepMargin: false, isFirstLoad:isFirstLoad);
         }
     }
 
@@ -67,10 +81,10 @@ namespace Toute
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to top</param>
         /// <returns></returns>
-        protected override async Task DoAnimation(FrameworkElement element, bool vanish)
+        protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.TopSlides, vanish);
+            await element.AddSlideAndFadeAnimation(PageAnimation.TopSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
         }
     }
 
@@ -85,10 +99,10 @@ namespace Toute
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to the right</param>
         /// <returns></returns>
-        protected override async Task DoAnimation(FrameworkElement element, bool vanish)
+        protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.RightSlides, vanish);
+            await element.AddSlideAndFadeAnimation(PageAnimation.RightSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
         }
     }
 
@@ -103,10 +117,10 @@ namespace Toute
         /// <param name="element">Element to animate</param>
         /// <param name="vanish">True if element should fade out and move out of the screen to the bottom</param>
         /// <returns></returns>
-        protected override async Task DoAnimation(FrameworkElement element, bool vanish)
+        protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.BottomSlides, vanish);
+            await element.AddSlideAndFadeAnimation(PageAnimation.BottomSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
         }
     }
 }

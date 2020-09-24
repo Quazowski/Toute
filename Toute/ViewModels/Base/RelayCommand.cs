@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace Toute
@@ -14,7 +12,7 @@ namespace Toute
         /// <summary>
         /// A action thats will be fired
         /// </summary>
-        public Action _action { get; set; }
+        private Action Action { get; set; }
         /// <summary>
         /// A event handler of RelayCommand
         /// </summary>
@@ -33,7 +31,7 @@ namespace Toute
         /// <param name="action"></param>
         public RelayCommand(Action action)
         {
-            _action = action;
+            this.Action = action;
         }
 
         /// <summary>
@@ -42,7 +40,7 @@ namespace Toute
         /// <param name="parameter"></param>
         public void Execute(object parameter)
         {
-            _action();
+            Action();
         }
     }
 }
