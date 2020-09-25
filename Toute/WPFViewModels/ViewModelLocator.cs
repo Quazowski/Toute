@@ -16,5 +16,10 @@ namespace Toute
         /// Static ViewModel of ApplicationViewModel
         /// </summary>
         public static ApplicationViewModel ApplicationViewModel = IoC.Kernel.Get<ApplicationViewModel>();
+
+        /// <summary>
+        /// Static ViewModel of GamesPageViewModel
+        /// </summary>
+        public static GamesPageViewModel GamesPageViewModel = IoC.Kernel.Get<GamesPageViewModel>();
     }
 }

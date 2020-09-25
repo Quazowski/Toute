@@ -12,6 +12,7 @@ namespace Toute
         /// </summary>
         public SideMenuControl()
         {
+            //Prepares Components for MainWindow
             InitializeComponent();
         }
     }

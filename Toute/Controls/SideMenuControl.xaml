@@ -39,19 +39,22 @@
                     <Button Grid.Column="0" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
-                            Content="{StaticResource FontAwesomeGamePadIcon}"/>
+                            Content="{StaticResource FontAwesomeGamePadIcon}"
+                            Command="{Binding GamesCommand}"/>
 
                     <!--Contacts tab-->
                     <Button Grid.Column="1" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
-                            Content="{StaticResource FontAwesomeUserIcon}"/>
+                            Content="{StaticResource FontAwesomeUserIcon}"
+                            Command="{Binding ContactCommand}"/>
 
                     <!--Settings tab-->
                     <Button Grid.Column="2" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
-                            Content="{StaticResource FontAwesomeCogIcon}"/>
+                            Content="{StaticResource FontAwesomeCogIcon}"
+                            Command="{Binding SettingsCommand}"/>
 
 
                 </Grid>

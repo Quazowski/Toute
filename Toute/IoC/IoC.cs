@@ -38,6 +38,9 @@ namespace Toute
         {
             //Binds ApplicationViewModel as singleton view model
             Kernel.Bind<ApplicationViewModel>().ToConstant(new ApplicationViewModel());
+
+            //Binds GamesPageViewModel as singleton view model 
+            Kernel.Bind<GamesPageViewModel>().ToConstant(new GamesPageViewModel());
         }
 
         /// <summary>

@@ -13,6 +13,7 @@
     <None Remove="Fonts\Lato-Bold.ttf" />
     <None Remove="Fonts\Lato-Regular.ttf" />
     <None Remove="Fonts\Lato-Thin.ttf" />
+    <None Remove="Images\LOGOToute.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +32,9 @@
     <Resource Include="Fonts\Lato-Thin.ttf">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Images\LOGOToute.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -45,6 +49,10 @@
 		  <IncludeAssets>compile; runtime; build; native; contentfiles; analyzers</IncludeAssets>
 	  </PackageReference>
 	  
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Toute.Core\Toute.Core.csproj" />
   </ItemGroup>
 
 </Project>

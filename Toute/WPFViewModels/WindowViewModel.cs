@@ -132,6 +132,7 @@ namespace Toute
         {
             //Close application
             _window.Close();
+            Application.Current.Shutdown();
         }
 
         #endregion

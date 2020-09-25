@@ -9,106 +9,100 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow"
+        MinHeight="400"
+        MinWidth="700"
         Height="700" 
         Width="1200">
-    
-    <Window.Resources>
-        <Style TargetType="{x:Type local:MainWindow}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Window}">
-                        <!--Border for drop shadow effect-->
-                        <Border Padding="{Binding DropShadowBorderPadding}">
-                            <!--Drop shadow of the Main Window-->
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="1" Color="Black"/>
-                            </Border.Effect>
-                            
-                            <!--Border for a whole application content-->
-                            <Border>
-                                <!--Grid that set application on Title and Main Content-->
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <!--Caption Height-->
-                                        <RowDefinition Height="{Binding CaptionHeight}" />
-                                        <!--Main Content Height-->
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
 
-                                    <!--Caption Height-->
-                                    <Border Grid.Row="0">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                                <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                                <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                            </LinearGradientBrush>
-                                        </Border.Background>
+    <!--Override default template--> 
+    <Window.Template>
+        <ControlTemplate TargetType="{x:Type Window}">
+            <!--Border for drop shadow effect-->
+            <Border Padding="{Binding DropShadowBorderPadding, FallbackValue=10}">
+                <!--Drop shadow of the Main Window-->
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="1" Color="Black"/>
+                </Border.Effect>
 
-                                        <!--Grid that split Header Bar-->
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <!--Title-->
-                                                <ColumnDefinition Width="Auto"/>
-                                                <!--Middle content-->
-                                                <ColumnDefinition Width="*"/>
-                                                <!--Buttons-->
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                <!--Border for a whole application content-->
+                <Border>
+                    <!--Grid that set application on Title and Main Content-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--Caption Height-->
+                            <RowDefinition Height="{Binding CaptionHeight, FallbackValue=68}" />
+                            <!--Main Content-->
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
 
-                                            <!--Title-->
-                                            <Border Grid.Column="0">
-                                                <TextBlock Text="Toute"
+                        <!--Caption Height-->
+                        <Border Grid.Row="0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
+                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <!--Grid that split Header Bar-->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!--Title-->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!--Middle content-->
+                                    <ColumnDefinition Width="*"/>
+                                    <!--Buttons-->
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--Title-->
+                                <Border Grid.Column="0">
+                                    <TextBlock Text="Toute"
                                                        FontFamily="{StaticResource FontScript}"
-                                                       FontSize="{Binding HeaderFontSize}"
+                                                       FontSize="{Binding HeaderFontSize, FallbackValue=48}"
                                                        Foreground="{StaticResource BackgroundGrayBrush}"
-                                                       Padding="{Binding HeaderTitlePadding}"
+                                                       Padding="{Binding HeaderTitlePadding, FallbackValue=25 10 25 10}"
                                                        />
-                                            </Border>
-                                            <!--Middle content-->
-                                            <Border Grid.Column="1">
+                                </Border>
+                                <!--Middle content-->
+                                <Border Grid.Column="1">
 
-                                            </Border>
-                                            <!--Buttons-->
-                                            <Border  Grid.Column="2">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <!--Minimize button-->
-                                                    <Button FontFamily="{StaticResource FontAwesome}"
+                                </Border>
+                                <!--Buttons-->
+                                <Border  Grid.Column="2">
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--Minimize button-->
+                                        <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMinimalizeIcon}"
                                                     Command="{Binding MinimizeCommand}" />
 
-                                                    <!--Maximize button-->
-                                                    <Button FontFamily="{StaticResource FontAwesome}"
+                                        <!--Maximize button-->
+                                        <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMaximalizeIcon}"
                                                     Command="{Binding MaximizeCommand}"/>
 
-                                                    <!--Close button-->
-                                                    <Button FontFamily="{StaticResource FontAwesome}"
+                                        <!--Close button-->
+                                        <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemCloseButton}"
                                                     Content="{StaticResource FontAwesomeCloseIcon}"
                                                     Command="{Binding CloseCommand}"
                                                     VerticalAlignment="Top" />
-                                                </StackPanel>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-
-                                    <!--Main Content Height-->
-                                    <Border Grid.Row="1" ClipToBounds="True">
-                                        <ContentPresenter Content="{TemplateBinding Content}" />
-                                    </Border>
-                                </Grid>
-                            </Border>
-
-
-
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
                         </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </Window.Resources>
+
+                        <!--Main Content-->
+                        <Border Grid.Row="1" ClipToBounds="True">
+                            <ContentPresenter Content="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                </Border>
+            </Border>
+        </ControlTemplate>
+    </Window.Template>
 
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
@@ -125,9 +119,10 @@
                 <!--Side menu control-->
                 <ColumnDefinition Width="auto" />
                 <!--Main Content-->
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+
             </Grid.ColumnDefinitions>
-            
+
             <!--Side menu control-->
             <Border  Grid.Column="0">
                 <local:SideMenuControl
@@ -135,15 +130,15 @@
                     local:LeftFadeSlideAttachedProperty.Value="{Binding SideMenuHidden}"  
                     Width="300" />
             </Border>
-            
+
             <!--Main Content-->
             <Border Grid.Column="1" 
-                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
+                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}" Grid.ColumnSpan="2">
                 <Frame Content="{Binding CurrentPage}"
                        local:NavigationHistoryAttachedProperty.Value="True"/>
             </Border>
         </Grid>
-        
+
         <!--Background of main content-->
         <Border.Background>
             <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">

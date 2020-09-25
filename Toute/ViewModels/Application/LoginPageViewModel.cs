@@ -15,6 +15,7 @@ namespace Toute
         public string Username { get; set; }
 
         #endregion
+
         #region Commands
         /// <summary>
         /// Command that handle login
@@ -63,6 +64,10 @@ namespace Toute
             //NOTE: It is only for testing, should be replaced with properly register
             //Password should not be hold in variables
             var password = (parameter as IHavePassword).SecureString.Unsecure();
+
+            //Go to Games page if successfully logged
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+
         }
 
         #endregion

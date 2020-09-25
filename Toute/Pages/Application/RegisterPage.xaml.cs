@@ -3,19 +3,18 @@
 namespace Toute
 {
     /// <summary>
-    /// Interaction logic for LoginPage.xaml
-    /// Using <see cref="LoginPageViewModel"/> as ViewModel,
+    /// Interaction logic for RegisterPage.xaml
+    /// Using <see cref="RegisterPageViewModel"/> as ViewModel,
     /// <see cref="BasePage"/> as base page, and 
     /// <see cref="IHavePassword"/> to handle password sending to VM
     /// </summary>
-    public partial class LoginPage : BasePage<LoginPageViewModel>, IHavePassword
+    public partial class RegisterPage : BasePage<RegisterPageViewModel>, IHaveDoublePassword
     {
         #region Public Members
 
-        /// <summary>
-        /// Secure string to handle sending password to ViewModel
-        /// </summary>
-        public SecureString SecureString => MyPassword.SecurePassword;
+        public SecureString FirstSecureString => MyPassword.SecurePassword;
+
+        public SecureString SecondSecureString => MyConfirmPassword.SecurePassword;
 
         #endregion
 
@@ -24,16 +23,17 @@ namespace Toute
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LoginPage()
+        public RegisterPage()
         {
-
+            //Prepares Components for MainWindow
+            InitializeComponent();
         }
 
         /// <summary>
         /// Constructor that accept view model as a parameter
         /// </summary>
-        /// <param name="vm"></param>
-        public LoginPage(LoginPageViewModel vm) : base(vm)
+        /// <param name="vm">ViewModel for RegisterPage</param>
+        public RegisterPage(RegisterPageViewModel viewModel) : base(viewModel)
         {
             //Prepares Components for MainWindow
             InitializeComponent();

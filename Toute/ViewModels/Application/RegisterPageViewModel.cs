@@ -18,7 +18,7 @@ namespace Toute
         /// <summary>
         /// Email of user
         /// </summary>
-        public int Email { get; set; }
+        public string Email { get; set; }
 
         #endregion
 

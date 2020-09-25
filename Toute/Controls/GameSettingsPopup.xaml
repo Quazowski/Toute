@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Toute.GameSettingsPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Toute"
+             mc:Ignorable="d"
+             DataContext="{x:Static local:ViewModelLocator.GamesPageViewModel}">
+
+
+    <Popup IsOpen="{Binding PopupHidden, Converter={local:BooleanInverterConverter}}"
+           StaysOpen="False"
+           Height="50" 
+           Placement="MousePoint" 
+           HorizontalOffset="-80" 
+           VerticalOffset="-46"
+           Width="80"
+           AllowsTransparency="True"
+           local:FadeAnimationAttachedProperty.Value="{Binding PopupHidden}"
+           >
+
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    Background="{StaticResource BackgroundWhiteBrush}"
+                    CornerRadius="4 4 0 4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0"
+                            Content="Set new path"
+                            Style="{StaticResource PopupButton}"
+                            Background="{StaticResource BackgroundWhiteBrush}"
+                            Foreground="{StaticResource BackgroundBlackBrush}"
+                            Padding="5"/>
+
+                    <Button Grid.Row="1"
+                            Style="{StaticResource PopupButton}"
+                            x:Name="Button"
+                            Background="{StaticResource BackgroundRedBrush}"
+                            Content="Delete"
+                            Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Padding="5">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource VeryLightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Background="Transparent">
+                <Path Grid.Row="2" 
+                      Fill="{StaticResource BackgroundWhiteBrush}"
+                      Data="M 80,0 L 80,10 73,3 C 73,3 72,1 65,0"/>
+            </Border>
+        </Grid>
+    </Popup>
+
+</UserControl>

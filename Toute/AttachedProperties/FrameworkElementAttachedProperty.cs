@@ -131,4 +131,25 @@ namespace Toute
 
     #endregion
 
+    #region Fade Animations
+
+    /// <summary>
+    /// Attached property that are responsible for handling fade in or out animation
+    /// </summary>
+    public class FadeAnimationAttachedProperty : BaseAnimationAttachedProperty<LeftFadeSlideAttachedProperty>
+    {
+        /// <summary>
+        /// Animation that fade in or out depends on vanish value
+        /// </summary>
+        /// <param name="element">Element to animate</param>
+        /// <param name="vanish">True if element should fade out, false if element should fade in</param>
+        protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
+        {
+            //Fires a fade in or out animation
+            await element.AddFadeAnimation(vanish);
+        }
+    }
+
+    #endregion
+
 }

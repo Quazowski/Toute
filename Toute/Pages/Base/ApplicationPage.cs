@@ -11,6 +11,15 @@
         LoginPage = 1,
 
         //Register Page
-        RegisterPage = 2
+        RegisterPage = 2,
+        
+        //Games Page
+        GamesPage = 3,
+
+        //Contact Page
+        ContactPage = 4,
+
+        //Settings Page
+        SettingsPage = 5
     }
 }

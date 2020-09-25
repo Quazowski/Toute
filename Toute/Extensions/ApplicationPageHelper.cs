@@ -21,12 +21,29 @@ namespace Toute
             {
                 //If it is LoginPage
                 case ApplicationPage.LoginPage:
-                    //return new LoginPage of Login Page ViewModel
+                    //return new LoginPage of LoginPageViewModel
                     return new LoginPage(new LoginPageViewModel());
                 //If it is RegisterPage
+
                 case ApplicationPage.RegisterPage:
-                    //return new LoginPage of Register Page ViewModel
+                    //return new LoginPage of RegisterPageViewModel
                     return new RegisterPage(new RegisterPageViewModel());
+
+                //If it is GamesPage
+                case ApplicationPage.GamesPage:
+                    //return new GamesPage of Game PageViewModel
+                    return new GamesPage(new GamesPageViewModel());
+
+                //If it is ContactPage
+                case ApplicationPage.ContactPage:
+                    //return new ContactPage of ContactPageViewModel
+                    return new ContactPage(new ContactPageViewModel());
+
+                //If it is SettingsPage
+                case ApplicationPage.SettingsPage:
+                    //return new SettingsPage of SettingsPageViewModel
+                    return new SettingsPage(new SettingsPageViewModel());
+
                 //If none of this
                 default:
                     //Break to give developer info
@@ -34,7 +51,6 @@ namespace Toute
                     //and return null
                     return null;
             }
-
         }
     }
 }
