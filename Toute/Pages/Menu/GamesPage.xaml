@@ -91,6 +91,7 @@
                                         <!--Settings button-->
                                         <Button Style="{StaticResource GameMenuSettingsButton}"
                                                 Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
+                                                CommandParameter="{Binding PathToGame}"
                                                 Content="Settings"/>
                                         
                                     </StackPanel>
@@ -104,7 +105,8 @@
 
         <!--Add Game button-->
         <Border Grid.Row="1" VerticalAlignment="Bottom">
-            <Button Content="Add game"/>
+            <Button Content="Add game"
+                    Command="{Binding AddGameCommand}"/>
         </Border>
         
         <!--Popup for settings-->

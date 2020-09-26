@@ -8,16 +8,14 @@
              DataContext="{x:Static local:ViewModelLocator.GamesPageViewModel}">
 
 
-    <Popup IsOpen="{Binding PopupHidden, Converter={local:BooleanInverterConverter}}"
+    <Popup IsOpen="{Binding CurrentItem.PopupOpen}"
            StaysOpen="False"
            Height="50" 
            Placement="MousePoint" 
            HorizontalOffset="-80" 
            VerticalOffset="-46"
            Width="80"
-           AllowsTransparency="True"
-           local:FadeAnimationAttachedProperty.Value="{Binding PopupHidden}"
-           >
+           AllowsTransparency="True">
 
         <Grid Background="Transparent">
             <Grid.RowDefinitions>
@@ -46,6 +44,7 @@
                             x:Name="Button"
                             Background="{StaticResource BackgroundRedBrush}"
                             Content="Delete"
+                            Command="{Binding RemoveGameCommand}"
                             Foreground="{StaticResource BackgroundWhiteBrush}"
                             Padding="5">
                         <Button.Triggers>

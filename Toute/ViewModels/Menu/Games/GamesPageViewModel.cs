@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Toute
@@ -14,9 +17,20 @@ namespace Toute
         /// <summary>
         /// All games that are added, and can be run
         /// </summary>
-        public ObservableCollection<GameModel> Items { get; set; }
+        private ObservableCollection<GameModel> _items;
+        public ObservableCollection<GameModel> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                OnPropertyChanged(nameof(_items));
+            }
+        }
 
         public bool PopupHidden { get; set; } = true;
+
+        public GameModel CurrentItem { get; set; }
 
         #endregion
 
@@ -32,6 +46,16 @@ namespace Toute
         /// </summary>
         public ICommand SettingsCommand { get; set; }
 
+        /// <summary>
+        /// Command that delete game with given path
+        /// </summary>
+        public ICommand RemoveGameCommand { get; set; }
+
+        /// <summary>
+        /// Command that add game
+        /// </summary>
+        public ICommand AddGameCommand { get; set; }
+
 
         #endregion
 
@@ -43,18 +67,46 @@ namespace Toute
             //Creating new ObservableCollection to store Games
             Items = new ObservableCollection<GameModel>();
 
+            Items.CollectionChanged += (sender, e) =>
+            {
+                OnPropertyChanged(nameof(Items));
+            };
+
             //Command to run chosen game
             RunCommand = new ParametrizedRelayCommand((path) => RunGame((string)path));
 
             //Command to open settings of chosen game
-            SettingsCommand = new RelayCommand(OpenSettingsGame);
+            SettingsCommand = new ParametrizedRelayCommand((path) => OpenSettingsGame((string)path));
 
+            //Command that delete game with given path
+            RemoveGameCommand = new RelayCommand(DeleteGame);
+
+            //Command that add game
+            AddGameCommand = new RelayCommand(AddGame);
+
+            //Load from local machine db and set items
             Items.Add(new GameModel { Title = "Config Folder", PathToGame = @"C:\Users\wardl\Desktop\config" });
             Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
             Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
             Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
             Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
             Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
+        }
+
+        private void AddGame()
+        {
+            AddGameWindow gameWindow = new AddGameWindow();
+            gameWindow.Show();
+            //Open window, select item, take of this icon and path, add to Items.
+        }
+
+        private void DeleteGame()
+        {
+            CurrentItem.PopupOpen = false;
+
+            Items.Remove(CurrentItem);
+
+            OnPropertyChanged(nameof(Items));
         }
 
         /// <summary>
@@ -69,9 +121,14 @@ namespace Toute
         /// <summary>
         /// Method that handle open settings of chosen game
         /// </summary>
-        private void OpenSettingsGame()
+        private void OpenSettingsGame(string path)
         {
-            PopupHidden ^= true;
+            //Toggle popup
+            CurrentItem = Items.FirstOrDefault(x => x.PathToGame == path);
+
+            CurrentItem.PopupOpen ^= true;
+
+
         }
     }
 }

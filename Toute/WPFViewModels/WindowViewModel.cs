@@ -81,11 +81,15 @@ namespace Toute
         #endregion
 
         #region Constructor
-        
+
+        public WindowViewModel()
+        {
+
+        }
         /// <summary>
         /// Default constructor
         /// </summary>
-        public WindowViewModel(Window window)
+        public WindowViewModel(Window window) : base()
         {
             //Assign main window to private member
             _window = window;
@@ -96,7 +100,7 @@ namespace Toute
             {
                 OnPropertyChanged(nameof(DropShadowBorderPadding));
             };
-            
+
             //Create commands
             MinimizeCommand = new RelayCommand(Minimize);
             MaximizeCommand = new RelayCommand(Maximize);
