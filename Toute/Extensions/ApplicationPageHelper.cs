@@ -13,8 +13,9 @@ namespace Toute
         /// page of application
         /// </summary>
         /// <param name="page">Page on which frame of application should be changed</param>
+        /// <param name="viewModel">ViewModel to pass to next page, can be null</param>
         /// <returns>New page</returns>
-        public static BasePage GoToBasePage(ApplicationPage page)
+        public static BasePage GoToBasePage(ApplicationPage page, BaseViewModel viewModel = null)
         {
             //Switch between ApplicationPage
             switch (page)
@@ -36,8 +37,8 @@ namespace Toute
 
                 //If it is ContactPage
                 case ApplicationPage.ContactPage:
-                    //return new ContactPage of ContactPageViewModel
-                    return new ContactPage(new ContactPageViewModel());
+                    //return new ContactPage of ContactPageViewModel, and sends given ViewModel
+                    return new ContactPage(new ContactPageViewModel(viewModel));
 
                 //If it is SettingsPage
                 case ApplicationPage.SettingsPage:

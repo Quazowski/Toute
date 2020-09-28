@@ -41,6 +41,7 @@ namespace Toute
 
             //Binds GamesPageViewModel as singleton view model 
             Kernel.Bind<GamesPageViewModel>().ToConstant(new GamesPageViewModel());
+
         }
 
         /// <summary>

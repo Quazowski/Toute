@@ -4,8 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Toute"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="250">
+             mc:Ignorable="d">
     <!--Border on whole control-->
     <Border>
         <!--Grid that splits a control-->
@@ -19,17 +18,21 @@
             
             <!--Tab controls-->
             <Border Grid.Row="0">
+                
                 <Border.Background>
-                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                        <GradientStop Color="{StaticResource Gray}" Offset="0" />
-                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="2" />
+                    <LinearGradientBrush StartPoint="1,0" 
+                                         EndPoint="1,1">
+                        <GradientStop Color="{StaticResource Gray}"
+                                      Offset="0" />
+                        <GradientStop Color="{StaticResource VeryLightGray}"
+                                      Offset="2" />
                     </LinearGradientBrush>
                 </Border.Background>
-                <Grid>
+                
+                <!--Buttons-->
+                <Grid DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
                     <Grid.ColumnDefinitions>
                         <!--Programs tab-->
-                        <ColumnDefinition Width="*" />
-                        <!--Contacts tab-->
                         <ColumnDefinition Width="*" />
                         <!--Settings tab-->
                         <ColumnDefinition Width="*" />
@@ -42,15 +45,8 @@
                             Content="{StaticResource FontAwesomeGamePadIcon}"
                             Command="{Binding GamesCommand}"/>
 
-                    <!--Contacts tab-->
-                    <Button Grid.Column="1" 
-                            Style="{StaticResource SideMenuButton}"
-                            FontFamily="{StaticResource FontAwesome}"
-                            Content="{StaticResource FontAwesomeUserIcon}"
-                            Command="{Binding ContactCommand}"/>
-
                     <!--Settings tab-->
-                    <Button Grid.Column="2" 
+                    <Button Grid.Column="1" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
                             Content="{StaticResource FontAwesomeCogIcon}"
@@ -59,13 +55,55 @@
 
                 </Grid>
             </Border>
+            
             <!--The content of tab control-->
-            <Border Grid.Row="1">
+            <Border Grid.Row="1" >
+                <ScrollViewer d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}">
+                    <ItemsControl ItemsSource="{Binding Friends}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                
+                                <local:UserChatControl DataContext="{Binding}"
+                                                       Background="{Binding IsSelectedBackground}" 
+                                                       x:Name="border">
+                                    
+                                    <local:UserChatControl.InputBindings>
+                                        <MouseBinding MouseAction="LeftClick" 
+                                                      Command="{Binding GoToUserCommand,
+                                                                Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                                                      CommandParameter="{Binding Id}"/>
+                                    </local:UserChatControl.InputBindings>
+                                    
+                                    <local:UserChatControl.Triggers>
+                                        <EventTrigger RoutedEvent="MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation To="{StaticResource LightGray}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation To="Transparent" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </local:UserChatControl.Triggers>
+                                    
+                                </local:UserChatControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
 
                 <Border.Background>
-                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                        <GradientStop Color="{StaticResource Gray}" Offset="2" />
+                    <LinearGradientBrush StartPoint="1,0" 
+                                         EndPoint="1,1">
+                        <GradientStop Color="{StaticResource VeryLightGray}" 
+                                      Offset="0" />
+                        <GradientStop Color="{StaticResource Gray}" 
+                                      Offset="2" />
                     </LinearGradientBrush>
                 </Border.Background>
 

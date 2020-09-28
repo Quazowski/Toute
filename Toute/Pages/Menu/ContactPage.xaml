@@ -8,7 +8,67 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ContactPage">
 
-    <Grid Background="Yellow">
+    <!--Grid around ContactPage-->
+    <Grid Background="Transparent">
+        
+        <Grid.RowDefinitions>
+            
+            <!--Messages-->
+            <RowDefinition Height="*"/>
+            <!--Sending Message-->
+            <RowDefinition Height="auto"/>
+            
+        </Grid.RowDefinitions>
 
+        <!--Messages-->
+        <Border Grid.Row="0"
+                d:DataContext="{x:Static local:MessageBoxListDesignModel.Instance}"
+                VerticalAlignment="Bottom">
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding Messages}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:MessageBox DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <!--Sending Message-->
+        <Border Grid.Row="1" Padding="0 20 0 0">
+            
+            <!--Grid that split sending message box-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <!--TextBox-->
+                    <ColumnDefinition Width="*" />
+                    <!--Send Button-->
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--TextBox-->
+                <Border Grid.Column="0" 
+                        Margin="20 10 20 10"
+                        Padding="5">
+                    <TextBox VerticalAlignment="Center"
+                             Padding="10 10"
+                             x:Name="Message"
+                             local:GetFocusAttachedProperty.Value="True">
+
+                    </TextBox>
+                </Border>
+                
+                <!--Send Button-->
+                <Border Grid.Column="1">
+                    <Button Content="Send"
+                            IsDefault="True"
+                            Command="{Binding SendMessageCommand}"
+                            CommandParameter="{Binding ElementName=Message}"
+                            Margin="5"/>
+                </Border>
+            </Grid>
+        </Border>
+        
     </Grid>
 </local:BasePage>
