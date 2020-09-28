@@ -3,20 +3,44 @@ using System.Windows;
 
 namespace Toute
 {
+    /// <summary>
+    /// ViewModel for AddGameWindow
+    /// </summary>
     public class AddGameWindowViewModel : WindowViewModel
     {
-        public AddGameWindowViewModel(AddGameWindow window) : base(window)
+        #region Constructor
+
+        /// <summary>
+        /// Constructor that pass window as parameter
+        /// </summary>
+        /// <param name="window">AddGameWindow</param>
+        public AddGameWindowViewModel(DialogPopup window) : base(window)
         {
+            //Change DropShadowBorderPadding to 10
             DropShadowBorderPadding = new Thickness(10);
 
-            //CloseCommand = new RelayCommand(ClosePopup(window));
+            //Change HeaderFontSize to 18, to make capitation height smaller
+            HeaderFontSize = 18;
+
+            //Change a CloseCommand to close AddGameWindow
+            CloseCommand = new RelayCommand(() => ClosePopup(window));
         }
 
-        private Action ClosePopup(AddGameWindow window)
+        #endregion
+
+        #region Helper Methods
+
+        /// <summary>
+        /// Method that Close Window
+        /// </summary>
+        /// <param name="window">AddGameWindow</param>
+        private void ClosePopup(DialogPopup window)
         {
+            //Close window
             window.Close();
-
-            return null;
         }
+
+        #endregion
+
     }
 }

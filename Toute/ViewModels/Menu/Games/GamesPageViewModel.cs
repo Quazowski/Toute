@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Toute
@@ -17,19 +17,11 @@ namespace Toute
         /// <summary>
         /// All games that are added, and can be run
         /// </summary>
-        private ObservableCollection<GameModel> _items;
-        public ObservableCollection<GameModel> Items
-        {
-            get => _items;
-            set
-            {
-                _items = value;
-                OnPropertyChanged(nameof(_items));
-            }
-        }
+        public ObservableCollection<GameModel> Items { get; set; }
 
-        public bool PopupHidden { get; set; } = true;
-
+        /// <summary>
+        /// Current item chosen in settings
+        /// </summary>
         public GameModel CurrentItem { get; set; }
 
         #endregion
@@ -59,6 +51,8 @@ namespace Toute
 
         #endregion
 
+        #region Constructor
+
         /// <summary>
         /// Default Constructor for GamesPageViewModel
         /// </summary>
@@ -66,11 +60,6 @@ namespace Toute
         {
             //Creating new ObservableCollection to store Games
             Items = new ObservableCollection<GameModel>();
-
-            Items.CollectionChanged += (sender, e) =>
-            {
-                OnPropertyChanged(nameof(Items));
-            };
 
             //Command to run chosen game
             RunCommand = new ParametrizedRelayCommand((path) => RunGame((string)path));
@@ -84,29 +73,62 @@ namespace Toute
             //Command that add game
             AddGameCommand = new RelayCommand(AddGame);
 
-            //Load from local machine db and set items
-            Items.Add(new GameModel { Title = "Config Folder", PathToGame = @"C:\Users\wardl\Desktop\config" });
-            Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
-            Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
-            Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
-            Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
-            Items.Add(new GameModel { Title = "22", PathToGame = "D..." });
+            //Loads all files that were added
+            var items = FileManaging.ReadAllTextFilesFromFolder("Files");
+
+            //For every file, that were added.... 
+            foreach (var file in items)
+            {
+                //Add to Item list a GameModel
+                Items.Add(JsonSerializer.Deserialize<GameModel>(file));
+            }
+
         }
 
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Adds a game to the application game search list
+        /// </summary>
         private void AddGame()
         {
-            AddGameWindow gameWindow = new AddGameWindow();
-            gameWindow.Show();
-            //Open window, select item, take of this icon and path, add to Items.
+            //Open a dialog and find a file u want to add...
+            GameModel game = DialogExtensions.FindGame();
+
+            //If file is not null...
+            if (game != null)
+                //Add chosen file
+                Items.Add(game);
+
         }
 
+        /// <summary>
+        /// Deletes a game from whole application
+        /// </summary>
         private void DeleteGame()
         {
+            //Make popup close
             CurrentItem.PopupOpen = false;
 
+            //Remove chosen item
             Items.Remove(CurrentItem);
 
-            OnPropertyChanged(nameof(Items));
+            //Run deleting of file and photo async, to prevent blocked UI or thread
+            Task.Run(async () =>
+            {
+                //Wait 100ms to be sure thread won't be block
+                await Task.Delay(100);
+
+                //Delete file of game
+                FileManaging.DeleteFile(CurrentItem.PathToFile);
+
+                //Delete photo of game
+                FileManaging.DeleteFile(CurrentItem.FullPathToImage);
+            });
+
+
         }
 
         /// <summary>
@@ -123,12 +145,15 @@ namespace Toute
         /// </summary>
         private void OpenSettingsGame(string path)
         {
-            //Toggle popup
+            //Set Current item to chosen item
             CurrentItem = Items.FirstOrDefault(x => x.PathToGame == path);
 
+            //Toggle popup
             CurrentItem.PopupOpen ^= true;
 
-
         }
+
+        #endregion
+
     }
 }

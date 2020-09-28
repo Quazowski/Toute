@@ -31,8 +31,8 @@ namespace Toute
 
                 //If it is GamesPage
                 case ApplicationPage.GamesPage:
-                    //return new GamesPage of Game PageViewModel
-                    return new GamesPage(new GamesPageViewModel());
+                    //return static GamesPage of static GamesPageViewModel
+                    return new GamesPage(IoC.Get<GamesPageViewModel>());
 
                 //If it is ContactPage
                 case ApplicationPage.ContactPage:

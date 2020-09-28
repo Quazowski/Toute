@@ -17,6 +17,23 @@ namespace Toute
 
             //Sets DataContext of MainWindow to WindowViewModel
             DataContext = new WindowViewModel(this);
+
+            
+        }
+
+        /// <summary>
+        /// Fired when window is deactivated
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Deactivated(object sender, System.EventArgs e)
+        {
+            (DataContext as WindowViewModel).OverlayVisible = true;
+        }
+
+        private void Window_Activated(object sender, System.EventArgs e)
+        {
+            (DataContext as WindowViewModel).OverlayVisible = false;
         }
     }
 }

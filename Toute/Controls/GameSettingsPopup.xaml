@@ -8,37 +8,47 @@
              DataContext="{x:Static local:ViewModelLocator.GamesPageViewModel}">
 
 
+    <!--Main cointerner of popup-->
     <Popup IsOpen="{Binding CurrentItem.PopupOpen}"
            StaysOpen="False"
-           Height="50" 
            Placement="MousePoint" 
-           HorizontalOffset="-80" 
-           VerticalOffset="-46"
-           Width="80"
+           HorizontalOffset="-130" 
+           VerticalOffset="-75"
            AllowsTransparency="True">
 
+        <!--Popup wrapped as grid-->
         <Grid Background="Transparent">
             <Grid.RowDefinitions>
+                
+                <!--Main content, buttons-->
                 <RowDefinition Height="*" />
+                <!--Carrot-->
                 <RowDefinition Height="*" />
+                
             </Grid.RowDefinitions>
 
+            <!--Main content, buttons-->
             <Border Grid.Row="0"
                     Background="{StaticResource BackgroundWhiteBrush}"
-                    CornerRadius="4 4 0 4">
+                    CornerRadius="4 4 0 4"
+                    Padding="3">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <!--Set new path button-->
                         <RowDefinition Height="*" />
+                        <!--Delete game button-->
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
+                    <!--Set new path button-->
                     <Button Grid.Row="0"
                             Content="Set new path"
                             Style="{StaticResource PopupButton}"
-                            Background="{StaticResource BackgroundWhiteBrush}"
-                            Foreground="{StaticResource BackgroundBlackBrush}"
-                            Padding="5"/>
+                            Background="{StaticResource BackgroundOrangeBrush}"
+                            Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Padding="15 5"/>
 
+                    <!--Delete game button-->
                     <Button Grid.Row="1"
                             Style="{StaticResource PopupButton}"
                             x:Name="Button"
@@ -46,12 +56,12 @@
                             Content="Delete"
                             Command="{Binding RemoveGameCommand}"
                             Foreground="{StaticResource BackgroundWhiteBrush}"
-                            Padding="5">
+                            Padding="15 5">
                         <Button.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource VeryLightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
+                                        <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
@@ -66,11 +76,14 @@
                     </Button>
                 </Grid>
             </Border>
+
+            <!--Carrot-->
             <Border Grid.Row="1" Background="Transparent">
                 <Path Grid.Row="2" 
                       Fill="{StaticResource BackgroundWhiteBrush}"
-                      Data="M 80,0 L 80,10 73,3 C 73,3 72,1 65,0"/>
+                      Data="M 130,0 L 130,20 C 123,10 114,5 100,0"/>
             </Border>
+            
         </Grid>
     </Popup>
 

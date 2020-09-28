@@ -7,7 +7,7 @@ namespace Toute
     /// <summary>
     /// Converter that convert boolean value, to Visibility value
     /// </summary>
-    public class BooleanToVisibilityConverter : BaseValueConverter<BooleanToVisibilityConverter>
+    public class BooleanToVisibilityRevertedConverter : BaseValueConverter<BooleanToVisibilityRevertedConverter>
     {
         /// <summary>
         /// Converts a value of boolean type
@@ -20,16 +20,17 @@ namespace Toute
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //if value is true...
-            if((bool)value)
+            if ((bool)value)
             {
-                //Returns visibility collapsed
-                return Visibility.Collapsed;
+                //Returns visibility visible
+                return Visibility.Visible;
+
             }
             //Otherwise...
             else
             {
-                //Returns visibility visible
-                return Visibility.Visible;
+                //Returns visibility collapsed
+                return Visibility.Collapsed;
             }
         }
 

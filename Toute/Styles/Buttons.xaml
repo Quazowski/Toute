@@ -294,13 +294,13 @@
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}"
-
+                            Padding="{TemplateBinding Padding}"
+                            CornerRadius="2"
                             x:Name="border">
                         <TextBlock Text="{TemplateBinding Content}"
                                    VerticalAlignment="Center"
@@ -310,14 +310,14 @@
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource VeryLightGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                        <ColorAnimation To="{StaticResource LightOrange}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="MouseLeave">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource White}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                        <ColorAnimation To="{StaticResource Orange}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>

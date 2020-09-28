@@ -9,6 +9,8 @@
         AllowsTransparency="True"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow"
+        Activated="Window_Activated"
+        Deactivated="Window_Deactivated"
         MinHeight="400"
         MinWidth="700"
         Height="700" 
@@ -28,77 +30,91 @@
                 <Border>
                     <!--Grid that set application on Title and Main Content-->
                     <Grid>
-                        <Grid.RowDefinitions>
+                        
+                        <!--Border that are visible, and block UI when window is deactivated-->
+                        <Border Background="Black"
+                                Panel.ZIndex="1"
+                                Opacity="0.3"
+                                Visibility="{Binding OverlayVisible,
+                                FallbackValue=Collapsed,
+                                Converter={local:BooleanToVisibilityRevertedConverter}}">
+                            
+                        </Border>
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <!--Caption Height-->
+                                <RowDefinition Height="{Binding CaptionHeight, FallbackValue=68}" />
+                                <!--Main Content-->
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
                             <!--Caption Height-->
-                            <RowDefinition Height="{Binding CaptionHeight, FallbackValue=68}" />
-                            <!--Main Content-->
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                            <Border Grid.Row="0">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
+                                        <GradientStop Color="{StaticResource LightGray}" Offset="2" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
 
-                        <!--Caption Height-->
-                        <Border Grid.Row="0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                                <!--Grid that split Header Bar-->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <!--Title-->
+                                        <ColumnDefinition Width="Auto"/>
+                                        <!--Middle content-->
+                                        <ColumnDefinition Width="*"/>
+                                        <!--Buttons-->
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                            <!--Grid that split Header Bar-->
-                            <Grid>
-                                <Grid.ColumnDefinitions>
                                     <!--Title-->
-                                    <ColumnDefinition Width="Auto"/>
-                                    <!--Middle content-->
-                                    <ColumnDefinition Width="*"/>
-                                    <!--Buttons-->
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!--Title-->
-                                <Border Grid.Column="0">
-                                    <TextBlock Text="Toute"
+                                    <Border Grid.Column="0">
+                                        <TextBlock Text="Toute"
                                                        FontFamily="{StaticResource FontScript}"
                                                        FontSize="{Binding HeaderFontSize, FallbackValue=48}"
                                                        Foreground="{StaticResource BackgroundGrayBrush}"
                                                        Padding="{Binding HeaderTitlePadding, FallbackValue=25 10 25 10}"
                                                        />
-                                </Border>
-                                <!--Middle content-->
-                                <Border Grid.Column="1">
+                                    </Border>
+                                    <!--Middle content-->
+                                    <Border Grid.Column="1">
 
-                                </Border>
-                                <!--Buttons-->
-                                <Border  Grid.Column="2">
-                                    <StackPanel Orientation="Horizontal">
-                                        <!--Minimize button-->
-                                        <Button FontFamily="{StaticResource FontAwesome}"
+                                    </Border>
+                                    <!--Buttons-->
+                                    <Border  Grid.Column="2">
+                                        <StackPanel Orientation="Horizontal">
+                                            <!--Minimize button-->
+                                            <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMinimalizeIcon}"
                                                     Command="{Binding MinimizeCommand}" />
 
-                                        <!--Maximize button-->
-                                        <Button FontFamily="{StaticResource FontAwesome}"
+                                            <!--Maximize button-->
+                                            <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMaximalizeIcon}"
                                                     Command="{Binding MaximizeCommand}"/>
 
-                                        <!--Close button-->
-                                        <Button FontFamily="{StaticResource FontAwesome}"
+                                            <!--Close button-->
+                                            <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemCloseButton}"
                                                     Content="{StaticResource FontAwesomeCloseIcon}"
                                                     Command="{Binding CloseCommand}"
                                                     VerticalAlignment="Top" />
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-                        </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
 
-                        <!--Main Content-->
-                        <Border Grid.Row="1" ClipToBounds="True">
-                            <ContentPresenter Content="{TemplateBinding Content}" />
-                        </Border>
+                            <!--Main Content-->
+                            <Border Grid.Row="1" ClipToBounds="True">
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </Border>
+                        </Grid>
                     </Grid>
+
                 </Border>
             </Border>
         </ControlTemplate>

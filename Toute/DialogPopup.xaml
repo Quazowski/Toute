@@ -1,4 +1,4 @@
-﻿<Window x:Class="Toute.AddGameWindow"
+﻿<Window x:Class="Toute.DialogPopup"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -27,7 +27,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <!--Caption Height-->
-                            <RowDefinition Height="{Binding CaptionHeight, FallbackValue=68}" />
+                            <RowDefinition Height="{Binding CaptionHeight, FallbackValue=38}" />
                             <!--Main Content-->
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
@@ -44,41 +44,24 @@
                             <!--Grid that split Header Bar-->
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <!--Title-->
-                                    <ColumnDefinition Width="Auto"/>
                                     <!--Middle content-->
                                     <ColumnDefinition Width="*"/>
                                     <!--Buttons-->
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!--Title-->
-                                <Border Grid.Column="0">
-                                    <TextBlock Text="Toute"
-                                                       FontFamily="{StaticResource FontScript}"
-                                                       FontSize="{Binding HeaderFontSize, FallbackValue=48}"
-                                                       Foreground="{StaticResource BackgroundGrayBrush}"
-                                                       Padding="{Binding HeaderTitlePadding, FallbackValue=25 10 25 10}"
-                                                       />
-                                </Border>
                                 <!--Middle content-->
-                                <Border Grid.Column="1">
+                                <Border Grid.Column="0">
 
                                 </Border>
                                 <!--Buttons-->
-                                <Border  Grid.Column="2">
+                                <Border  Grid.Column="1">
                                     <StackPanel Orientation="Horizontal">
                                         <!--Minimize button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMinimalizeIcon}"
                                                     Command="{Binding MinimizeCommand}" />
-
-                                        <!--Maximize button-->
-                                        <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemButton}"
-                                                    Content="{StaticResource FontAwesomeMaximalizeIcon}"
-                                                    Command="{Binding MaximizeCommand}"/>
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
@@ -110,25 +93,25 @@
     </WindowChrome.WindowChrome>
 
     <!--Content-->
+    
     <Border>
         <Grid>
-            <Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
                 <!--Side menu control-->
-                <ColumnDefinition Width="auto" />
+                <RowDefinition Height="*" />
                 <!--Main Content-->
-                <ColumnDefinition Width="*" />
+                <RowDefinition Height="auto" />
 
-            </Grid.ColumnDefinitions>
+            </Grid.RowDefinitions>
 
             <!--Side menu control-->
-            <Border  Grid.Column="0">
+            <Border  Grid.Row="0">
                 
             </Border>
 
-            <!--Main Content-->
-            <Border Grid.Column="1" 
-                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}" Grid.ColumnSpan="2">
-                
+            <!--MAIN CONTENT NOTHING ATM-->
+            <Border Grid.Row="1" >
+
             </Border>
         </Grid>
 

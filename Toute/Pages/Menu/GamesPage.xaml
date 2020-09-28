@@ -28,15 +28,15 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <!--Single item of list-->
-                        <Border x:Name="border" Background="Transparent">
-                            <Border.Triggers>
+                        <Grid x:Name="grid" Background="Transparent" Margin="0 0 0 2">
+                            <Grid.Triggers>
                                 <EventTrigger RoutedEvent="MouseEnter">
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ColorAnimation To="#c4bfbe"
                                                             Duration="0:0:0.2"
                                                             Storyboard.TargetProperty="Background.Color"
-                                                            Storyboard.TargetName="border"/>
+                                                            Storyboard.TargetName="grid"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -46,12 +46,14 @@
                                             <ColorAnimation To="Transparent"
                                                             Duration="0:0:0.2"
                                                             Storyboard.TargetProperty="Background.Color"
-                                                            Storyboard.TargetName="border"/>
+                                                            Storyboard.TargetName="grid"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
-                            </Border.Triggers>
+                            </Grid.Triggers>
                             
+                            <Border Background="Black" Opacity="0.05"/>
+
                             <!--Content of single item-->
                             <Grid Margin="5" >
                                 <Grid.ColumnDefinitions>
@@ -65,7 +67,7 @@
 
                                 <!--Image-->
                                 <Border Grid.Column="0" Margin="5">
-                                    <Image Source="/Images/LOGOToute.png" Width="40"/>
+                                    <Image Source="{Binding fullPathToImage, Mode=OneWay}"/>
                                 </Border>
 
                                 <!--Name of game-->
@@ -97,7 +99,7 @@
                                     </StackPanel>
                                 </Border>
                             </Grid>
-                        </Border>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

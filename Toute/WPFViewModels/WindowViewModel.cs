@@ -51,14 +51,21 @@ namespace Toute
         /// value of the resizable border
         /// </summary>
         public Thickness ResizeBorderThickness => new Thickness(DropShadowBorderPadding.Bottom + 2);
+
         /// <summary>
         /// Font size of the header Title
         /// </summary>
         public int HeaderFontSize { get; set; } = 48;
+
         /// <summary>
         /// Value of capitonHeight
         /// </summary>
         public int CaptionHeight => HeaderFontSize + (int)HeaderTitlePadding.Top + (int)HeaderTitlePadding.Bottom;
+
+        /// <summary>
+        /// Overlay over application
+        /// </summary>
+        public bool OverlayVisible { get; set; } = false;
         #endregion
 
         #region Commands
@@ -82,14 +89,10 @@ namespace Toute
 
         #region Constructor
 
-        public WindowViewModel()
-        {
-
-        }
         /// <summary>
         /// Default constructor
         /// </summary>
-        public WindowViewModel(Window window) : base()
+        public WindowViewModel(Window window)
         {
             //Assign main window to private member
             _window = window;
