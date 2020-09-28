@@ -67,7 +67,7 @@
 
                                 <!--Image-->
                                 <Border Grid.Column="0" Margin="5">
-                                    <Image Source="{Binding fullPathToImage, Mode=OneWay}"/>
+                                    <Image Source="{Binding FullPathToImage, Mode=OneWay}"/>
                                 </Border>
 
                                 <!--Name of game-->
