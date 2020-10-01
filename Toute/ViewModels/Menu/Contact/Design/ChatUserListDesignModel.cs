@@ -19,23 +19,28 @@ namespace Toute
         public ChatUserListDesignModel()
         {
             //Set friends in design time to...
-            Friends = new ObservableCollection<ChatUser>
+            Friends = new ObservableCollection<ChatUserModel>
             {
-                new ChatUser
+                new ChatUserModel
                 {
-                    Name = "Design"
+                    Name = "Design",
+                    Status = Core.DataModels.StatusOfFriendship.Accepted,
+                    IsSelected = true
                 },
-                new ChatUser
+                new ChatUserModel
                 {
-                    Name = "Short Design"
+                    Name = "Short Design",
+                    Status = Core.DataModels.StatusOfFriendship.Blocked
                 },
-                new ChatUser
+                new ChatUserModel
                 {
-                    Name = "Long name in design"
+                    Name = "Long name in design",
+                    Status = Core.DataModels.StatusOfFriendship.Pending
                 },
-                new ChatUser
+                new ChatUserModel
                 {
-                    Name = "Second Design"
+                    Name = "Second Design",
+                    Status = Core.DataModels.StatusOfFriendship.Accepted
                 },
             };
         }

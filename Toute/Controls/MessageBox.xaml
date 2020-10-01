@@ -17,7 +17,7 @@
         <!--Text inside messageBox-->
         <TextBlock Text="{Binding Message}"
                    Foreground="{Binding ForegroundColorOfMessage}"
-                   FontSize="{StaticResource FontSizeRegular}"
+                   FontSize="18"
                    TextWrapping="Wrap"/>
     </Border>
 </UserControl>

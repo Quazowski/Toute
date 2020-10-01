@@ -1,0 +1,79 @@
+﻿<UserControl x:Class="Toute.FriendSettingsPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Toute"
+             mc:Ignorable="d" 
+             DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
+    <!--Main cointerner of popup-->
+
+    <Popup IsOpen="{Binding IsFriendSettingsOpen}"
+           StaysOpen="False"
+           Placement="MousePoint" 
+
+           AllowsTransparency="True">
+
+        <!--Popup wrapped as grid-->
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+
+                <!--Main content, buttons-->
+                <RowDefinition Height="*" />
+
+            </Grid.RowDefinitions>
+
+            <!--Main content, buttons-->
+            <Border Grid.Row="0"
+                    Background="{StaticResource BackgroundWhiteBrush}"
+                    CornerRadius="4 4 0 4"
+                    Padding="3">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <!--Set new path button-->
+                        <RowDefinition Height="*" />
+                        <!--Delete game button-->
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <!--Set new path button-->
+                    <Button Grid.Row="0"
+                            Content="Delete friend"
+                            Command="{Binding DeleteFriend}"
+                            Style="{StaticResource PopupButton}"
+                            Background="{StaticResource BackgroundOrangeBrush}"
+                            Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Padding="15 5"/>
+
+                    <!--Delete game button-->
+                    <Button Grid.Row="1"
+                            Style="{StaticResource PopupButton}"
+                            x:Name="Button"
+                            Background="{StaticResource BackgroundRedBrush}"
+                            Content="Block"
+                            Command="{Binding BlockFriend}"
+                            Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Padding="15 5">
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="Button"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+        
+    </Popup>
+</UserControl>

@@ -19,7 +19,7 @@ namespace Toute
             Owner = Application.Current.MainWindow;
 
             //Binds DataContext to AddGameWindowViewModel and pass window as parameter
-            DataContext = new AddGameWindowViewModel(this);
+            DataContext = new DialogPopupWindowViewModel(this);
         }
     }
 }

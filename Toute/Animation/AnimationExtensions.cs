@@ -52,10 +52,6 @@ namespace Toute
             //Wait for animation to happen before
             //doing anything
             await Task.Delay((int)(seconds * 1000));
-
-            //If element is about to hide, set Visibility to Collapsed
-            if (vanish)
-                element.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
@@ -98,10 +94,6 @@ namespace Toute
             //Wait for animation to happen before
             //doing anything
             await Task.Delay((int)(seconds * 1000));
-
-            //If element is about to hide, set Visibility to Collapsed
-            if (vanish)
-                element.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

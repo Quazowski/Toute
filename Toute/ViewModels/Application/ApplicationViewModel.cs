@@ -1,8 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Input;
+using Toute.Core;
+using Toute.Core.DataModels;
 
 namespace Toute
 {
@@ -27,11 +31,19 @@ namespace Toute
         /// Determines a visibility of side menu
         /// </summary>
         public bool SideMenuHidden { get; set; }
+        public bool BlockListOpen { get; set; }
+        public bool RequestListOpen { get; set; }
+        public string NameOfFriendToAdd { get; set; }
+        public string CurrentNameOfFriendManaging { get; set; }
+        public bool IsFriendSettingsOpen { get; set; }
+        public bool IsFriendRequest { get; set; }
+        public FriendUserModel Friend { get; set; }
+        public ApplicationUserModel ApplicationUser { get; set; }
 
         /// <summary>
         /// If user is logged, store Friends in a list
         /// </summary>
-        public ObservableCollection<ChatUser> Friends { get; set; }
+        public ObservableCollection<ChatUserModel> Friends { get; set; }
 
         /// <summary>
         /// Current viewModel of application
@@ -76,7 +88,20 @@ namespace Toute
         /// <summary>
         /// Command that handle going to OptionsPage
         /// </summary>
-        public ICommand SettingsCommand { get; set; }
+        public ICommand SettingsCommand { get; set; }  
+        public ICommand OpenFriendSettings { get; set; }  
+        
+        /// <summary>
+        /// Command that handle going to OptionsPage
+        /// </summary>
+        public ICommand SendFriendRequest { get; set; }
+        public ICommand AcceptFriendRequest { get; set; }
+        public ICommand DeclineFriendRequest { get; set; }
+        public ICommand DeleteFriend { get; set; }
+        public ICommand BlockFriend { get; set; }
+
+        public ICommand BlockListCommand { get; set; }
+        public ICommand RequestListCommand { get; set; }
 
         #endregion
 
@@ -110,18 +135,8 @@ namespace Toute
                 CurrentPage = ApplicationPageHelper.GoToBasePage(DesignPage);                
             }
 
-            //If user logged
-            if(true == true)
-            {
-                //Set users
-                //TODO: Take a friends form DB
-                Friends = new ObservableCollection<ChatUser>
-                {
-                    new ChatUser { Name = "test", Id = "aa" },
-                    new ChatUser { Name = "test1", Id = "bb" },
-                    new ChatUser { Name = "test2", Id = "cc" }
-                };
-            }
+
+            Friends = new ObservableCollection<ChatUserModel>();
 
             //Command that handle going to Chat page of specific user
             GoToUserCommand = new ParametrizedRelayCommand((id) => GoToUser(id));
@@ -131,6 +146,204 @@ namespace Toute
 
             //Command that handle going to OptionsPage
             SettingsCommand = new RelayCommand(GoToSettingsPage);
+
+            OpenFriendSettings = new ParametrizedRelayCommand((id) => OpenSettingsFriend(id));
+
+            SendFriendRequest = new RelayCommand(SendRequest);
+
+            AcceptFriendRequest = new ParametrizedRelayCommand((username) => AcceptFriend(username));
+            DeclineFriendRequest = new ParametrizedRelayCommand((username) => DeclineFriend(username));
+
+            DeleteFriend = new RelayCommand(DeleteFriendFromFriendship);
+            BlockFriend = new RelayCommand(BlockFriendMethod);
+
+            RequestListCommand = new RelayCommand(RequestListStatus);
+            BlockListCommand = new RelayCommand(BlockListStatus);
+        }
+
+        private void BlockListStatus()
+        {
+            BlockListOpen ^= true;
+        }
+
+        private void RequestListStatus()
+        {
+            RequestListOpen ^= true;
+        }
+
+        private async void BlockFriendMethod()
+        {
+            if (ApplicationUser == null || string.IsNullOrEmpty(CurrentNameOfFriendManaging))
+                return;
+
+            var userToBlock = new AddFriendModel
+            {
+                UserId = ApplicationUser.Id,
+                FriendUsername = CurrentNameOfFriendManaging
+            };
+
+            var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.BlockFriend, userToBlock);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var httpContext = result.Content.ReadAsStringAsync().Result;
+
+                var deserializedResult = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(httpContext);
+
+                if (deserializedResult.IsSucessfull)
+                {
+                    Friends.FirstOrDefault(x => x.Name == CurrentNameOfFriendManaging).Status = StatusOfFriendship.Blocked;
+
+                }
+                else
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = deserializedResult.ErrorMessage;
+                    newPopup.ShowDialog();
+                }
+            }
+        }
+
+        private async void DeleteFriendFromFriendship()
+        {
+            if (ApplicationUser == null || string.IsNullOrEmpty(CurrentNameOfFriendManaging))
+                return;
+
+            var userToDelete = new AddFriendModel
+            {
+                UserId = ApplicationUser.Id,
+                FriendUsername = CurrentNameOfFriendManaging
+            };
+
+            var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.DeleteFriend, userToDelete);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var httpContext = result.Content.ReadAsStringAsync().Result;
+
+                var deserializedResult = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(httpContext);
+
+                if (deserializedResult.IsSucessfull)
+                {
+                    Friends.Remove(Friends.FirstOrDefault(x => x.Name == CurrentNameOfFriendManaging));
+                }
+                else
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = deserializedResult.ErrorMessage;
+                    newPopup.ShowDialog();
+                }
+
+            }
+        }
+
+        private void OpenSettingsFriend(object name)
+        {
+            CurrentNameOfFriendManaging = name.ToString();
+
+            IsFriendSettingsOpen ^= true;
+        }
+
+        private async void AcceptFriend(object test)
+        {
+            if (ApplicationUser == null || string.IsNullOrEmpty(test.ToString()))
+                return;
+
+            var userToAdd = new AddFriendModel
+            {
+                UserId = ApplicationUser.Id,
+                FriendUsername = test.ToString()
+            };
+
+            var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.AddFriend, userToAdd);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var httpContext = result.Content.ReadAsStringAsync().Result;
+
+                var friendToAdd = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(httpContext);
+
+                if(friendToAdd.IsSucessfull)
+                {
+                    Friends.FirstOrDefault(x => x.Name == friendToAdd.TResponse.Name).Status = StatusOfFriendship.Accepted;
+                }
+                else
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = friendToAdd.ErrorMessage;
+                    newPopup.ShowDialog();
+                }
+
+            }
+        }
+
+        private async void DeclineFriend(object username)
+        {
+            if (ApplicationUser == null || string.IsNullOrEmpty(username.ToString()))
+                return;
+
+            var userToReject = new AddFriendModel
+            {
+                UserId = ApplicationUser.Id,
+                FriendUsername = username.ToString()
+            };
+
+            var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.RejectFriendRequest, userToReject);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var httpContext = result.Content.ReadAsStringAsync().Result;
+
+                var deserializedResult = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(httpContext);
+
+                if (deserializedResult.IsSucessfull)
+                {
+                    Friends.Remove(Friends.FirstOrDefault(x => x.Name == username.ToString()));
+
+                }
+                else
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = deserializedResult.ErrorMessage;
+                    newPopup.ShowDialog();
+                }
+
+            }
+        }
+
+        private async void SendRequest()
+        {
+
+            if (ApplicationUser == null || string.IsNullOrEmpty(NameOfFriendToAdd))
+                return;
+
+            var userToAdd = new SendFriendRequestModel
+            {
+                UserId = ApplicationUser.Id,
+                FriendUsername = NameOfFriendToAdd
+            };
+
+            var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.SendFriendRequest, userToAdd);
+
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var httpContext = result.Content.ReadAsStringAsync().Result;
+
+                var deserializedResult = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(httpContext);
+
+                if (deserializedResult.IsSucessfull)
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = "Friend request sent";
+                    newPopup.ShowDialog();
+                }
+                else
+                {
+                    var newPopup = new DialogPopup();
+                    newPopup.MainMessage.Text = deserializedResult.ErrorMessage;
+                    newPopup.ShowDialog();
+                }
+            }
         }
 
         #endregion
@@ -197,10 +410,10 @@ namespace Toute
         /// specific user
         /// </summary>
         /// <param name="id">Id of the user</param>
-        private void GoToUser(object id)
+        private async void GoToUser(object friend)
         {
             //Finds user of given if
-            var chatUser = Friends.FirstOrDefault(x => x.Id == id.ToString());
+            var chatUser = Friends.FirstOrDefault(x => x.Name == friend.ToString());
 
             //If user exists...
             if(chatUser != null)
@@ -214,6 +427,37 @@ namespace Toute
 
                 //Select new user
                 chatUser.IsSelected = true;
+
+                var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.GetMessages, new GetMessages
+                {
+                    UserId = ApplicationUser.Id,
+                    FriendUsername = chatUser.Name
+                });
+
+                if(response.StatusCode == HttpStatusCode.OK)
+                {
+                    IoC.Get<ApplicationViewModel>().Friend = new FriendUserModel
+                    {
+                        Username = chatUser.Name
+                    };
+
+                    var content = await response.Content.ReadAsStringAsync();
+                    var messages = JsonConvert.DeserializeObject<ApiResponse<ChatUserDataModel>>(content);
+
+                    if(messages.IsSucessfull)
+                    {
+                        var mess = new ObservableCollection<MessageBoxModel>();
+                        foreach (var message in messages.TResponse.Messages)
+                        {
+                            mess.Add(new MessageBoxModel
+                            {
+                                Message = message.Message,
+                                SentByMe = message.SentByMe
+                            });
+                        }
+                        chatUser.Messages = mess;
+                    }          
+                }
 
                 //Go to chat page with specific user of given id
                 IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.ContactPage, chatUser);

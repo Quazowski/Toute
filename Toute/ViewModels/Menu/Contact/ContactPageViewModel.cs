@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Toute.Core;
 
 namespace Toute
 {
@@ -19,7 +21,7 @@ namespace Toute
         /// <summary>
         /// Current user that is selected
         /// </summary>
-        public ChatUser CurrentChatUser { get; set; }
+        public ChatUserModel CurrentChatUser { get; set; }
 
         #endregion
 
@@ -59,7 +61,7 @@ namespace Toute
         /// that send message
         /// </summary>
         /// <param name="Textbox">TextBox with values</param>
-        private void SendMessage(object Textbox)
+        private async void SendMessage(object Textbox)
         {
             //Convert a TextBox
             var textBox = (Textbox as TextBox);
@@ -67,13 +69,28 @@ namespace Toute
             //if text of TextBox is null or Empty return
             if (!(string.IsNullOrEmpty(textBox.Text)))
             {
-                //Add message to the User Message List
-                CurrentChatUser.Messages.Add(new MessageBoxModel
+                ////Add message to the User Message List
+                //CurrentChatUser.Messages.Add(new MessageBoxModel
+                //{
+                //    SentByMe = true,
+                //    Message = textBox.Text
+                //});
+
+                var result = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.SendMessage, new SendMessageModel
                 {
-                    SentByMe = true,
+                    UserId = IoC.Get<ApplicationViewModel>().ApplicationUser.Id,
+                    FriendUsername = IoC.Get<ApplicationViewModel>().Friend.Username,
                     Message = textBox.Text
                 });
 
+                if(result.StatusCode == HttpStatusCode.OK)
+                {
+                    CurrentChatUser.Messages.Add(new MessageBoxModel
+                    {
+                        SentByMe = true,
+                        Message = textBox.Text
+                    });
+                }
                 //Clear TextBox for a next message
                 textBox.Text = "";
             }
@@ -84,11 +101,11 @@ namespace Toute
         /// A constructor, that accept a <see cref="BaseViewModel"/>
         /// as a parameter.
         /// </summary>
-        /// <param name="viewModel">ViewModel, should be <see cref="ChatUser"/></param>
+        /// <param name="viewModel">ViewModel, should be <see cref="ChatUserModel"/></param>
         public ContactPageViewModel(BaseViewModel viewModel) : this()
         {
             //Convert viewModel to ChatUser ViewModel
-            CurrentChatUser = (viewModel as ChatUser);
+            CurrentChatUser = (viewModel as ChatUserModel);
 
             //If list is not created...
             if (CurrentChatUser.Messages == null)

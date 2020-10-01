@@ -8,8 +8,37 @@
              d:DataContext="{x:Static local:ChatUserDesignModel.Instance}">
 
     <!--Border around User-->
-    <Border Background="Transparent" Name="border">
+    <Border x:Name="border"
+            Opacity="{Binding IsSelected, Converter={local:BooleanToOpacityConverter}}"
+            Background="{Binding Status, Converter={local:StatusOfFriendshipToBackgroundConverter}}" >
         <!--Content-->
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation To="{Binding Status, Converter={local:StatusOfFriendshipToMouseEnterBackgroundConverter}}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ColorAnimation To="{Binding Status, Converter={local:StatusOfFriendshipToMouseLeaveBackgroundConverter}}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+
+        <Border.InputBindings>
+            <MouseBinding MouseAction="LeftClick" 
+                          Command="{Binding GoToUserCommand,
+                          Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                          CommandParameter="{Binding Name}"/>
+            <MouseBinding MouseAction="RightClick" 
+                          Command="{Binding OpenFriendSettings,
+                          Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                          CommandParameter="{Binding Name}"/>
+        </Border.InputBindings>
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -28,14 +57,78 @@
             </Border>
 
             <!--Text-->
-            <Border Grid.Column="1" 
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Padding="30 15">
-                <TextBlock Text="{Binding Name}"
-                           FontSize="28"/>
-            </Border>
+            <Border Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
 
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{Binding Name}"
+                               Grid.Column="0"
+                               HorizontalAlignment="Left"
+                               VerticalAlignment="Center"
+                               FontSize="14"/>
+
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Visibility="{Binding Status, Converter={local:StatusOfFriendshipToVisibilityConverter}}">
+
+
+                        <Button Style="{StaticResource FriendManagmentButton}"
+                                Content="{StaticResource FontAwesomeCheckIcon}"
+                                x:Name="buttonAccept"
+                                Foreground="{StaticResource BackgroundBlackBrush}"
+                                Command="{Binding AcceptFriendRequest, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                                CommandParameter="{Binding Name}">
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Foreground.Color" Storyboard.TargetName="buttonAccept"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource Black}" Duration="0:0:0.2" Storyboard.TargetProperty="Foreground.Color" Storyboard.TargetName="buttonAccept"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>
+
+                        <Button Style="{StaticResource FriendManagmentButton}"
+                                Content="{StaticResource FontAwesomeDeclineIcon}"
+                                Foreground="{StaticResource BackgroundBlackBrush}"
+                                x:Name="buttonDecline"
+                                Command="{Binding DeclineFriendRequest, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                                CommandParameter="{Binding Name}">
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Foreground.Color" Storyboard.TargetName="buttonDecline"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation To="{StaticResource Black}" Duration="0:0:0.2" Storyboard.TargetProperty="Foreground.Color" Storyboard.TargetName="buttonDecline"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </StackPanel>
+
+                </Grid>
+
+            </Border>
         </Grid>
     </Border>
 </UserControl>

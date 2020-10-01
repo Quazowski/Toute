@@ -6,7 +6,7 @@ namespace Toute
     /// <summary>
     /// ViewModel for AddGameWindow
     /// </summary>
-    public class AddGameWindowViewModel : WindowViewModel
+    public class DialogPopupWindowViewModel : WindowViewModel
     {
         #region Constructor
 
@@ -14,7 +14,7 @@ namespace Toute
         /// Constructor that pass window as parameter
         /// </summary>
         /// <param name="window">AddGameWindow</param>
-        public AddGameWindowViewModel(DialogPopup window) : base(window)
+        public DialogPopupWindowViewModel(DialogPopup window) : base(window)
         {
             //Change DropShadowBorderPadding to 10
             DropShadowBorderPadding = new Thickness(10);

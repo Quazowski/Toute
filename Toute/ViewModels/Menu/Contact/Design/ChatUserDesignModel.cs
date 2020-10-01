@@ -1,10 +1,10 @@
 ﻿namespace Toute
 {
     /// <summary>
-    /// Design model for <see cref="ChatUser"/>
+    /// Design model for <see cref="ChatUserModel"/>
     /// to display in <see cref="UserChatControl"/>
     /// </summary>
-    public class ChatUserDesignModel : ChatUser
+    public class ChatUserDesignModel : ChatUserModel
     {
         /// <summary>
         /// Makes a static instance of this class

@@ -22,7 +22,7 @@ namespace Toute
             IoC.Setup();
 
             //On start go to LoginPage
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
 
             //Create a new MainWindow
             Current.MainWindow = new MainWindow();

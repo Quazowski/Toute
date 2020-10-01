@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Toute.Core;
 
 namespace Toute
 {
@@ -56,12 +57,20 @@ namespace Toute
         /// Method that handle register
         /// </summary>
         /// <param name="parameter"></param>
-        private void Register(object parameter)
+        private async void Register(object parameter)
         {
             //NOTE: It is only for testing, should be replaced with properly register
             //Password should not be hold in variables
-            var firstPassword = (parameter as IHaveDoublePassword).FirstSecureString.Unsecure();
-            var secondPassword = (parameter as IHaveDoublePassword).SecondSecureString.Unsecure();
+            if((parameter as IHaveDoublePassword).FirstSecureString.Unsecure() == (parameter as IHaveDoublePassword).SecondSecureString.Unsecure())
+            {
+                var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ApiRegister,
+                                new RegisterCredentialsApiModel
+                                {
+                                    Username = Username,
+                                    Email = Email,
+                                    Password = (parameter as IHaveDoublePassword).FirstSecureString.Unsecure()
+                                });
+            }
         }
 
         /// <summary>

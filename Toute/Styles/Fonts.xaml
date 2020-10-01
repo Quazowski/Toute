@@ -23,6 +23,16 @@
     <system:String x:Key="FontAwesomeGamePadIcon">&#xf11b;</system:String>
     <system:String x:Key="FontAwesomeUserIcon">&#xf007;</system:String>
     <system:String x:Key="FontAwesomeCogIcon">&#xf013;</system:String>
+    <system:String x:Key="FontAwesomeCheckIcon">&#xf00c;</system:String>
+    <system:String x:Key="FontAwesomeBlockIcon">&#xf056;</system:String>
+    <system:String x:Key="FontAwesomeDeclineIcon">&#xf05c;</system:String>
+    <system:String x:Key="FontAwesomeArrowDownIcon">&#xf175;</system:String>
+    <system:String x:Key="FontAwesomeArrowUpIcon">&#xf176;</system:String>
 
+    <system:String x:Key="FontAwesomeArrowDownFriendRequestIcon">&#xf175;  Friend Requests  &#xf175;</system:String>
+    <system:String x:Key="FontAwesomeArrowUpFriendRequestIcon">&#xf176;  Friend Requests  &#xf176;</system:String>
+
+    <system:String x:Key="FontAwesomeArrowDownBlockUsersIcon">&#xf175;  Block List  &#xf175;</system:String>
+    <system:String x:Key="FontAwesomeArrowUpBlockUsersIcon">&#xf176;  Block List  &#xf176;</system:String>
 
 </ResourceDictionary>

@@ -91,7 +91,7 @@ namespace Toute
         protected override async Task DoAnimation(FrameworkElement element, bool vanish, bool isFirstLoad)
         {
             //Fires a slide animation with Fade effect
-            await element.AddSlideAndFadeAnimation(PageAnimation.TopSlides, vanish, keepMargin: false, isFirstLoad: isFirstLoad);
+            await element.AddSlideAndFadeAnimation(PageAnimation.TopSlides, vanish, keepMargin: false, isFirstLoad: false);
         }
     }
 

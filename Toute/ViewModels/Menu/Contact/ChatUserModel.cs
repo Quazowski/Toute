@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
+using Toute.Core.DataModels;
 
 namespace Toute
 {
     /// <summary>
     /// A Model for Chat user. Is used in friend list
     /// </summary>
-    public class ChatUser : BaseViewModel
+    public class ChatUserModel : BaseViewModel
     {
         /// <summary>
         /// Id of user
@@ -18,14 +19,15 @@ namespace Toute
         public string Name { get; set; }
 
         /// <summary>
-        /// Path to the image of the user
+        /// Image of the user
         /// </summary>
-        public string PathToImage { get; set; }
+        public byte[] Image { get; set; }
 
         /// <summary>
         /// Is user selected
         /// </summary>
         public bool IsSelected { get; set; }
+        public StatusOfFriendship Status { get; set; }
 
         /// <summary>
         /// Depending on <see cref="IsSelected"/> value, set a background to...
