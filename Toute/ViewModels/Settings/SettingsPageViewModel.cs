@@ -270,17 +270,7 @@ namespace Toute
         /// </summary>
         public void Logout()
         {
-            //Remove all method that are periodically fired
-            TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
-
-            //Set ApplicationUser to null
-            IoC.Get<ApplicationViewModel>().ApplicationUser = null;
-
-            //Clear friends list
-            IoC.Get<ApplicationViewModel>().Friends = new ObservableCollection<FriendModel>();
-
-            //Go to login page
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+            IoC.Get<ApplicationViewModel>().Logout();
         }
 
         /// <summary>

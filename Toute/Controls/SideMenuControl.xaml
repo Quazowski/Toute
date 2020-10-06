@@ -47,14 +47,14 @@
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
                             Content="{StaticResource FontAwesomeGamePadIcon}"
-                            Command="{Binding GamesCommand, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"/>
+                            Command="{Binding GamesCommand}"/>
 
                     <!--Settings tab-->
                     <Button Grid.Column="1" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
                             Content="{StaticResource FontAwesomeCogIcon}"
-                            Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"/>
+                            Command="{Binding SettingsCommand}"/>
 
 
                 </Grid>

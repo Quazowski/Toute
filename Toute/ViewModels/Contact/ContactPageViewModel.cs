@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -160,13 +161,13 @@ namespace Toute
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<List<MessageDataModel>>>();
 
                 //If there is successful response
                 if (context.IsSuccessful)
                 {
                     //For every message...
-                    foreach (var message in context.TResponse.Messages)
+                    foreach (var message in context.TResponse)
                     {
                         //Add new message to message list
                         Application.Current.Dispatcher.Invoke(delegate

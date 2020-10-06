@@ -44,7 +44,6 @@ namespace Toute
 
             //Binds SideMenuViewModel as singleton view model 
             Kernel.Bind<SideMenuViewModel>().ToConstant(new SideMenuViewModel());
-
         }
 
         /// <summary>

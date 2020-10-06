@@ -49,6 +49,11 @@ namespace Toute
         public BaseViewModel CurrentViewModel { get; set; }
 
         /// <summary>
+        /// Current Application Page of enum value
+        /// </summary>
+        public ApplicationPage CurrentApplicationPage { get; set; }
+
+        /// <summary>
         /// Current application page in frame
         /// </summary>
         public BasePage CurrentPage
@@ -62,26 +67,6 @@ namespace Toute
                 currentPage = value;
             }
         }
-
-        #endregion
-
-        #region Public Commands
-
-        /// <summary>
-        /// Command that handle going to GamesPage
-        /// </summary>
-        public ICommand GamesCommand { get; set; }
-
-        /// <summary>
-        /// Current Application Page of enum value
-        /// </summary>
-        public ApplicationPage CurrentApplicationPage { get; set; }
-
-        /// <summary>
-        /// Command that handle going to OptionsPage
-        /// </summary>
-        public ICommand SettingsCommand { get; set; }  
-
 
         #endregion
 
@@ -117,12 +102,7 @@ namespace Toute
 
             //Create new List of friends
             Friends = new ObservableCollection<FriendModel>();
-
-            //Create commands
-            GamesCommand = new RelayCommand(GoToGamesPage);
-            SettingsCommand = new RelayCommand(GoToSettingsPage);
-
-
+          
         }
 
         #endregion
@@ -165,26 +145,25 @@ namespace Toute
 
             //Sets frame to given page
             CurrentPage = ApplicationPageHelper.GoToBasePage(CurrentApplicationPage, viewModel);
-
             
         }
 
         /// <summary>
-        /// Method that handle going to GamesPage
+        /// Method that logout user from Application
         /// </summary>
-        private void GoToGamesPage()
+        public void Logout()
         {
-            //Go to GamesPage
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
-        }
+            //Remove all method that are periodically fired
+            TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
 
-        /// <summary>
-        /// Method that handle going to OptionsPage
-        /// </summary>
-        private void GoToSettingsPage()
-        {
-            //Go to SettingsPage
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.SettingsPage);
+            //Set ApplicationUser to null
+            IoC.Get<ApplicationViewModel>().ApplicationUser = null;
+
+            //Clear friends list
+            IoC.Get<ApplicationViewModel>().Friends = new ObservableCollection<FriendModel>();
+
+            //Go to login page
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
         }
 
         #endregion

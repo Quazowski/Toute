@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.DataModels;
@@ -104,6 +106,16 @@ namespace Toute
         /// </summary>
         public ICommand RequestListCommand { get; set; }
 
+        /// <summary>
+        /// Command that handle going to GamesPage
+        /// </summary>
+        public ICommand GamesCommand { get; set; }
+
+        /// <summary>
+        /// Command that handle going to OptionsPage
+        /// </summary>
+        public ICommand SettingsCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -124,6 +136,8 @@ namespace Toute
             OpenFriendSettingsCommand = new ParametrizedRelayCommand((FriendId) => OpenFriendSettings(FriendId));
             RequestListCommand = new RelayCommand(RequestListChangeStatus);
             BlockListCommand = new RelayCommand(BlockListStatusChangeStatus);
+            GamesCommand = new RelayCommand(GoToGamesPage);
+            SettingsCommand = new RelayCommand(GoToSettingsPage);
 
         }
 
@@ -349,9 +363,19 @@ namespace Toute
                 //If ApiResponse is successful
                 if (context.IsSuccessful)
                 {
+                    //If user are on page with given friend...
+                    if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friend)
+                    {
+                        if (friend.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
+                            //Go to GamesPage
+                            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+
+                    }
+
                     IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     CurrentIdOfManagedFriend = "";
+                    
                 }
                 //Otherwise...
                 else
@@ -475,7 +499,7 @@ namespace Toute
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         //Read context as ApiResponse<ChatUserDataModel>
-                        var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
+                        var context = response.DeseralizeHttpResponse<ApiResponse<List<MessageDataModel>>>();
 
                         //If ApiResponse is successful
                         if (context.IsSuccessful)
@@ -484,7 +508,7 @@ namespace Toute
                             IoC.Get<ApplicationViewModel>().CurrentFriendId = FriendId.ToString();
 
                             //For each message...
-                            foreach (var message in context.TResponse.Messages)
+                            foreach (var message in context.TResponse)
                             {
                                 //add message to Message List
                                 chatUser.Messages.Add(new MessageModel
@@ -541,7 +565,25 @@ namespace Toute
             //toggle
             BlockListOpen ^= true;
         }
-                
+
+        /// <summary>
+        /// Method that handle going to GamesPage
+        /// </summary>
+        private void GoToGamesPage()
+        {
+            //Go to GamesPage
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+        }
+
+        /// <summary>
+        /// Method that handle going to OptionsPage
+        /// </summary>
+        private void GoToSettingsPage()
+        {
+            //Go to SettingsPage
+            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.SettingsPage);
+        }
+
         #endregion
     }
 }

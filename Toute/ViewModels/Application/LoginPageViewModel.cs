@@ -232,6 +232,15 @@ namespace Toute
                         //For every friend to remove...
                         foreach (var friend in context.TResponse.FriendsToRemove)
                         {
+                            //If user are on page with given friend...
+                            if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friendModel)
+                            {
+                                if (friendModel.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
+                                {
+                                    IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+                                }
+                            }
+
                             //remove form ApplicationUser friends
                             IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
 
