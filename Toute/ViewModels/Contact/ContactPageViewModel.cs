@@ -74,12 +74,12 @@ namespace Toute
             Messages = CurrentChatUser.Messages;
 
             ///Sets refresh time
-            var refreshTime = 3;
+            var refreshTime = 2;
 
             //Make call to API for new messages, every x seconds.
             IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshMessages = new Timer((e) =>
             {
-                GetMessagesWithGivenUser(CurrentChatUser.FriendId, refreshTime);
+                RefreshMessagesWithTheUser(CurrentChatUser.FriendId, refreshTime);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(refreshTime));
         }
 
@@ -144,7 +144,7 @@ namespace Toute
         /// </summary>
         /// <param name="FriendId">ID of friend that user are currently messaging with</param>
         /// <param name="lastRefresh">Seconds from last refresh</param>
-        private async void GetMessagesWithGivenUser(string FriendId, int lastRefresh)
+        private async void RefreshMessagesWithTheUser(string FriendId, int lastRefresh)
         {
             //Get current DateTime, and subtract lastRefresh seconds, to get when last refresh was 
             var LastRefresh = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(lastRefresh));
