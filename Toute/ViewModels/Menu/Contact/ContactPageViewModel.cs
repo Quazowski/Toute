@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Toute.Core;
+using Toute.Core.Routes;
 using Toute.Extensions;
 
 namespace Toute
@@ -21,12 +22,12 @@ namespace Toute
         /// <summary>
         /// List of messages, to display
         /// </summary>
-        public ObservableCollection<MessageBoxModel> Messages { get; set; }
+        public ObservableCollection<MessageModel> Messages { get; set; }
 
         /// <summary>
         /// Current user that is selected
         /// </summary>
-        public ChatUserModel CurrentChatUser { get; set; }
+        public FriendModel CurrentChatUser { get; set; }
 
         #endregion
 
@@ -47,7 +48,7 @@ namespace Toute
         public ContactPageViewModel()
         {
             //Create a list
-            Messages = new ObservableCollection<MessageBoxModel>();
+            Messages = new ObservableCollection<MessageModel>();
 
             //Create command
             SendMessageCommand = new ParametrizedRelayCommand((message) => SendMessage(message));
@@ -57,16 +58,16 @@ namespace Toute
         /// A constructor, that accept a <see cref="BaseViewModel"/>
         /// as a parameter.
         /// </summary>
-        /// <param name="viewModel">ViewModel, should be <see cref="ChatUserModel"/></param>
+        /// <param name="viewModel">ViewModel, should be <see cref="FriendModel"/></param>
         public ContactPageViewModel(BaseViewModel viewModel) : this()
         {
             //Convert viewModel to ChatUser ViewModel
-            CurrentChatUser = (viewModel as ChatUserModel);
+            CurrentChatUser = (viewModel as FriendModel);
 
             //If list is not created...
             if (CurrentChatUser.Messages == null)
                 //create a list
-                CurrentChatUser.Messages = new ObservableCollection<MessageBoxModel>();
+                CurrentChatUser.Messages = new ObservableCollection<MessageModel>();
 
             //Set messages as list
             Messages = CurrentChatUser.Messages;
@@ -98,9 +99,9 @@ namespace Toute
             if (!(string.IsNullOrEmpty(textBox.Text)))
             {
                 //Send request to API
-                var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.SendMessage, new SendMessageModel
+                var response = await WebRequests.PostAsync(MessageRoutes.SendMessage, new SendMessageRequest
                 {
-                    FriendId = IoC.Get<ApplicationViewModel>().Friend.FriendId,
+                    FriendId = IoC.Get<ApplicationViewModel>().CurrentFriendId,
                     Message = textBox.Text,
                     DateOfSend = DateTime.UtcNow
                 }, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
@@ -112,10 +113,10 @@ namespace Toute
                     var context = response.DeseralizeHttpResponse<ApiResponse>();
                     
                     //If response is successful...
-                    if (context.IsSucessfull)
+                    if (context.IsSuccessful)
                     {
                         //Add message to Message list
-                        Messages.Add(new MessageBoxModel
+                        Messages.Add(new MessageModel
                         {
                             SentByMe = true,
                             Message = textBox.Text,
@@ -148,7 +149,7 @@ namespace Toute
             var LastRefresh = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(lastRefresh));
 
             //Make a request to API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.GetMessages, new GetMessages
+            var response = await WebRequests.PostAsync(MessageRoutes.GetMessages, new GetMessagesRequest
             {
                 FriendId = FriendId.ToString(),
                 LastRefreshDateTime = LastRefresh
@@ -159,10 +160,10 @@ namespace Toute
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If there is successful response
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //For every message...
                     foreach (var message in context.TResponse.Messages)
@@ -171,7 +172,7 @@ namespace Toute
                         Application.Current.Dispatcher.Invoke(delegate
                         {
                             if (message.SentByMe == false)
-                                Messages.Add(new MessageBoxModel
+                                Messages.Add(new MessageModel
                                 {
                                     Message = message.Message,
                                     SentByMe = message.SentByMe,
@@ -181,7 +182,7 @@ namespace Toute
                     }
 
                     //Orders all messages by DateOfSent
-                    Messages = new ObservableCollection<MessageBoxModel>(Messages.OrderBy(x => x.DateOfSent));
+                    Messages = new ObservableCollection<MessageModel>(Messages.OrderBy(x => x.DateOfSent));
                 }
             }
         }

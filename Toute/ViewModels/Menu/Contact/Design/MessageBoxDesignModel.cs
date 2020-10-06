@@ -1,9 +1,9 @@
 ﻿namespace Toute
 {
     /// <summary>
-    /// Design model for <see cref="MessageBoxModel"/>
+    /// Design model for <see cref="MessageModel"/>
     /// </summary>
-    public class MessageBoxDesignModel : MessageBoxModel
+    public class MessageBoxDesignModel : MessageModel
     {
         /// <summary>
         /// Makes a static instance of this class

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Windows.Input;
 using Toute.Core;
+using Toute.Core.Routes;
 using Toute.Extensions;
 
 namespace Toute
@@ -64,8 +65,8 @@ namespace Toute
             if ((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure() == (parameter as RegisterPage).MyConfirmPassword.SecurePassword.Unsecure())
             {
                 //Send request to the server
-                var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ApiRegister,
-                                new RegisterCredentialsApiModel
+                var response = await WebRequests.PostAsync(UserRoutes.Register,
+                                new RegisterRequest
                                 {
                                     Username = Username,
                                     Email = Email,
@@ -76,10 +77,10 @@ namespace Toute
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Read server response as ApiResponse<RegisterCredentialsApiModel>
-                    var context = response.DeseralizeHttpResponse<ApiResponse<RegisterCredentialsApiModel>>();
+                    var context = response.DeseralizeHttpResponse<ApiResponse<RegisterRequest>>();
 
                     //If register went successfully
-                    if (context.IsSucessfull)
+                    if (context.IsSuccessful)
                     {   
                         //Go to login page
                         IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);

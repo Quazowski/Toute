@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Toute.Core;
+using Toute.Core.Routes;
 using Toute.Extensions;
 
 namespace Toute
@@ -93,8 +94,10 @@ namespace Toute
             if (Name != IoC.Get<ApplicationViewModel>().ApplicationUser.Username)
             {
                 //Create new HttpResponseMessage and set StatusCode to NotImplemented
-                var response = new HttpResponseMessage();
-                response.StatusCode = HttpStatusCode.NotImplemented;
+                var response = new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotImplemented
+                };
 
                 //If name length is less that four...
                 if (Name.Length < 4)
@@ -106,7 +109,7 @@ namespace Toute
                 else
                 {
                     //Send request to the API
-                    response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ChangeUsername, new ChangeUsernameModel
+                    response = await WebRequests.PostAsync(UserRoutes.ChangeUsername, new ChangeUsernameRequest
                     {
                         NewUsername = Name
                     }, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
@@ -116,10 +119,10 @@ namespace Toute
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Read context as ApiResponse<CredentialChanged>
-                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChanged>>();
+                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChangedResponse>>();
 
                     //If ApiResponse is successful
-                    if (context.IsSucessfull)
+                    if (context.IsSuccessful)
                     {
                         //Set header name to new username
                         HeaderName = Name;
@@ -147,8 +150,10 @@ namespace Toute
             {
 
                 //Create new HttpResponseMessage and set StatusCode to NotImplemented
-                var response = new HttpResponseMessage();
-                response.StatusCode = HttpStatusCode.NotImplemented;
+                var response = new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotImplemented
+                };
 
                 //If Email length is less that four...
                 if (Email.Length < 4)
@@ -166,7 +171,7 @@ namespace Toute
                 else
                 {
                     //Send request to the API
-                    response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ChangeEmail, new ChangeEmailModel
+                    response = await WebRequests.PostAsync(UserRoutes.ChangeEmail, new ChangeEmailRequest
                     {
                         NewEmail = Email
                     }, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
@@ -176,10 +181,10 @@ namespace Toute
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Read context as ApiResponse<CredentialChanged>
-                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChanged>>();
+                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChangedResponse>>();
 
                     //If ApiResponse is successful
-                    if (context.IsSucessfull)
+                    if (context.IsSuccessful)
                     {
                         //Set ApplicationUser Email to new Email
                         IoC.Get<ApplicationViewModel>().ApplicationUser.Email = Email;
@@ -206,7 +211,7 @@ namespace Toute
                 if ((credentials as SettingsPage).Password.SecurePassword.Unsecure() == (credentials as SettingsPage).ConfirmPassword.SecurePassword.Unsecure())
                 {
                     //Send request to the API
-                    var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ChangePassword, new ChangePasswordModel
+                    var response = await WebRequests.PostAsync(UserRoutes.ChangePassword, new ChangePasswordRequest
                     {
                         CurrentPassword = (credentials as SettingsPage).CurrentPassword.SecurePassword.Unsecure(),
                         NewPassword = (credentials as SettingsPage).Password.SecurePassword.Unsecure()
@@ -216,10 +221,10 @@ namespace Toute
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         //Read context as ApiResponse<CredentialChanged>
-                        var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChanged>>();
+                        var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChangedResponse>>();
 
                         //If ApiResponse is successful
-                        if (context.IsSucessfull)
+                        if (context.IsSuccessful)
                         {
                             //Get new JWTToken
                             IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken = context.TResponse.JWTToken;
@@ -272,7 +277,7 @@ namespace Toute
             IoC.Get<ApplicationViewModel>().ApplicationUser = null;
 
             //Clear friends list
-            IoC.Get<ApplicationViewModel>().Friends = new ObservableCollection<ChatUserModel>();
+            IoC.Get<ApplicationViewModel>().Friends = new ObservableCollection<FriendModel>();
 
             //Go to login page
             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
@@ -299,22 +304,26 @@ namespace Toute
                 Image imageFromPC = Image.FromFile(pathToImage);
 
                 //Create new Model, which will be sent to API
-                var ImageToChange = new ChangeImageModel();
+                var ImageToChange = new ChangeImageRequest
+                {
 
-                //Set Image in model, as byte[] image
-                ImageToChange.Image = imageFromPC.ImageToBytes();
+                    //Set Image in model, as byte[] image
+                    Image = imageFromPC.ImageToBytes()
+                };
 
                 //Send request to the API
-                var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ChangeImage, ImageToChange, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+                var response = await WebRequests.PostAsync(UserRoutes.ChangeImage,
+                    ImageToChange,
+                    IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
                 //if response status code is OK...
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Read context as ApiResponse<CredentialChanged>
-                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChanged>>();
+                    var context = response.DeseralizeHttpResponse<ApiResponse<CredentialChangedResponse>>();
 
                     //If ApiResponse is successful
-                    if (context.IsSucessfull)
+                    if (context.IsSuccessful)
                     {
                         //Set current image of user, to new image
                         ImageBytes = imageFromPC.ImageToBytes();

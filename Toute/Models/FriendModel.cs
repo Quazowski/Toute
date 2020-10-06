@@ -7,7 +7,7 @@ namespace Toute
     /// <summary>
     /// A Model for Chat user. Is used in friend list
     /// </summary>
-    public class ChatUserModel : BaseViewModel
+    public class FriendModel : BaseViewModel
     {
         /// <summary>
         /// Id of friend user
@@ -50,6 +50,6 @@ namespace Toute
         /// <summary>
         /// List of all messages with a user
         /// </summary>
-        public ObservableCollection<MessageBoxModel> Messages { get; set; }
+        public ObservableCollection<MessageModel> Messages { get; set; }
     }
 }

@@ -1,12 +1,10 @@
 ﻿namespace Toute.Core
 {
-    public class ApiRoutes
+    public class ApiUserRoutes
     {
-        public const string BaseUrl = "https://localhost:5000/";
+        public const string Login = "api/login";
 
-        public const string ApiRegister = "api/register";
-
-        public const string ApiLogin = "api/login";
+        public const string Register = "api/register";
 
         public const string ChangeUsername = "api/ChangeUsername";
 
@@ -15,10 +13,17 @@
         public const string ChangePassword = "api/ChangePassword";
 
         public const string ChangeImage = "api/ChangeImage";
+    }
+
+    public class ApiFriendRoutes
+    {
+        public const string GetFriends = "api/Chat/GetFriends";
 
         public const string GetFriendImage = "api/GetFriendImage";
 
         public const string SendFriendRequest = "api/Chat/SendFriendRequest";
+
+        public const string AddFriend = "api/Chat/AddFriend";
 
         public const string RejectFriendRequest = "api/Chat/RejectFriendRequest";
 
@@ -27,14 +32,12 @@
         public const string BlockFriend = "api/Chat/BlockFriend";
 
         public const string UnblockFriend = "api/Chat/UnblockFriend";
+    }
 
-        public const string AddFriend = "api/Chat/AddFriend";
-
-        public const string GetFriends = "api/Chat/GetFriends";
-
+    public class ApiMessageRoutes
+    {
         public const string SendMessage = "api/Chat/SendMessage";
 
         public const string GetMessages = "api/Chat/GetMessage";
-
     }
 }

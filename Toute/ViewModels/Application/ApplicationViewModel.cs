@@ -29,14 +29,14 @@ namespace Toute
         public bool SideMenuHidden { get; set; }
 
         /// <summary>
-        /// Model that hold actual info, of friend that is managed
+        /// Model that hold actual ID, of friend that is managed
         /// </summary>
-        public FriendUserModel Friend { get; set; }
+        public string CurrentFriendId { get; set; }
         
         /// <summary>
         /// If user is logged, store Friends in a list
         /// </summary>
-        public ObservableCollection<ChatUserModel> Friends { get; set; }
+        public ObservableCollection<FriendModel> Friends { get; set; }
 
         /// <summary>
         /// Information about user, that are already logged to application
@@ -116,7 +116,7 @@ namespace Toute
             }
 
             //Create new List of friends
-            Friends = new ObservableCollection<ChatUserModel>();
+            Friends = new ObservableCollection<FriendModel>();
 
             //Create commands
             GamesCommand = new RelayCommand(GoToGamesPage);

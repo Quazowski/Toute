@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using Toute.Core;
+using Toute.Core.Routes;
 using Toute.Extensions;
 
 namespace Toute
@@ -76,8 +79,8 @@ namespace Toute
             }
 
             //Send request with credentials to server, to login
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ApiLogin,
-                new LoginCredentialsApiModel
+            var response = await WebRequests.PostAsync(UserRoutes.Login,
+                new LoginRequest
                 {
                     Username = Username,
                     Password = "Mypassword1!" ?? (parameter as IHavePassword).SecureString.Unsecure()
@@ -87,18 +90,42 @@ namespace Toute
             if(response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<LoginResponseApiModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<LoginResponseApiModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<LoginResponse>>();
 
                 //if ApiResponse is successful...
-                if(context.IsSucessfull)
+                if(context.IsSuccessful)
                 {
-                    //Set current application user to...
-                    IoC.Get<ApplicationViewModel>().ApplicationUser = new ApplicationUserModel
+                    var Friends = new ObservableCollection<FriendModel>();
+
+                    foreach (var friend in context.TResponse.Friends)
+                    {
+                        var messages = new ObservableCollection<MessageModel>();
+                        foreach (var message in friend.Messages)
+                        {
+                            messages.Add(new MessageModel
+                            {
+                                Message = message.Message,
+                                DateOfSent = message.DateOfSent,
+                                SentByMe = message.SentByMe
+                            });
+                        }
+                        Friends.Add(new FriendModel
+                        {
+                            FriendId = friend.FriendId,
+                            BytesImage = friend.BytesImage,
+                            Name = friend.Name,
+                            Status = friend.Status,
+                            Messages = messages
+                        });
+                    }
+                    
+                        //Set current application user to...
+                        IoC.Get<ApplicationViewModel>().ApplicationUser = new ApplicationUserModel
                     {
                         Id = context.TResponse.Id,
                         Username = context.TResponse.Username,
                         Email = context.TResponse.Email,
-                        Friends = context.TResponse.Friends,
+                        Friends = Friends,
                         Image = context.TResponse.Image,
                         JWTToken = context.TResponse.JWTToken
                     };
@@ -106,12 +133,12 @@ namespace Toute
                     //foreach friend in Friends of user...
                     foreach (var friend in IoC.Get<ApplicationViewModel>().ApplicationUser.Friends)
                     {
-                        IoC.Get<ApplicationViewModel>().Friends.Add(new ChatUserModel
+                        IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
                         {
                             FriendId = friend.FriendId,
                             Name = friend.Name,
                             Status = friend.Status,
-                            BytesImage = friend.Image
+                            BytesImage = friend.BytesImage
                         });
 
                     }
@@ -146,10 +173,10 @@ namespace Toute
         /// It used to refresh friend list
         /// </summary>
         /// <param name="friends">Actual friend IDs of user</param>
-        private async void RefreshFriends(ObservableCollection<ChatUserModel> friends)
+        private async void RefreshFriends(ObservableCollection<FriendModel> friends)
         {
             //Make a request
-            var listOfFriendsId = new RefreshFriendsModel();
+            var listOfFriendsId = new RefreshFriendsRequest();
 
             //add all friend IDs to the list
             foreach (var friend in friends)
@@ -158,7 +185,7 @@ namespace Toute
             }
 
             //Make a request to the server with friend IDs
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.GetFriends,
+            var response = await WebRequests.PostAsync(FriendRoutes.GetFriends,
                 listOfFriendsId,
                 IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
@@ -166,19 +193,19 @@ namespace Toute
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Deseralize content as ApiResponse<UpdateFriends>
-                var context = response.DeseralizeHttpResponse<ApiResponse<UpdateFriends>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<UpdateFriendsResponse>>();
 
                 //If response is successful and there is any TRespond...
-                if (context.IsSucessfull && context.TResponse != null)
+                if (context.IsSuccessful && context.TResponse != null)
                 {
                     //If there are any friends to add...
-                    if(!(context.TResponse.friendsToAdd == null || context.TResponse.friendsToAdd.Count == 0))
+                    if(!(context.TResponse.FriendsToAdd == null || context.TResponse.FriendsToAdd.Count == 0))
                     {
                         //for every friends...
-                        foreach (var friend in context.TResponse.friendsToAdd)
+                        foreach (var friend in context.TResponse.FriendsToAdd)
                         {
                             //add him to Friends of ApplicatioUser
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Add(new Core.ChatUserModel
+                            IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Add(new FriendModel
                             {
                                 FriendId = friend.FriendId,
                                 Name = friend.Name,
@@ -188,10 +215,10 @@ namespace Toute
                             //Add to friends of Application
                             Application.Current.Dispatcher.Invoke(delegate 
                             {
-                                IoC.Get<ApplicationViewModel>().Friends.Add(new ChatUserModel
+                                IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
                                 {
                                     FriendId = friend.FriendId,
-                                    BytesImage = friend.Image,
+                                    BytesImage = friend.BytesImage,
                                     Name = friend.Name,
                                     Status = friend.Status,
                                 });
@@ -200,10 +227,10 @@ namespace Toute
                     }
 
                     //If there are any friends to remove...
-                    if (!(context.TResponse.friendsToRemove == null || context.TResponse.friendsToRemove.Count == 0))
+                    if (!(context.TResponse.FriendsToRemove == null || context.TResponse.FriendsToRemove.Count == 0))
                     {
                         //For every friend to remove...
-                        foreach (var friend in context.TResponse.friendsToRemove)
+                        foreach (var friend in context.TResponse.FriendsToRemove)
                         {
                             //remove form ApplicationUser friends
                             IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));

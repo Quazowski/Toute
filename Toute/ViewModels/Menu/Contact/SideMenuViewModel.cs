@@ -1,13 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.DataModels;
+using Toute.Core.Routes;
 using Toute.Extensions;
 
 namespace Toute
@@ -145,22 +142,22 @@ namespace Toute
                 return;
 
             //Sets values of friend request
-            var userToAdd = new SendFriendRequestModel
+            var userToAdd = new SendFriendRequest
             {
                 FriendUsername = NameOfFriendToAdd
             };
 
             //Sends request to API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.SendFriendRequest, userToAdd, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.SendFriendRequest, userToAdd, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //If response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //Show that friend request is sent successfully
                     //TODO: Change it to nice looking animation
@@ -187,22 +184,22 @@ namespace Toute
                 PopupExtensions.NewPopupWithMessage("Unknown error occurred");
 
             //Make a request Model
-            var userToAdd = new AddFriendModel
+            var userToAdd = new AddFriendRequest
             {
                 FriendId = FriendId.ToString()
             };
 
             //Send request to the API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.AddFriend, userToAdd, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.AddFriend, userToAdd, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //if response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //Set value of StatusOfFiendship in ApplicationUser friends, to accepted with given friend
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
@@ -231,22 +228,22 @@ namespace Toute
                 PopupExtensions.NewPopupWithMessage("Unknown error occurred");
 
             //Make a request Model
-            var userToReject = new AddFriendModel
+            var userToReject = new AddFriendRequest
             {
                 FriendId = FriendId.ToString()
             };
 
             //Send request to the API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.RejectFriendRequest, userToReject, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.RejectFriendRequest, userToReject, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //if response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //Remove friend from friend list
                     IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
@@ -279,27 +276,27 @@ namespace Toute
             IsFriendSettingsOpen = false;
 
             //Make a request Model
-            var userToDelete = new AddFriendModel
+            var userToDelete = new AddFriendRequest
             {
                 FriendId = CurrentIdOfManagedFriend
             };
 
             //Send request to the API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.DeleteFriend, userToDelete, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.DeleteFriend, userToDelete, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //if response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //If user are on page with given friend...
-                    if(IoC.Get<ApplicationViewModel>().CurrentViewModel is ChatUserModel userModel)
+                    if(IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friend)
                     {
-                        if(userModel.FriendId == CurrentIdOfManagedFriend)     
+                        if(friend.FriendId == CurrentIdOfManagedFriend)     
                             //Go to GamesPage
                             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
                         
@@ -335,22 +332,22 @@ namespace Toute
             IsFriendSettingsOpen = false;
 
             //Make a request Model
-            var userToBlock = new AddFriendModel
+            var userToBlock = new AddFriendRequest
             {
                 FriendId = CurrentIdOfManagedFriend
             };
 
             //Send request to the API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.BlockFriend, userToBlock, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.BlockFriend, userToBlock, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //if response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as 
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
@@ -393,22 +390,24 @@ namespace Toute
                 PopupExtensions.NewPopupWithMessage("Unknown error occurred");
 
             //Make a request Model
-            var friendToUnblock = new UnblockFriendModel
+            var friendToUnblock = new UnblockFriendRequest
             {
                 FriendId = FriendId.ToString()
             };
 
             //Send request to the API
-            var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.UnblockFriend, friendToUnblock, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var response = await WebRequests.PostAsync(FriendRoutes.UnblockFriend,
+                friendToUnblock,
+                IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
 
             //if response status code is OK...
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 //Read context as ApiResponse<ChatUserDataModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                 //If ApiResponse is successful
-                if (context.IsSucessfull)
+                if (context.IsSuccessful)
                 {
                     //Change StatusOfFriendship with friend to accepted in ApplicationUser 
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
@@ -452,22 +451,22 @@ namespace Toute
             else
             {
                 //Create new ObservableCollection with messages
-                chatUser.Messages = new ObservableCollection<MessageBoxModel>();
+                chatUser.Messages = new ObservableCollection<MessageModel>();
 
                 //If StatusOfFriendship is not blocked or pending...
                 if (!(chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending))
                 {
 
-                    if(IoC.Get<ApplicationViewModel>().Friend != null)
+                    if(!(string.IsNullOrEmpty(IoC.Get<ApplicationViewModel>().CurrentFriendId)))
                     {
-                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().Friend.FriendId).IsSelected = false;
+                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).IsSelected = false;
                     }
 
                     //Select new user
                     chatUser.IsSelected = true;
 
                     //Send request to the API
-                    var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.GetMessages, new GetMessages
+                    var response = await WebRequests.PostAsync(MessageRoutes.GetMessages, new GetMessagesRequest
                     {
                         FriendId = FriendId.ToString()
                     }, IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
@@ -476,22 +475,19 @@ namespace Toute
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         //Read context as ApiResponse<ChatUserDataModel>
-                        var context = response.DeseralizeHttpResponse<ApiResponse<ChatUserDataModel>>();
+                        var context = response.DeseralizeHttpResponse<ApiResponse<FriendDataModel>>();
 
                         //If ApiResponse is successful
-                        if (context.IsSucessfull)
+                        if (context.IsSuccessful)
                         {
                             //Set actual friend
-                            IoC.Get<ApplicationViewModel>().Friend = new FriendUserModel
-                            {
-                                FriendId = FriendId.ToString()
-                            };
+                            IoC.Get<ApplicationViewModel>().CurrentFriendId = FriendId.ToString();
 
                             //For each message...
                             foreach (var message in context.TResponse.Messages)
                             {
                                 //add message to Message List
-                                chatUser.Messages.Add(new MessageBoxModel
+                                chatUser.Messages.Add(new MessageModel
                                 {
                                     Message = message.Message,
                                     SentByMe = message.SentByMe,
@@ -499,7 +495,7 @@ namespace Toute
                                 });
                             }
                             //Set chatUser messages to new ObservableCollection and order them by date
-                            chatUser.Messages = new ObservableCollection<MessageBoxModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
+                            chatUser.Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
                         }
                     }
 

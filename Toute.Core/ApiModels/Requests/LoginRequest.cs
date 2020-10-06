@@ -1,6 +1,9 @@
 ﻿namespace Toute.Core
 {
-    public class LoginCredentialsApiModel
+    /// <summary>
+    /// Request to login
+    /// </summary>
+    public class LoginRequest
     {
         /// <summary>
         /// Username of the user

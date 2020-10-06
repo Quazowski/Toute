@@ -5,7 +5,7 @@ namespace Toute
     /// <summary>
     /// Model for sending a message
     /// </summary>
-    public class MessageBoxModel : BaseViewModel
+    public class MessageModel : BaseViewModel
     {
         /// <summary>
         /// Value of the message
