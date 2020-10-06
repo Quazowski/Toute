@@ -141,9 +141,7 @@
 
             <!--Side menu control-->
             <Border  Grid.Column="0">
-                <local:SideMenuControl
-                    DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}"
-                    local:LeftFadeSlideAttachedProperty.Value="{Binding SideMenuHidden}"  
+                <local:SideMenuControl local:LeftFadeSlideAttachedProperty.Value="{Binding SideMenuHidden, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"  
                     Width="300" />
             </Border>
 

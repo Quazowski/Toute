@@ -397,31 +397,52 @@
     <Style x:Key="FriendExpandButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}">
+                        <TextBlock Text="{TemplateBinding Content}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LogoutButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Background" Value="{StaticResource BackgroundLightGrayBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundLightOrangeBrush}" />
+        <Setter Property="Margin" Value="15 5" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border Background="{TemplateBinding Background}"
                             Padding="{TemplateBinding Padding}"
                             Margin="{TemplateBinding Margin}"
-
-                            Name="border">
+                            Name="border"
+                            CornerRadius="6">
                         <TextBlock Text="{TemplateBinding Content}"
                                    VerticalAlignment="Center"
+                                   Padding="5"
                                    HorizontalAlignment="Center"/>
                         <Border.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                        <ColorAnimation To="{StaticResource Orange}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>
                             <EventTrigger RoutedEvent="MouseLeave">
                                 <BeginStoryboard>
                                     <Storyboard>
-                                        <ColorAnimation To="{StaticResource DarkGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                        <ColorAnimation To="{StaticResource LightOrange}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>

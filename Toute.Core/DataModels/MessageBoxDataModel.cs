@@ -1,4 +1,6 @@
-﻿namespace Toute
+﻿using System;
+
+namespace Toute
 {
     /// <summary>
     /// Model for sending a message
@@ -13,6 +15,7 @@
         /// Value of the message
         /// </summary>
         public string Message { get; set; }
+        public DateTime DateOfSent { get; set; }
 
         /// <summary>
         /// Is message sent by user

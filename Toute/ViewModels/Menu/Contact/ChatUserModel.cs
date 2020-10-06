@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
 using Toute.Core.DataModels;
 
 namespace Toute
@@ -9,9 +10,9 @@ namespace Toute
     public class ChatUserModel : BaseViewModel
     {
         /// <summary>
-        /// Id of user
+        /// Id of friend user
         /// </summary>
-        public string Id { get; set; }
+        public string FriendId { get; set; }
 
         /// <summary>
         /// Name of the user
@@ -19,18 +20,30 @@ namespace Toute
         public string Name { get; set; }
 
         /// <summary>
-        /// Image of the user
+        /// Image of the user in byte[]
         /// </summary>
-        public byte[] Image { get; set; }
+        public byte[] BytesImage { get; set; }
+
+        /// <summary>
+        /// If <see cref="BytesImage"/> is not null,
+        /// Get image as BitmapImage converting <see cref="BytesImage"/> 
+        /// using extensions from <see cref="DirectoryExtensions"/>
+        /// and <see cref="ImageExtension"/>
+        /// </summary>
+        public BitmapImage Image => BytesImage?.BytesToBitMapImage() ?? System.Drawing.Image.FromFile(DirectoryExtensions.GetPathToImageFromImages("user.png")).ImageToBitMapImage();
 
         /// <summary>
         /// Is user selected
         /// </summary>
         public bool IsSelected { get; set; }
+
+        /// <summary>
+        /// Status of friendship e.g Pending
+        /// </summary>
         public StatusOfFriendship Status { get; set; }
 
         /// <summary>
-        /// Depending on <see cref="IsSelected"/> value, set a background to...
+        /// Depends on <see cref="IsSelected"/> value, set a background to...
         /// </summary>
         public string IsSelectedBackground => IsSelected ? "#aaaaaa" : "#0000";
 

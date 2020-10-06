@@ -8,7 +8,7 @@ namespace Toute
     /// <summary>
     /// Converter that convert boolean value, to HorizontalAlignment value
     /// </summary>
-    public class StatusOfFriendshipToVisibilityConverter : BaseValueConverter<StatusOfFriendshipToVisibilityConverter>
+    public class StatusOfBlockToVisibilityConverter : BaseValueConverter<StatusOfBlockToVisibilityConverter>
     {
         /// <summary>
         /// Converts a value of boolean type to HorizontalAlignment value
@@ -23,8 +23,8 @@ namespace Toute
             return ((StatusOfFriendship)value) switch
             {
                 StatusOfFriendship.Accepted => Visibility.Collapsed,
-                StatusOfFriendship.Pending => Visibility.Visible,
-                StatusOfFriendship.Blocked => Visibility.Collapsed,
+                StatusOfFriendship.Pending => Visibility.Collapsed,
+                StatusOfFriendship.Blocked => Visibility.Visible,
                 _ => null,
             };
         }

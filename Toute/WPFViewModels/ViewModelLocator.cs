@@ -23,8 +23,8 @@ namespace Toute
         public static GamesPageViewModel GamesPageViewModel = IoC.Kernel.Get<GamesPageViewModel>();
 
         /// <summary>
-        /// Static ViewModel of ContactPageViewModel
+        /// Static ViewModel of SideMenuViewModel
         /// </summary>
-        //public static ContactPageViewModel ContactPageViewModel = IoC.Kernel.Get<ContactPageViewModel>();
+        public static SideMenuViewModel SideMenuViewModel = IoC.Kernel.Get<SideMenuViewModel>();
     }
 }

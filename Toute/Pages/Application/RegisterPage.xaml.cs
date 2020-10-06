@@ -8,16 +8,8 @@ namespace Toute
     /// <see cref="BasePage"/> as base page, and 
     /// <see cref="IHavePassword"/> to handle password sending to VM
     /// </summary>
-    public partial class RegisterPage : BasePage<RegisterPageViewModel>, IHaveDoublePassword
+    public partial class RegisterPage : BasePage<RegisterPageViewModel>
     {
-        #region Public Members
-
-        public SecureString FirstSecureString => MyPassword.SecurePassword;
-
-        public SecureString SecondSecureString => MyConfirmPassword.SecurePassword;
-
-        #endregion
-
         #region Constructors
 
         /// <summary>

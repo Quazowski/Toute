@@ -164,11 +164,11 @@ namespace Toute
         public static Storyboard AddFadeAnimation(this Storyboard storyboard, bool Vanish, float seconds = 0.3f, float decelerationRatio = 0.9f)
         {
             //Create double animation
-            var animation = new DoubleAnimation();
+            DoubleAnimation animation;
 
             //if block, if animation should fade in or out
             //true if animation should fade out
-            if(Vanish)
+            if (Vanish)
             {
                 //Add animation
                 animation = new DoubleAnimation

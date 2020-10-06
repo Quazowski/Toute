@@ -34,7 +34,7 @@
                 </Border.Background>
 
                 <!--Buttons-->
-                <Grid DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <!--Programs tab-->
                         <ColumnDefinition Width="*" />
@@ -47,14 +47,14 @@
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
                             Content="{StaticResource FontAwesomeGamePadIcon}"
-                            Command="{Binding GamesCommand}"/>
+                            Command="{Binding GamesCommand, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"/>
 
                     <!--Settings tab-->
                     <Button Grid.Column="1" 
                             Style="{StaticResource SideMenuButton}"
                             FontFamily="{StaticResource FontAwesome}"
                             Content="{StaticResource FontAwesomeCogIcon}"
-                            Command="{Binding SettingsCommand}"/>
+                            Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"/>
 
 
                 </Grid>
@@ -62,37 +62,48 @@
 
             <!--The content of tab control-->
             <Border Grid.Row="1" >
-                <ScrollViewer d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}">
+                <ScrollViewer>
                     <Grid>
                         <Grid.RowDefinitions>
+                            <!--ItemsControl with friends-->
                             <RowDefinition Height="auto" />
+                            <!--Friend request-->
                             <RowDefinition Height="auto" />
+                            <!--Blocked friends-->
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
 
-                        <ItemsControl Grid.Row="0" ItemsSource="{Binding Friends}">
+                        <!--ItemsControl with friends-->
+                        <ItemsControl Grid.Row="0" d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}"
+                                      ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <local:UserChatControl DataContext="{Binding}"
+                                    <local:UserChatControl 
                                                            Visibility="{Binding Status, Converter={local:StatusOfAcceptedToVisibilityConverter}}"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
+                        <!--Friend request-->
                         <Grid Grid.Row="1">
                             <Grid.RowDefinitions>
+                                <!--Button to expand friend request-->
                                 <RowDefinition Height="auto" />
+                                <!--Friend request ItemsSoruce-->
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
-                            <Button 
-                                    FontFamily="{StaticResource FontAwesome}"
+
+                            <!--Button to expand friend request-->
+                            <Button FontFamily="{StaticResource FontAwesome}"
                                     Grid.Row="0"
+                                    x:Name="ExpandFriendRequestListButton"
+                                    Background="{StaticResource BackgroundVeryLightYellowBrush}"
                                     Command="{Binding RequestListCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding RequestListOpen}" Value="True">
-                                                <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownFriendRequestIcon}" /> 
+                                                <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownFriendRequestIcon}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding RequestListOpen}" Value="False">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowUpFriendRequestIcon}" />
@@ -100,17 +111,34 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+                                <Button.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="{StaticResource Yellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="{StaticResource VeryLightYellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Button.Triggers>
                             </Button>
 
+                            <!--Friend request ItemsSoruce-->
                             <Border Grid.Row="1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                                           VerticalScrollBarVisibility="Disabled">
                                     <ItemsControl Grid.Row="0" 
-                                                  ItemsSource="{Binding Friends}"
+                                                  ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
                                                   local:TopFadeSlideAttachedProperty.Value="{Binding RequestListOpen}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <local:UserChatControl DataContext="{Binding}"
+                                                <local:UserChatControl
                                                            Visibility="{Binding Status, Converter={local:StatusOfPendingToVisibilityConverter}}"
 />
                                             </DataTemplate>
@@ -119,20 +147,27 @@
                                 </ScrollViewer>
                             </Border>
                         </Grid>
+
+                        <!--Blocked friends-->
                         <Grid Grid.Row="2">
                             <Grid.RowDefinitions>
+                                <!--Button to expand blocked friends-->
                                 <RowDefinition Height="auto" />
+                                <!--Blocked friends ItemsSoruce-->
                                 <RowDefinition Height="auto" />
                             </Grid.RowDefinitions>
 
+                            <!--Button to expand blocked friends-->
                             <Button FontFamily="{StaticResource FontAwesome}"
                                     Grid.Row="0"
+                                    x:Name="ExpandBlockFriendListButton"
+                                    Background="{StaticResource BackgroundVeryLightRedBrush}"
                                     Command="{Binding BlockListCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding BlockListOpen}" Value="True">
-                                                <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownBlockUsersIcon}" /> 
+                                                <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownBlockUsersIcon}" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding BlockListOpen}" Value="False">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowUpBlockUsersIcon}" />
@@ -140,16 +175,33 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+                                <Button.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="{StaticResource VeryLightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </Button.Triggers>
                             </Button>
 
+                            <!--Blocked friends ItemsSoruce-->
                             <Border Grid.Row="1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                                           VerticalScrollBarVisibility="Disabled">
-                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Friends}"
+                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
                                                   local:TopFadeSlideAttachedProperty.Value="{Binding BlockListOpen}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <local:UserChatControl DataContext="{Binding}"
+                                                <local:UserChatControl 
                                                            Visibility="{Binding Status, Converter={local:StatusOfBlockedToVisibilityConverter}}"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -158,8 +210,8 @@
                             </Border>
                         </Grid>
                     </Grid>
-                   
                 </ScrollViewer>
+                
                 <Border.Background>
                     <LinearGradientBrush StartPoint="1,0" 
                                          EndPoint="1,1">
@@ -176,21 +228,30 @@
             <Border Grid.Row="2">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <!--Button to add friend-->
                         <ColumnDefinition Width="auto" />
+                        <!--TextBox with friend nickname-->
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-
+                    
+                    <!--Button to add friend-->
                     <Button Grid.Column="0" 
                             Content="+"
                             Style="{StaticResource AddFriendButton}"
-                            Command="{Binding SendFriendRequest}"/>
+                            Command="{Binding SendFriendRequestCommand}"/>
+                    
+                    <!--TextBox with friend nickname-->
                     <TextBox Grid.Column="1"
                              Tag="Username of friend to add..."
                              Style="{StaticResource AddFriendTextbox}"
-                             Text="{Binding NameOfFriendToAdd}"/>
+                             FontSize="18"
+                             Text="{Binding NameOfFriendToAdd}"
+                             VerticalContentAlignment="Center"
+                             HorizontalContentAlignment="Center" />
                 </Grid>
             </Border>
 
+            <!--PlaceHolder for friend settings popup-->
             <local:FriendSettingsPopup 
                 Grid.Row="3"/>
         </Grid>

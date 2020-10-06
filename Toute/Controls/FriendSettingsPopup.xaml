@@ -4,14 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Toute"
-             mc:Ignorable="d" 
-             DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}">
+             mc:Ignorable="d"
+             DataContext="{x:Static local:ViewModelLocator.SideMenuViewModel}">
+    
     <!--Main cointerner of popup-->
-
     <Popup IsOpen="{Binding IsFriendSettingsOpen}"
            StaysOpen="False"
            Placement="MousePoint" 
-
            AllowsTransparency="True">
 
         <!--Popup wrapped as grid-->
@@ -30,28 +29,28 @@
                     Padding="3">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <!--Set new path button-->
+                        <!--Delete Friend button-->
                         <RowDefinition Height="*" />
-                        <!--Delete game button-->
+                        <!--Block friend button-->
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <!--Set new path button-->
+                    <!--Delete Friend button-->
                     <Button Grid.Row="0"
                             Content="Delete friend"
-                            Command="{Binding DeleteFriend}"
+                            Command="{Binding DeleteFriendCommand}"
                             Style="{StaticResource PopupButton}"
                             Background="{StaticResource BackgroundOrangeBrush}"
                             Foreground="{StaticResource BackgroundWhiteBrush}"
                             Padding="15 5"/>
 
-                    <!--Delete game button-->
+                    <!--Block friend button-->
                     <Button Grid.Row="1"
                             Style="{StaticResource PopupButton}"
                             x:Name="Button"
                             Background="{StaticResource BackgroundRedBrush}"
                             Content="Block"
-                            Command="{Binding BlockFriend}"
+                            Command="{Binding BlockFriendCommand}"
                             Foreground="{StaticResource BackgroundWhiteBrush}"
                             Padding="15 5">
                         <Button.Triggers>

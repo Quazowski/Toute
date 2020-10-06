@@ -13,11 +13,7 @@ namespace Toute
         /// </summary>
         
         public virtual string Id { get; set; }
-
-        /// <summary>
-        /// Name of the user
-        /// </summary>
-        public virtual string Name { get; set; }
+        public virtual string FriendId { get; set; }
 
         /// <summary>
         /// List of all messages with a user

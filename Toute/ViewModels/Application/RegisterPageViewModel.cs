@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Net;
 using System.Windows.Input;
 using Toute.Core;
+using Toute.Extensions;
 
 namespace Toute
 {
@@ -59,19 +60,46 @@ namespace Toute
         /// <param name="parameter"></param>
         private async void Register(object parameter)
         {
-            //NOTE: It is only for testing, should be replaced with properly register
-            //Password should not be hold in variables
-            if((parameter as IHaveDoublePassword).FirstSecureString.Unsecure() == (parameter as IHaveDoublePassword).SecondSecureString.Unsecure())
+            //If password and confirm new password is the same...
+            if ((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure() == (parameter as RegisterPage).MyConfirmPassword.SecurePassword.Unsecure())
             {
+                //Send request to the server
                 var response = await WebRequests.PostAsync(ApiRoutes.BaseUrl + ApiRoutes.ApiRegister,
                                 new RegisterCredentialsApiModel
                                 {
                                     Username = Username,
                                     Email = Email,
-                                    Password = (parameter as IHaveDoublePassword).FirstSecureString.Unsecure()
+                                    Password = (parameter as RegisterPage).MyPassword.SecurePassword.Unsecure()
                                 });
+
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    //Read server response as ApiResponse<RegisterCredentialsApiModel>
+                    var context = response.DeseralizeHttpResponse<ApiResponse<RegisterCredentialsApiModel>>();
+
+                    //If register went successfully
+                    if (context.IsSucessfull)
+                    {   
+                        //Go to login page
+                        IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+                    }
+                    //Otherwise...
+                    else
+                    {
+                        //Show error message
+                        PopupExtensions.NewPopupWithMessage(context.ErrorMessage);
+                    }
+                }
+                else
+                {
+                    //Display error
+                    PopupExtensions.NewPopupWithMessage("Unknown error occurred");
+                }
             }
         }
+
+
 
         /// <summary>
         /// Method that handle going to login page

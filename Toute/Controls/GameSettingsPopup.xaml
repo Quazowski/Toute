@@ -12,21 +12,10 @@
     <Popup IsOpen="{Binding CurrentItem.PopupOpen}"
            StaysOpen="False"
            Placement="MousePoint" 
-           HorizontalOffset="-130" 
-           VerticalOffset="-75"
+           HorizontalOffset="-105" 
+           VerticalOffset="-50"
            AllowsTransparency="True">
-
-        <!--Popup wrapped as grid-->
-        <Grid Background="Transparent">
-            <Grid.RowDefinitions>
-                
-                <!--Main content, buttons-->
-                <RowDefinition Height="*" />
-                <!--Carrot-->
-                <RowDefinition Height="*" />
-                
-            </Grid.RowDefinitions>
-
+        
             <!--Main content, buttons-->
             <Border Grid.Row="0"
                     Background="{StaticResource BackgroundWhiteBrush}"
@@ -76,15 +65,6 @@
                     </Button>
                 </Grid>
             </Border>
-
-            <!--Carrot-->
-            <Border Grid.Row="1" Background="Transparent">
-                <Path Grid.Row="2" 
-                      Fill="{StaticResource BackgroundWhiteBrush}"
-                      Data="M 130,0 L 130,20 C 123,10 114,5 100,0"/>
-            </Border>
-            
-        </Grid>
     </Popup>
 
 </UserControl>

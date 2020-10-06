@@ -15,7 +15,9 @@ namespace Toute.Core
         /// Email of the user
         /// </summary>
         public string Email { get; set; }
+        public byte[] Image { get; set; }
 
-        public List<ChatUserDataModel> Friends { get; set; }
+        public List<ChatUserModel> Friends { get; set; }
+        public string JWTToken { get; set; }
     }
 }

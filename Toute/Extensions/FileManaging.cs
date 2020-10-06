@@ -36,7 +36,7 @@ namespace Toute
                     return true;
                 }
             }
-            //If error accrued...
+            //If error occurred...
             catch (Exception ex)
             {
                 //Lets developer know
@@ -67,7 +67,7 @@ namespace Toute
                 using StreamWriter streamWriter = File.CreateText(pathToGivenFile);
                  streamWriter.WriteLine(text);
             }
-            //If error accrued...
+            //If error occurred...
             catch (Exception ex)
             {
                 //Lets developer know
@@ -99,7 +99,7 @@ namespace Toute
                 using StreamReader streamReader = File.OpenText(pathToGivenFile);
                     context = streamReader.ReadToEnd();
             }
-            //If error accrued...
+            //If error occurred...
             catch (Exception ex)
             {
                 //Lets developer know
@@ -109,7 +109,7 @@ namespace Toute
             }
 
             //Returns a context from a file
-            //or if error accrued returns empty string
+            //or if error occurred returns empty string
             return context;          
         }
 
@@ -137,7 +137,7 @@ namespace Toute
                     newList.Add(File.ReadAllText(file));
                 }
             }
-            //If error accrued...
+            //If error occurred...
             catch (Exception ex)
             {
                 //Lets developer know
@@ -174,7 +174,7 @@ namespace Toute
                     File.Delete(pathToGivenFile);
                 }
             }
-            //If error accrued...
+            //If error occurred...
             catch (Exception ex)
             {
                 //Lets developer know

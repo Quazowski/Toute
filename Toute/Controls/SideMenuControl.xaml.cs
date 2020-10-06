@@ -14,6 +14,8 @@ namespace Toute
         {
             //Prepares Components for MainWindow
             InitializeComponent();
+
+            DataContext = new SideMenuViewModel();
         }
     }
 }

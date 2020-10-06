@@ -9,7 +9,7 @@
       Title="ContactPage">
 
     <!--Grid around ContactPage-->
-    <Grid Background="Transparent">
+    <Grid Background="Transparent" x:Name="GridWithScrollViewerAndTextBox">
         
         <Grid.RowDefinitions>
             
@@ -22,10 +22,12 @@
 
         <!--Messages-->
         <Border Grid.Row="0"
-                d:DataContext="{x:Static local:MessageBoxListDesignModel.Instance}"
-                VerticalAlignment="Bottom">
-            <ScrollViewer>
-                <ItemsControl ItemsSource="{Binding Messages}">
+                d:DataContext="{x:Static local:MessageBoxListDesignModel.Instance}">
+            <ScrollViewer x:Name="ScrollMessages"
+                          local:ScrollToBottomOnLoadAttachedProperty.Value="True"                        
+                          local:ScrollToBottomOnValueChangedAttachedProperty.Value="True">
+                <ItemsControl ItemsSource="{Binding Messages}" 
+                              VerticalAlignment="Bottom">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:MessageBox DataContext="{Binding}"/>
@@ -55,7 +57,6 @@
                              Padding="10 10"
                              x:Name="Message"
                              local:GetFocusAttachedProperty.Value="True">
-
                     </TextBox>
                 </Border>
                 

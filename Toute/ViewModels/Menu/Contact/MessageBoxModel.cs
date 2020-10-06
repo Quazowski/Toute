@@ -1,4 +1,6 @@
-﻿namespace Toute
+﻿using System;
+
+namespace Toute
 {
     /// <summary>
     /// Model for sending a message
@@ -14,6 +16,11 @@
         /// Is message sent by user
         /// </summary>
         public bool SentByMe { get; set; }
+
+        /// <summary>
+        /// Date when message was sent (UTC)
+        /// </summary>
+        public DateTime DateOfSent { get; set; }
 
         /// <summary>
         /// Set Background color depends on <see cref="SentByMe"/>

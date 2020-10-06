@@ -5,10 +5,198 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Toute"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="SettingPage">
+      d:Width="850"
+      d:Height="550"
+      Title="SettingPage"
+      x:Name="SettingsPageName">
 
-    <Grid Background="Blue">
+    <!--Content-->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
+                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <!--Header title with username-->
+            <RowDefinition Height="auto" />
+            <!--A solid line below header title-->
+            <RowDefinition Height="auto" />
+            <!--Content with image and credentials-->
+            <RowDefinition Height="auto" />
+            <!--Logout button-->
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
 
+        <!--Header title with username-->
+        <Border Grid.Row="0">
+            <TextBlock Text="{Binding HeaderName}"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Padding="10 5"
+                       FontSize="24"/>
+        </Border>
+
+        <!--A solid line below header title-->
+        <Border Grid.Row="1"
+                BorderThickness="0 0 0 1"
+                BorderBrush="Gray"
+                Margin="30 0"/>
+
+        <!--Content with image and credentials-->
+        <Grid Grid.Row="2" Margin="0 10 0 5">
+            <Grid.ColumnDefinitions>
+                <!--Image-->
+                <ColumnDefinition Width="auto"/>
+                <!--Credentials-->
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--Image-->
+            <Grid Grid.Column="0" Grid.Row="0"
+                  Margin="30 0">
+                <Grid.RowDefinitions>
+                    <!--Image-->
+                    <RowDefinition Height="*" />
+                    <!--Upload new photo button-->
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <!--Image-->
+                <Image Source="{Binding UserImage}"
+                       Grid.Row="0"
+                       MaxWidth="180"/>
+
+                <!--Upload new photo button-->
+                <Button Grid.Row="1"
+                        Style="{StaticResource LogoutButton}"
+                        Content="Upload new photo"
+                        Margin="0"
+                        Command="{Binding UploadNewPhotoCommand}"/>
+            </Grid>
+
+            <!--Credentials-->
+            <Grid Grid.Column="1" Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <!--TextBlocks with username etc.-->
+                    <ColumnDefinition Width="auto" />
+                    <!--TextBox with credentials-->
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <!--TextBlocks and TextBoxs-->
+                    <RowDefinition Height="auto" />
+                    <!--Save Changes button-->
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <!--TextBlocks with username etc.-->
+                <Grid Grid.Column="0" >
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="0,5,0,5" />
+                            <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <!--Username-->
+                        <RowDefinition Height="auto" />
+                        <!--Email-->
+                        <RowDefinition Height="auto" />
+                        <!--Password-->
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--Username-->
+                    <TextBlock Text="Username:"
+                                Grid.Row="0"/>
+
+                    <!--Email-->
+                    <TextBlock Text="Email:"
+                                   Grid.Row="1"/>
+
+                    <!--Password-->
+                    <TextBlock Text="Password:"
+                                Grid.Row="2"/>
+                </Grid>
+
+                <!--TextBox with credentials-->
+                <Grid Grid.Column="1">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
+                            <Setter Property="Margin" Value="5,5,150,5" />
+                            <Setter Property="MinWidth" Value="300" />
+                            <Setter Property="Padding" Value="10 0" />
+                            <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
+                        </Style>
+                        <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource BasePasswordBox}">
+                            <Setter Property="Margin" Value="5,5,150,5" />
+                            <Setter Property="MinWidth" Value="300" />
+                            <Setter Property="Padding" Value="10 0" />
+                            <Setter Property="FontSize" Value="{StaticResource FontSizeLarge}" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <!--Username-->
+                        <RowDefinition Height="auto" />
+                        <!--Email-->
+                        <RowDefinition Height="auto" />
+                        <!--Current password-->
+                        <RowDefinition Height="auto" />
+                        <!--New password-->
+                        <RowDefinition Height="auto" />
+                        <!--Confirm new password-->
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--Username-->
+                    <TextBox Text="{Binding Name}" 
+                                 HorizontalContentAlignment="Center"
+                                 Grid.Row="0"/>
+
+                    <!--Email-->
+                    <TextBox  Text="{Binding Email}"
+                                  HorizontalContentAlignment="Center"
+                                  Grid.Row="1"/>
+
+                    <!--Current password-->
+                    <PasswordBox Tag="Current password" 
+                                     HorizontalContentAlignment="Center"
+                                     x:Name="CurrentPassword"
+                                     Grid.Row="2"/>
+
+                    <!--New password-->
+                    <PasswordBox Tag="New password" 
+                                     HorizontalContentAlignment="Center"
+                                     x:Name="Password"
+                                     Grid.Row="3"/>
+
+                    <!--Confirm new password-->
+                    <PasswordBox Tag="Confirm New password" 
+                                     HorizontalContentAlignment="Center"
+                                     x:Name="ConfirmPassword"
+                                     Grid.Row="4"/>
+                </Grid>
+
+                <!--Save Changes button-->
+                <Button Style="{StaticResource LogoutButton}"
+                        Content="Save Changes"
+                        Grid.Row="1"                      
+                        Margin="0 0 75 0"
+                        Grid.ColumnSpan="2"
+                        Command="{Binding SaveChangesCommand}"
+                        CommandParameter="{Binding ElementName=SettingsPageName}"/>
+
+            </Grid>
+        </Grid>
+
+        <!--Logout button-->
+        <Button Style="{StaticResource LogoutButton}"
+                Grid.Row="3"
+                Grid.ColumnSpan="2"
+                Margin="15 5 75 5"
+                Content="Logout"
+                Command="{Binding LogoutCommand}"/>
     </Grid>
 </local:BasePage>

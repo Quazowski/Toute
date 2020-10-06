@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 using Toute.Core.DataModels;
 
 namespace Toute
@@ -20,18 +19,13 @@ namespace Toute
         /// <returns>Converted value as HorizontalAlignment</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            switch((StatusOfFriendship)value)
+            return ((StatusOfFriendship)value) switch
             {
-                case StatusOfFriendship.Accepted:
-                    return "#aaaaaa";
-                case StatusOfFriendship.Pending:
-                    return "#eee83b";
-                case StatusOfFriendship.Blocked:
-                    return "#ea3540";
-                default:
-                    return null;
-            }
-
+                StatusOfFriendship.Accepted => "#aaaaaa",
+                StatusOfFriendship.Pending => "#eee83b",
+                StatusOfFriendship.Blocked => "#ea3540",
+                _ => null,
+            };
         }
 
         /// <summary>

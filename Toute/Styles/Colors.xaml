@@ -41,6 +41,15 @@
     <Color x:Key="LightOrange">#ffb74f</Color>
     <SolidColorBrush x:Key="BackgroundLightOrangeBrush" Color="{StaticResource LightOrange}"/>
 
+    <Color x:Key="VeryLightYellow">#f0eda0</Color>
+    <SolidColorBrush x:Key="BackgroundVeryLightYellowBrush" Color="{StaticResource VeryLightYellow}"/>
+
+    <Color x:Key="Yellow">#e8e460</Color>
+    <SolidColorBrush x:Key="BackgroundYellowBrush" Color="{StaticResource Yellow}"/>
+
+    <Color x:Key="DarkYellow">#e3dd21</Color>
+    <SolidColorBrush x:Key="BackgroundightDarkYellowBrush" Color="{StaticResource DarkYellow}"/>
+
     <Color x:Key="Black">#000000</Color>
     <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource Black}"/>
 

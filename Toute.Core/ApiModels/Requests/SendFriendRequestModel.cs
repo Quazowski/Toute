@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Toute.Core
+﻿namespace Toute.Core
 {
-    public class SendFriendRequestModel : RelationshipModel
+    public class SendFriendRequestModel
     {
+        public string FriendUsername { get; set; }
     }
 }

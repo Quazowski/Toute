@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:Toute">
 
     <!--A base style for all TextBox in application-->
-    <Style  TargetType="{x:Type TextBox}">
+    <Style x:Key="BaseTextBox" TargetType="{x:Type TextBox}">
         <Setter Property="Background" Value="#ffffff"/>
         <Setter Property="BorderBrush" Value="#AAAAAA"/>
         <Setter Property="Foreground" Value="#000000"/>
@@ -60,8 +60,14 @@
         </Setter>
     </Style>
 
+    <!--A base style for all TextBox in application-->
+    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
+
+    </Style>
+
+
     <!--A base style for all PasswordBox in application-->
-    <Style TargetType="{x:Type PasswordBox}">
+    <Style x:Key="BasePasswordBox" TargetType="{x:Type PasswordBox}">
         <Setter Property="PasswordChar" Value="●"/>
         <Setter Property="Background" Value="#ffffff"/>
         <Setter Property="BorderBrush" Value="#AAAAAA"/>
@@ -114,6 +120,11 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!--A base style for all PasswordBox in application-->
+    <Style TargetType="{x:Type PasswordBox}" BasedOn="{StaticResource BasePasswordBox}">
+
     </Style>
 
     <!--A base style for all TextBox in application-->
