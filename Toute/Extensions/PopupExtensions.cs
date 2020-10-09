@@ -20,5 +20,23 @@
             //Show DialogPopup with message
             newPopup.ShowDialog();
         }
+
+        public static void NewInfoPopup(string informationMessage)
+        {
+            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            {
+                Message = informationMessage,
+                IsError = false
+            });
+        }
+
+        public static void NewErrorPopup(string informationMessage)
+        {
+            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            {
+                Message = informationMessage,
+                IsError = true
+            });
+        }
     }
 }

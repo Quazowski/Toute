@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace Toute.Core
 {
     /// <summary>
@@ -9,6 +11,7 @@ namespace Toute.Core
         /// <summary>
         /// Image on which be changed
         /// </summary>
+        [Required(ErrorMessage = "Current Password is required")]
         public byte[] Image { get; set; }
     }
 }

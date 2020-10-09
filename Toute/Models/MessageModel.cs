@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media.Imaging;
 
 namespace Toute
 {
@@ -21,6 +22,8 @@ namespace Toute
         /// Date when message was sent (UTC)
         /// </summary>
         public DateTime DateOfSent { get; set; }
+
+        public BitmapImage FriendsImage{ get; set; }
 
         /// <summary>
         /// Set Background color depends on <see cref="SentByMe"/>

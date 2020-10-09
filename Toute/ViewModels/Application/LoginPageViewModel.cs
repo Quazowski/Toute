@@ -3,7 +3,10 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Runtime.ExceptionServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -24,6 +27,17 @@ namespace Toute
         /// Username of user
         /// </summary>
         public string Username { get; set; } = "Testuser";
+
+        /// <summary>
+        /// Status of <see cref="LoginAsync(object)"/>
+        /// </summary>
+        public bool LoginIsRunning { get; set; }
+
+        /// <summary>
+        /// Status of <see cref="RefreshFriendsAsync(ObservableCollection{FriendModel})"/>
+        /// method.
+        /// </summary>
+        public bool RefreshFriendIsRunning { get; set; }
 
         #endregion
 
@@ -47,7 +61,7 @@ namespace Toute
         public LoginPageViewModel()
         {
             //Command that handle login
-            LoginCommand = new ParametrizedRelayCommand((parameter) => Login(parameter));
+            LoginCommand = new ParametrizedRelayCommand(async (parameter) => await LoginAsync(parameter));
 
             //Command that handle going to register page
             GoToRegister = new RelayCommand(GoToRegisterPage);
@@ -70,34 +84,31 @@ namespace Toute
         /// Method that handle going to register page
         /// </summary>
         /// <param name="parameter"></param>
-        public async void Login(object parameter)
+        public async Task LoginAsync(object parameter)
         {
-            //If there is any username is given...
-            if(string.IsNullOrEmpty(Username))
+            await RunCommandAsync(() => LoginIsRunning, async () =>
             {
-                PopupExtensions.NewPopupWithMessage("Provide username first");
-            }
-
-            //Send request with credentials to server, to login
-            var response = await WebRequests.PostAsync(UserRoutes.Login,
-                new LoginRequest
+                //If there is any username is given...
+                if (string.IsNullOrEmpty(Username))
                 {
-                    Username = Username,
-                    Password = "Mypassword1!" ?? (parameter as IHavePassword).SecureString.Unsecure()
-                });
+                    PopupExtensions.NewInfoPopup("Provide username first");
+                }
 
-            //If server respond OK...
-            if(response.StatusCode == HttpStatusCode.OK)
-            {
-                //Read context as ApiResponse<LoginResponseApiModel>
-                var context = response.DeseralizeHttpResponse<ApiResponse<LoginResponse>>();
+                //Send request with credentials to server, to login
+                var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<LoginResponse>(UserRoutes.Login,
+                        new LoginRequest
+                        {
+                            Username = Username,
+                            Password = "Mypassword1!" ?? (parameter as IHavePassword).SecureString.Unsecure()
+                        });
 
-                //if ApiResponse is successful...
-                if(context.IsSuccessful)
+                //If there is any context back
+                if(context != null)
                 {
+                    //Make a list of friends
                     var Friends = new ObservableCollection<FriendModel>();
 
-                    foreach (var friend in context.TResponse.Friends)
+                    foreach (var friend in context.Friends)
                     {
                         var messages = new ObservableCollection<MessageModel>();
                         foreach (var message in friend.Messages)
@@ -118,16 +129,16 @@ namespace Toute
                             Messages = messages
                         });
                     }
-                    
-                        //Set current application user to...
-                        IoC.Get<ApplicationViewModel>().ApplicationUser = new ApplicationUserModel
+
+                    //Set current application user to...
+                    IoC.Get<ApplicationViewModel>().ApplicationUser = new ApplicationUserModel
                     {
-                        Id = context.TResponse.Id,
-                        Username = context.TResponse.Username,
-                        Email = context.TResponse.Email,
+                        Id = context.Id,
+                        Username = context.Username,
+                        Email = context.Email,
                         Friends = Friends,
-                        Image = context.TResponse.Image,
-                        JWTToken = context.TResponse.JWTToken
+                        Image = context.Image,
+                        JWTToken = context.JWTToken
                     };
 
                     //foreach friend in Friends of user...
@@ -142,30 +153,18 @@ namespace Toute
                         });
 
                     }
-                    
+
                     //Start refreshing list of friends every x seconds.
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshFriends = new Timer((e) =>
+                    IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshFriends = new Timer(async (e) =>
                     {
-                        RefreshFriends(IoC.Get<ApplicationViewModel>().Friends);
+                        await RefreshFriendsAsync(IoC.Get<ApplicationViewModel>().Friends);
                     }, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
 
                     //Go to GamesPage page
                     IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
                 }
-                //Otherwise
-                else
-                {
-                    //Display error with error message
-                    PopupExtensions.NewPopupWithMessage(context.ErrorMessage);
-                }
 
-            }
-            //Otherwise...
-            else
-            {
-                //Display error
-                PopupExtensions.NewPopupWithMessage("Unknown error occurred");
-            }
+            });
         }
 
         /// <summary>
@@ -173,8 +172,9 @@ namespace Toute
         /// It used to refresh friend list
         /// </summary>
         /// <param name="friends">Actual friend IDs of user</param>
-        private async void RefreshFriends(ObservableCollection<FriendModel> friends)
+        private async Task RefreshFriendsAsync(ObservableCollection<FriendModel> friends)
         {
+
             //Make a request
             var listOfFriendsId = new RefreshFriendsRequest();
 
@@ -185,88 +185,63 @@ namespace Toute
             }
 
             //Make a request to the server with friend IDs
-            var response = await WebRequests.PostAsync(FriendRoutes.GetFriends,
-                listOfFriendsId,
-                IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken);
+            var TContext = await HttpExtensions.HandleHttpRequestOfTResponseAsync<UpdateFriendsResponse>(FriendRoutes.GetFriends, listOfFriendsId);
 
-            //If server respond OK...
-            if (response.StatusCode == HttpStatusCode.OK)
+
+            //If there are any friends to add...
+            if (TContext?.FriendsToAdd.Count > 0)
             {
-                //Deseralize content as ApiResponse<UpdateFriends>
-                var context = response.DeseralizeHttpResponse<ApiResponse<UpdateFriendsResponse>>();
-
-                //If response is successful and there is any TRespond...
-                if (context.IsSuccessful && context.TResponse != null)
+                //for every friends...
+                foreach (var friend in TContext.FriendsToAdd)
                 {
-                    //If there are any friends to add...
-                    if(!(context.TResponse.FriendsToAdd == null || context.TResponse.FriendsToAdd.Count == 0))
+                    //add him to Friends of ApplicatioUser
+                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Add(new FriendModel
                     {
-                        //for every friends...
-                        foreach (var friend in context.TResponse.FriendsToAdd)
-                        {
-                            //add him to Friends of ApplicatioUser
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Add(new FriendModel
-                            {
-                                FriendId = friend.FriendId,
-                                Name = friend.Name,
-                                Status = friend.Status,
-                            });
+                        FriendId = friend.FriendId,
+                        Name = friend.Name,
+                        Status = friend.Status,
+                    });
 
-                            //Add to friends of Application
-                            Application.Current.Dispatcher.Invoke(delegate 
-                            {
-                                IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
-                                {
-                                    FriendId = friend.FriendId,
-                                    BytesImage = friend.BytesImage,
-                                    Name = friend.Name,
-                                    Status = friend.Status,
-                                });
-                            });
+                    //Add to friends of Application
+                    Application.Current.Dispatcher.Invoke(delegate
+                    {
+                        IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
+                        {
+                            FriendId = friend.FriendId,
+                            BytesImage = friend.BytesImage,
+                            Name = friend.Name,
+                            Status = friend.Status,
+                        });
+                    });
+                }
+            }
+
+            //If there are any friends to remove...
+            if (TContext?.FriendsToRemove.Count > 0)
+            {
+                //For every friend to remove...
+                foreach (var friend in TContext.FriendsToRemove)
+                {
+                    //If user are on page with given friend...
+                    if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friendModel)
+                    {
+                        if (friendModel.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
+                        {
+                            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
                         }
                     }
 
-                    //If there are any friends to remove...
-                    if (!(context.TResponse.FriendsToRemove == null || context.TResponse.FriendsToRemove.Count == 0))
+                    //remove form ApplicationUser friends
+                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
+
+                    //Remove from friends of Application
+                    Application.Current.Dispatcher.Invoke(delegate
                     {
-                        //For every friend to remove...
-                        foreach (var friend in context.TResponse.FriendsToRemove)
-                        {
-                            //If user are on page with given friend...
-                            if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friendModel)
-                            {
-                                if (friendModel.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
-                                {
-                                    IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
-                                }
-                            }
-
-                            //remove form ApplicationUser friends
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
-
-                            //Remove from friends of Application
-                            Application.Current.Dispatcher.Invoke(delegate
-                            {
-                                IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == friend));
-                            });
-                        }
-                    }           
+                        IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == friend));
+                    });
                 }
             }
-            //Else, if statusCode have no content...
-            else if(response.StatusCode == HttpStatusCode.NoContent)
-            {
-                //Do nothing
-            }
-            //Otherwise...
-            else
-            {
-                //TODO: Delete this, and let logger write a error
-                PopupExtensions.NewPopupWithMessage("Unknown error occurred");
-            }
         }
-
-
         #endregion
     }
 }

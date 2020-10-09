@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
@@ -23,6 +25,11 @@ namespace Toute
         /// </summary>
         public string Email { get; set; }
 
+        /// <summary>
+        /// Status of <see cref="RegisterAsync(object)"/>
+        /// </summary>
+        public bool RegisterIsRunning { get; set; }
+
         #endregion
 
         #region Commands
@@ -45,7 +52,7 @@ namespace Toute
         public RegisterPageViewModel()
         {
             //Command that handle register
-            RegisterCommand = new ParametrizedRelayCommand((parameter) => Register(parameter));
+            RegisterCommand = new ParametrizedRelayCommand(async(parameter) => await RegisterAsync(parameter));
 
             //Command that handle going to login page
             GoToLogin = new RelayCommand(GoToLoginPage);
@@ -59,45 +66,46 @@ namespace Toute
         /// Method that handle register
         /// </summary>
         /// <param name="parameter"></param>
-        private async void Register(object parameter)
+        private async Task RegisterAsync(object parameter)
         {
-            //If password and confirm new password is the same...
-            if ((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure() == (parameter as RegisterPage).MyConfirmPassword.SecurePassword.Unsecure())
+            await RunCommandAsync(() => RegisterIsRunning, async () => 
             {
-                //Send request to the server
-                var response = await WebRequests.PostAsync(UserRoutes.Register,
-                                new RegisterRequest
-                                {
-                                    Username = Username,
-                                    Email = Email,
-                                    Password = (parameter as RegisterPage).MyPassword.SecurePassword.Unsecure()
-                                });
-
-
-                if (response.StatusCode == HttpStatusCode.OK)
+                if(string.IsNullOrEmpty(Username)|| string.IsNullOrEmpty(Email))
                 {
-                    //Read server response as ApiResponse<RegisterCredentialsApiModel>
-                    var context = response.DeseralizeHttpResponse<ApiResponse<RegisterRequest>>();
+                    PopupExtensions.NewInfoPopup("Provide all values");
+                    return;
+                }
 
-                    //If register went successfully
-                    if (context.IsSuccessful)
-                    {   
+                if((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure().Length < 4)
+                {
+                    PopupExtensions.NewInfoPopup("Password must have at least 5 letters");
+                    return;
+                }
+                    //If password and confirm new password is the same...
+                if ((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure() == (parameter as RegisterPage).MyConfirmPassword.SecurePassword.Unsecure())
+                {
+                    //Make a request to register, with the credentials
+                    var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<RegisterRequest>(UserRoutes.Register,
+                                    new RegisterRequest
+                                    {
+                                        Username = Username,
+                                        Email = Email,
+                                        Password = (parameter as RegisterPage).MyPassword.SecurePassword.Unsecure()
+                                    });
+
+                    //If there is content back
+                    if (context != null)
+                    {
                         //Go to login page
                         IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
-                    }
-                    //Otherwise...
-                    else
-                    {
-                        //Show error message
-                        PopupExtensions.NewPopupWithMessage(context.ErrorMessage);
                     }
                 }
                 else
                 {
-                    //Display error
-                    PopupExtensions.NewPopupWithMessage("Unknown error occurred");
+                    PopupExtensions.NewInfoPopup("Password, and confirm password must match!");
                 }
-            }
+            });
+
         }
 
 

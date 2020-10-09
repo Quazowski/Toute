@@ -1,7 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading;
 using System.Windows;
-using System.Windows.Input;
 using Toute.Core;
 
 namespace Toute
@@ -32,7 +34,9 @@ namespace Toute
         /// Model that hold actual ID, of friend that is managed
         /// </summary>
         public string CurrentFriendId { get; set; }
-        
+
+        public ObservableCollection<InfoControlViewModel> InformationsAndErrors { get; set; }
+
         /// <summary>
         /// If user is logged, store Friends in a list
         /// </summary>
@@ -47,6 +51,12 @@ namespace Toute
         /// Current viewModel of application
         /// </summary>
         public BaseViewModel CurrentViewModel { get; set; }
+
+        /// <summary>
+        /// Timer, that delete list of errors and infos
+        /// every x seconds
+        /// </summary>
+        public Timer DeleteInfoAndErrors { get; set; }
 
         /// <summary>
         /// Current Application Page of enum value
@@ -99,6 +109,13 @@ namespace Toute
                 //Set current page to DesignPage value
                 CurrentPage = ApplicationPageHelper.GoToBasePage(DesignPage);                
             }
+
+            InformationsAndErrors = new ObservableCollection<InfoControlViewModel>();
+
+            DeleteInfoAndErrors = new Timer((e) =>
+            {
+                RefreshList(InformationsAndErrors);
+            }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
             //Create new List of friends
             Friends = new ObservableCollection<FriendModel>();
@@ -164,6 +181,33 @@ namespace Toute
 
             //Go to login page
             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+        }
+
+        /// <summary>
+        /// Method that delete not needed informations
+        /// or errors from list
+        /// </summary>
+        /// <param name="informationsAndErrors">List to remove unneeded items</param>
+        private void RefreshList(ObservableCollection<InfoControlViewModel> informationsAndErrors)
+        {
+            //If there is any item...
+            if (informationsAndErrors.Count > 0)
+            {
+                //Use Dispatcher to get update ObservableCollection
+                Application.Current.Dispatcher.Invoke(delegate
+                {
+                    //For each info/error
+                    foreach (var infoOrError in informationsAndErrors.ToList())
+                    {
+                        //If is mark as to delete...
+                        if (infoOrError.ToDelete)
+                        {
+                            //Remove from list
+                            informationsAndErrors.Remove(infoOrError);
+                        }
+                    }
+                });
+            }
         }
 
         #endregion

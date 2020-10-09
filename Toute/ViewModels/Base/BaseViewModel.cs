@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace Toute
 {
@@ -7,6 +10,8 @@ namespace Toute
     /// </summary>
     public class BaseViewModel : INotifyPropertyChanged
     {
+        protected object mGlobalLock = new object();
+
         /// <summary>
         /// INotifyPropertyChanged implementation that
         /// changes values run time
@@ -20,6 +25,26 @@ namespace Toute
         public void OnPropertyChanged(string name)
         {
             PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+
+        protected async Task RunCommandAsync(Expression<Func<bool>> updatingFlag, Func<Task> action)
+        {
+            lock (mGlobalLock)
+            {
+                if (updatingFlag.GetPropertyValue())
+                    return;
+
+                updatingFlag.SetPropertyValue(true);
+
+            }
+            try
+            {
+                await action();
+            }
+            finally
+            {
+                updatingFlag.SetPropertyValue(false);
+            }
         }
     }
 }

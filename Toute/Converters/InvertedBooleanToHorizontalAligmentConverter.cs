@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Toute.Core.DataModels;
 
 namespace Toute
 {
     /// <summary>
     /// Converter that convert boolean value, to HorizontalAlignment value
     /// </summary>
-    public class StatusOfAcceptedToVisibilityConverter : BaseValueConverter<StatusOfAcceptedToVisibilityConverter>
+    public class InvertedBooleanToHorizontalAligmentConverter : BaseValueConverter<InvertedBooleanToHorizontalAligmentConverter>
     {
         /// <summary>
         /// Converts a value of boolean type to HorizontalAlignment value
@@ -20,13 +19,15 @@ namespace Toute
         /// <returns>Converted value as HorizontalAlignment</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((StatusOfFriendship)value) switch
-            {
-                StatusOfFriendship.Accepted => Visibility.Visible,
-                StatusOfFriendship.Pending => Visibility.Collapsed,
-                StatusOfFriendship.Blocked => Visibility.Collapsed,
-                _ => null,
-            };
+            //If value is true...
+            if ((bool)value)
+                //Returns 
+                return HorizontalAlignment.Left;
+            //Otherwise...
+            else
+                //Returns
+                return HorizontalAlignment.Right;
+
         }
 
         /// <summary>

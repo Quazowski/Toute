@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Toute.Core
 {
@@ -11,6 +12,7 @@ namespace Toute.Core
         /// Actual list of friends, contains all 
         /// friend IDs
         /// </summary>
+        [Required(ErrorMessage = "List of friends must exists!")]
         public List<string> FriendsId { get; set; }
 
         /// <summary>

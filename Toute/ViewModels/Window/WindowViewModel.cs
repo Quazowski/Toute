@@ -120,7 +120,12 @@ namespace Toute
         private void Minimize()
         {
             //Minimize window
-            _window.WindowState = WindowState.Minimized;
+            //_window.WindowState = WindowState.Minimized;
+            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            {
+                Message = "test",
+                IsError = true
+            });
         }
 
         /// <summary>

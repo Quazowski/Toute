@@ -44,7 +44,7 @@ namespace Toute
         /// <returns>Converted value. If the method returns null, the valid null value is used.</returns>
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

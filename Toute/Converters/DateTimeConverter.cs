@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
-using Toute.Core.DataModels;
 
 namespace Toute
 {
     /// <summary>
-    /// Converter that convert boolean value, to HorizontalAlignment value
+    /// Converter that revert value of boolean value
     /// </summary>
-    public class StatusOfAcceptedToVisibilityConverter : BaseValueConverter<StatusOfAcceptedToVisibilityConverter>
+    public class DateTimeConverter : BaseValueConverter<DateTimeConverter>
     {
         /// <summary>
-        /// Converts a value of boolean type to HorizontalAlignment value
+        /// Converts a boolean value
         /// </summary>
-        /// <param name="value">Boolean value</param>
+        /// <param name="value">The value produced by the binding source.</param>
         /// <param name="targetType">The type of the binding target property.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>Converted value as HorizontalAlignment</returns>
+        /// <returns>Converted value</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((StatusOfFriendship)value) switch
-            {
-                StatusOfFriendship.Accepted => Visibility.Visible,
-                StatusOfFriendship.Pending => Visibility.Collapsed,
-                StatusOfFriendship.Blocked => Visibility.Collapsed,
-                _ => null,
-            };
+            if (!(value is DateTime datetime))
+                return null;
+
+            if(datetime.ToUniversalTime().Day == DateTime.UtcNow.Day)
+                return datetime.ToShortTimeString();
+
+            return datetime.ToUniversalTime();
         }
 
         /// <summary>
@@ -36,10 +34,11 @@ namespace Toute
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>Converted value. If the method returns null, the valid null value is used.</returns>
+        /// <returns>returns always true</returns>
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            //Retruns true
+            return true;
         }
     }
 }

@@ -146,11 +146,22 @@
             </Border>
 
             <!--Main Content-->
-            <Border Grid.Column="1" 
+            <Grid Grid.Column="1" 
                     DataContext="{x:Static local:ViewModelLocator.ApplicationViewModel}" Grid.ColumnSpan="2">
-                <Frame Content="{Binding CurrentPage}"
-                       local:NavigationHistoryAttachedProperty.Value="True"/>
+
+            <Border Panel.ZIndex="2">
+                <ItemsControl ItemsSource="{Binding InformationsAndErrors}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:InfoControl />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Border>
+            <Frame Content="{Binding CurrentPage}"
+                       
+                    local:NavigationHistoryAttachedProperty.Value="True"/>
+            </Grid>
         </Grid>
 
         <!--Background of main content-->

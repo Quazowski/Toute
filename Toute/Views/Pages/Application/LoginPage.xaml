@@ -66,6 +66,7 @@
                      Height="50"        
                      Margin="20 5"
                      Padding="20 5"
+                     local:GetFocusAttachedProperty.Value="True"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
                      FontSize="{StaticResource FontSizeXLarge}"/>
@@ -84,6 +85,8 @@
             <Button Grid.Row="5"
                     Content="Sign in"
                     IsDefault="True"
+                    Style="{StaticResource SignInButton}"
+                    local:IsButtonBusy.Value="{Binding LoginIsRunning}"
                     Command="{Binding LoginCommand}"
                     CommandParameter="{Binding ElementName=LoginPageName}"/>
 

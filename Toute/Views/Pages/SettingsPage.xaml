@@ -70,7 +70,8 @@
 
                 <!--Upload new photo button-->
                 <Button Grid.Row="1"
-                        Style="{StaticResource LogoutButton}"
+                        Style="{StaticResource SettingsButton}"
+                        local:IsButtonBusy.Value="{Binding UploadNewPhotoIsRunning}"
                         Content="Upload new photo"
                         Margin="0"
                         Command="{Binding UploadNewPhotoCommand}"/>
@@ -88,7 +89,7 @@
                     <!--TextBlocks and TextBoxs-->
                     <RowDefinition Height="auto" />
                     <!--Save Changes button-->
-                    <RowDefinition Height="auto" />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
 
                 <!--TextBlocks with username etc.-->
@@ -180,8 +181,9 @@
                 </Grid>
 
                 <!--Save Changes button-->
-                <Button Style="{StaticResource LogoutButton}"
+                <Button Style="{StaticResource SettingsButton}"
                         Content="Save Changes"
+                        local:IsButtonBusy.Value="{Binding SaveChangesIsRunning}"
                         Grid.Row="1"                      
                         Margin="0 0 75 0"
                         Grid.ColumnSpan="2"
@@ -192,7 +194,7 @@
         </Grid>
 
         <!--Logout button-->
-        <Button Style="{StaticResource LogoutButton}"
+        <Button Style="{StaticResource SettingsButton}"
                 Grid.Row="3"
                 Grid.ColumnSpan="2"
                 Margin="15 5 75 5"

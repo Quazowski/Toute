@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
+using System.Windows.Media.Imaging;
 
 namespace Toute.Core
 {
@@ -41,6 +42,11 @@ namespace Toute.Core
         /// Image of the user
         /// </summary>
         public byte[] Image { get; set; }
+
+        /// <summary>
+        /// Image as BitmapImage
+        /// </summary>
+        public BitmapImage UserImage => Image?.BytesToBitMapImage();
 
         /// <summary>
         /// List of all friends, that user have

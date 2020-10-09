@@ -1,4 +1,6 @@
-﻿namespace Toute.Core
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Toute.Core
 {
     /// <summary>
     /// Model, that contains basic information
@@ -6,6 +8,10 @@
     /// </summary>
     public class RelationshipModel
     {
+        /// <summary>
+        /// ID of friend
+        /// </summary>
+        [Required(ErrorMessage = "You must provide a ID!")]
         public string FriendId { get; set; }
     }
 }

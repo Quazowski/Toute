@@ -108,6 +108,7 @@
         <!--Add Game button-->
         <Border Grid.Row="1" VerticalAlignment="Bottom">
             <Button Content="Add game"
+                    Style="{StaticResource AddGameButton}"
                     Command="{Binding AddGameCommand}"/>
         </Border>
         

@@ -64,6 +64,7 @@
                 <Border Grid.Column="1">
                     <Button Content="Send"
                             IsDefault="True"
+                            Style="{StaticResource SendMessageButton}"
                             Command="{Binding SendMessageCommand}"
                             CommandParameter="{Binding ElementName=Message}"
                             Margin="5"/>

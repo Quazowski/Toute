@@ -26,12 +26,24 @@ namespace Toute
             //Creates a storyboard
             Storyboard storyboard = new Storyboard();
 
+            //Set width or height
+            int widthOrHeight;
+
             //If the element ActualWidth is 0, for example on start of application
             //use element.Width property instead of element.ActualWith
-            int width = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
+            //Also if element should slide bottom/top manage his height,
+            //instead only width
+            if (direction == PageAnimation.BottomSlides || direction == PageAnimation.TopSlides)
+            {
+                widthOrHeight = (int)element.ActualHeight == 0 ? (int)element.Height : (int)element.ActualHeight;
+            }
+            else
+            {
+                widthOrHeight = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
+            }          
 
             //Adds slide animation to right. 
-            storyboard.AddSlideAnimation(direction, vanish, width,
+            storyboard.AddSlideAnimation(direction, vanish, widthOrHeight,
                 seconds, decelerationRatio, keepMargin);
 
             //Adds Fade out Animation
@@ -71,12 +83,25 @@ namespace Toute
             //Create a storyboard
             Storyboard storyboard = new Storyboard();
 
+            //Set width or height
+            int widthOrHeight;
+
             //If the element ActualWidth is 0, for example on start of application
             //use element.Width property instead of element.ActualWith
-            int width = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
+            //Also if element should slide bottom/top manage his height,
+            //instead only width
+            if (direction == PageAnimation.BottomSlides || direction == PageAnimation.TopSlides)
+            {
+                widthOrHeight = (int)element.ActualHeight == 0 ? (int)element.Height : (int)element.ActualHeight;
+            }
+            else
+            {
+                widthOrHeight = (int)element.ActualWidth == 0 ? (int)element.Width : (int)element.ActualWidth;
+            }
+
 
             //Adds slide animation to right. 
-            storyboard.AddSlideAnimation(direction, vanish, width,
+            storyboard.AddSlideAnimation(direction, vanish, widthOrHeight,
                 seconds, decelerationRatio, keepMargin);
 
             //Sets the element Visibility to Visible before

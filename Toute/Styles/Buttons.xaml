@@ -2,15 +2,21 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Toute">
 
+    <ResourceDictionary.MergedDictionaries>
+        <!-- Order is important-->
+        <ResourceDictionary Source="Colors.xaml" />
+        <ResourceDictionary Source="Fonts.xaml" />
+        <ResourceDictionary Source="Texts.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <!--A base style for all buttons, must be applied for BaseButton-->
     <Style x:Key="Hoverless" TargetType="{x:Type Button}">
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
     </Style>
 
-    <!--Base Button Style that must be applied on style of button type,-->
-    <!--where there is no key value provided-->
-    <Style x:Key="BaseButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+    <!--Sign In Button -->
+    <Style x:Key="SignInButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="28" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Foreground" Value="White" />
@@ -26,8 +32,16 @@
                             CornerRadius="12"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Name="border">
-                        <TextBlock Text="{TemplateBinding Content}"/>
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <TextBlock Text="{TemplateBinding Content}" 
+                                       Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:BooleanToVisibilityConverter}}"/>
+                            <TextBlock Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:InvertedBooleanToVisibilityConverter}}"
+                                       Style="{StaticResource SpinningText}"
+                                       Padding="27 3">
+                            </TextBlock>
+                        </Grid>
                         <Border.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>
@@ -50,13 +64,142 @@
         </Setter>
     </Style>
 
-    <!--BaseButton Style that is applied on all buttons-->
-    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}" >
-        
+    <!--Sign In Button -->
+    <Style x:Key="SignUpButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
+        <Setter Property="Padding" Value="60 8" />
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            CornerRadius="12"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <TextBlock Text="{TemplateBinding Content}" 
+                                       Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:BooleanToVisibilityConverter}}"/>
+                            <TextBlock Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:InvertedBooleanToVisibilityConverter}}"
+                                       Style="{StaticResource SpinningText}"
+                                       Padding="27 3">
+                            </TextBlock>
+                        </Grid>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource DarkGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Send Message Button -->
+    <Style x:Key="SendMessageButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
+        <Setter Property="Padding" Value="60 8" />
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            CornerRadius="12"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{TemplateBinding Content}" >
+                        </TextBlock>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource DarkGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Add Game Button -->
+    <Style x:Key="AddGameButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
+        <Setter Property="Padding" Value="60 8" />
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            CornerRadius="12"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{TemplateBinding Content}" />
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource DarkGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!--System Button style-->
-    <Style x:Key="SystemButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="SystemButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="28" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Background" Value="Transparent" />
@@ -96,7 +239,7 @@
     </Style>
 
     <!--System close button-->
-    <Style x:Key="SystemCloseButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="SystemCloseButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="28" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Background" Value="Transparent" />
@@ -136,7 +279,7 @@
     </Style>
 
     <!--Side menu buttons-->
-    <Style x:Key="SideMenuButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="SideMenuButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="28" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Background" Value="Transparent" />
@@ -174,7 +317,7 @@
     </Style>
 
     <!--Button that looks like a text-->
-    <Style x:Key="TextButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="TextButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -208,9 +351,10 @@
     </Style>
 
     <!--Game Menu Run Button Style-->
-    <Style x:Key="GameMenuRunButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="GameMenuRunButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
         <Setter Property="Padding" Value="20 0" />
         <Setter Property="Margin" Value="5 2" />
@@ -249,9 +393,10 @@
     </Style>
 
     <!--Game Menu Settings Button Style-->
-    <Style x:Key="GameMenuSettingsButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="GameMenuSettingsButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="{StaticResource BackgroundDarkOrangeBrush}" />
         <Setter Property="Padding" Value="20 0" />
         <Setter Property="Margin" Value="5 2" />
@@ -290,7 +435,7 @@
     </Style>
 
     <!--Popup Button style-->
-    <Style x:Key="PopupButton" TargetType="{x:Type Button}" BasedOn="{StaticResource BaseButton}">
+    <Style x:Key="PopupButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Background" Value="Transparent" />
@@ -413,7 +558,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="LogoutButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+    <Style x:Key="SettingsButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
         <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Foreground" Value="White" />
@@ -427,10 +572,19 @@
                             Margin="{TemplateBinding Margin}"
                             Name="border"
                             CornerRadius="6">
-                        <TextBlock Text="{TemplateBinding Content}"
-                                   VerticalAlignment="Center"
-                                   Padding="5"
-                                   HorizontalAlignment="Center"/>
+                        <Grid>
+                            <TextBlock Text="{TemplateBinding Content}" 
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:BooleanToVisibilityConverter}}"
+                                       Padding="5"/>
+                            <TextBlock Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:InvertedBooleanToVisibilityConverter}}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Padding="5"
+                                       Style="{StaticResource SpinningText}">
+                            </TextBlock>
+                        </Grid>
                         <Border.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>

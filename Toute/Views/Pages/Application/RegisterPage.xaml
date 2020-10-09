@@ -5,97 +5,144 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Toute"
       mc:Ignorable="d" 
-      Width="300" 
+      Width="320" 
       x:Name="RegisterPageName"
       Height="470"
       Title="RegisterPage">
 
-    <!--Border for whole Page-->
-    <Border CornerRadius="15"
+    <AdornerDecorator>
+        <!--Border for whole Page-->
+        <Border CornerRadius="15"
             Background="{StaticResource BackgroundOrangeBrush}">
-        <!--Drop shadow effect for a page-->
-        <Border.Effect>
-            <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.5" Color="Black"/>
-        </Border.Effect>
+            <!--Drop shadow effect for a page-->
+            <Border.Effect>
+                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.5" Color="Black"/>
+            </Border.Effect>
 
-        <!--Main content-->
-        <Grid>
-            <Grid.RowDefinitions>
+            <!--Main content-->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <!--Label on the top-->
+                    <RowDefinition Height="auto" />
+                    <!--First Line for UI purpose-->
+                    <RowDefinition Height="auto" />
+                    <!--Second Line for UI purpose-->
+                    <RowDefinition Height="auto" />
+                    <!--Username TextBox-->
+                    <RowDefinition Height="auto" />
+                    <!--Email password TextBox-->
+                    <RowDefinition Height="auto" />
+                    <!--Password TextBox-->
+                    <RowDefinition Height="auto" />
+                    <!--Confirm password TextBox-->
+                    <RowDefinition Height="auto" />
+                    <!--Sign in Button-->
+                    <RowDefinition Height="auto" />
+                    <!--Bottom Line for UI purpose-->
+                    <RowDefinition Height="auto" />
+                    <!--Sing Up button-->
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
                 <!--Label on the top-->
-                <RowDefinition Height="auto" />
-                <!--First Line for UI purpose-->
-                <RowDefinition Height="auto" />
-                <!--Second Line for UI purpose-->
-                <RowDefinition Height="auto" />
-                <!--Username TextBox-->
-                <RowDefinition Height="auto" />
-                <!--Email password TextBox-->
-                <RowDefinition Height="auto" />
-                <!--Password TextBox-->
-                <RowDefinition Height="auto" />
-                <!--Confirm password TextBox-->
-                <RowDefinition Height="auto" />
-                <!--Sign in Button-->
-                <RowDefinition Height="auto" />
-                <!--Bottom Line for UI purpose-->
-                <RowDefinition Height="auto" />
-                <!--Sing Up button-->
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-
-            <!--Label on the top-->
-            <TextBlock Grid.Row="0"
+                <TextBlock Grid.Row="0"
                        Text="Toute"
                        HorizontalAlignment="Center"
                        Padding="0 20 0 10"
                        Foreground="{StaticResource BackgroundWhiteBrush}"
                        FontSize="{StaticResource FontSizeXXLarge}"/>
 
-            <!--First Line for UI purpose-->
-            <Border Grid.Row="1" 
+                <!--First Line for UI purpose-->
+                <Border Grid.Row="1" 
                     BorderBrush="White" 
                     BorderThickness="1"
                     Margin="60 5"/>
 
-            <!--Second Line for UI purpose-->
-            <Border Grid.Row="2" 
+                <!--Second Line for UI purpose-->
+                <Border Grid.Row="2" 
                     BorderBrush="White" 
                     BorderThickness="1"
                     Margin="20 3 20 10"/>
 
-            <!--Username TextBox-->
-            <TextBox Grid.Row="3"
-                     Tag="Username"
-                     Text="{Binding Username}"
-                     Height="50"        
-                     Margin="20 5"
-                     Padding="20 5"
-                     HorizontalContentAlignment="Center"
-                     VerticalContentAlignment="Center"
-                     FontSize="{StaticResource FontSizeXLarge}"/>
+                <!--Username TextBox-->
+                <TextBox Grid.Row="3"
+                         Tag="Username"
+                         Height="50"      
+                         x:Name="UsernameTxt"
+                         Margin="23,5,17,5"
+                         local:GetFocusAttachedProperty.Value="True"
+                         Padding="20 5"
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         FontSize="{StaticResource FontSizeXLarge}"
+                         Validation.ErrorTemplate="{StaticResource errorTemplate}">
+                    <TextBox.Text>
+                        <Binding Path="Username" ValidatesOnDataErrors="True" 
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:MinimumCharacterRule MinimumCharacters="3"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="true">
+                                    <Setter Property="Control.ToolTip" 
+                                            Value="{Binding RelativeSource={RelativeSource Self},
+                                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
 
-            <!--Email password TextBox-->
-            <TextBox Grid.Row="4"
-                     Tag="Email"
-                     Text="{Binding Email}"
-                     Margin="20 5"
-                     Height="50"
-                     FontSize="{StaticResource FontSizeXLarge}"
-                     HorizontalContentAlignment="Center"
-                     VerticalContentAlignment="Center"/>
+                <!--Email password TextBox-->
+                <TextBox Grid.Row="4"
+                         Tag="Email"
+                         x:Name="EmailTxt"
+                         Margin="20 5"
+                         Height="50"
+                         FontSize="{StaticResource FontSizeXLarge}"
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         Validation.ErrorTemplate="{StaticResource errorTemplate}">
+                    <TextBox.Text>
+                        <Binding Path="Email" 
+                                 ValidatesOnDataErrors="True"
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:IsEmailRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="true">
+                                    <Setter Property="Control.ToolTip" 
+                                            Value="{Binding RelativeSource={RelativeSource Self},
+                                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
 
-            <!--Password TextBox-->
-            <PasswordBox Grid.Row="5"
-                     Tag="Password"
-                     Margin="20 5"
-                     Height="50"
-                     Name="MyPassword"
-                     FontSize="{StaticResource FontSizeXLarge}"
-                     HorizontalContentAlignment="Center"
-                     VerticalContentAlignment="Center"/>
+                <!--Password TextBox-->
+                <PasswordBox Grid.Row="5"
+                             Tag="Password"
+                             Margin="20 5"
+                             Height="50"
+                             Name="MyPassword"
+                             FontSize="{StaticResource FontSizeXLarge}"
+                             HorizontalContentAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             Validation.ErrorTemplate="{StaticResource errorTemplate}"
+                             ToolTip="Password must have at least 5 letters!" />
 
-            <!--Confirm password TextBox-->
-            <PasswordBox Grid.Row="6"
+                <!--Confirm password TextBox-->
+                <PasswordBox Grid.Row="6"
                      Tag="Confirm Password"
                      Margin="20 5"
                      Height="50"
@@ -104,21 +151,38 @@
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"/>
 
-            <!--Sign Up Button-->
-            <Button Grid.Row="7"
-                    Content="Sign up"
-                    IsDefault="True"
-                    Command="{Binding RegisterCommand}"
-                    CommandParameter="{Binding ElementName=RegisterPageName}"/>
+                <!--Sign Up Button-->
+                <Button Grid.Row="7"
+                        Content="Sign up"
+                        IsDefault="True"
+                        local:IsButtonBusy.Value="{Binding RegisterIsRunning}"
+                        Command="{Binding RegisterCommand}"
+                        CommandParameter="{Binding ElementName=RegisterPageName}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource SignUpButton}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=UsernameTxt}" Value="False"/>
+                                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=EmailTxt}" Value="False"/>
+                                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=MyPassword}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
 
-            <!--Bottom Line for UI purpose-->
-            <Border Grid.Row="8"
+                <!--Bottom Line for UI purpose-->
+                <Border Grid.Row="8"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BackgroundWhiteBrush}"
                     Margin="20 0"/>
 
-            <!--Sing In button-->
-            <Button Grid.Row="9"
+                <!--Sing In button-->
+                <Button Grid.Row="9"
                     Content="Sing in"
                     Margin="0"
                     Command="{Binding GoToLogin}"
@@ -127,6 +191,8 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"/>
 
-        </Grid>
-    </Border>
+            </Grid>
+        </Border>
+    </AdornerDecorator>
+
 </local:BasePage>
