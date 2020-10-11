@@ -12,7 +12,6 @@ namespace Toute.Core
         /// <summary>
         /// Date when last updated occurred
         /// </summary>
-        [Required(ErrorMessage = "Date can not be empty")]
         [DataType(DataType.Date, ErrorMessage = "Invalid type for a date")]
         public DateTime LastRefreshDateTime { get; set; }
     }

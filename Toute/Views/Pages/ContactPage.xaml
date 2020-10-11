@@ -10,19 +10,28 @@
 
     <!--Grid around ContactPage-->
     <Grid Background="Transparent" x:Name="GridWithScrollViewerAndTextBox">
-        
+
         <Grid.RowDefinitions>
-            
+
             <!--Messages-->
             <RowDefinition Height="*"/>
             <!--Sending Message-->
             <RowDefinition Height="auto"/>
-            
+
         </Grid.RowDefinitions>
 
         <!--Messages-->
-        <Border Grid.Row="0"
+        <Grid Grid.Row="0"
                 d:DataContext="{x:Static local:MessageBoxListDesignModel.Instance}">
+
+            <TextBlock Text="{StaticResource FontAwesomeSpinIcon}" 
+                       FontFamily="{StaticResource FontAwesome}"
+                       Foreground="White"
+                       Visibility="{Binding LoadMoreMessagesIsRunning, Converter={local:InvertedBooleanToVisibilityConverter}, Source={x:Static local:ViewModelLocator.SideMenuViewModel}}"
+                       VerticalAlignment="Top"
+                       FontSize="32"
+                       HorizontalAlignment="Center"/>
+            
             <ScrollViewer x:Name="ScrollMessages"
                           local:ScrollToBottomOnLoadAttachedProperty.Value="True"                        
                           local:ScrollToBottomOnValueChangedAttachedProperty.Value="True">
@@ -35,7 +44,7 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-        </Border>
+        </Grid>
 
         <!--Sending Message-->
         <Border Grid.Row="1" Padding="0 20 0 0">

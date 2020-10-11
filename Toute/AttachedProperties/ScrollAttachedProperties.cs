@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Toute
@@ -18,7 +20,7 @@ namespace Toute
         public override void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             //If new value is true...
-            if((bool)e.NewValue)
+            if ((bool)e.NewValue)
             {
                 //If sent object is not ScrollViewer...
                 if (!(d is ScrollViewer scroll))
@@ -41,12 +43,6 @@ namespace Toute
     public class ScrollToBottomOnValueChangedAttachedProperty : BaseAttachedProperty<ScrollToBottomOnValueChangedAttachedProperty, bool>
     {
         /// <summary>
-        /// Range, on which scroll of ScrollViewer will move to
-        /// the bottom if scroll will changed.
-        /// </summary>
-        private readonly int offset = 70;
-
-        /// <summary>
         /// When value of attached property is changed...
         /// </summary>
         /// <param name="d">Object to manipulate with</param>
@@ -61,25 +57,42 @@ namespace Toute
                     //Returns
                     return;
 
-                //Fires, when scroll of scrollViewer is changed...
-                scrollViewer.ScrollChanged += (sender, e) =>
-                {
-                    //If height of scrollBar is greater than position of scroll, and scroll position plus offset is greater than height of scroll
-                    //i.e if scroll is on the bottom of scroll range, and e.g new message comes, scroll on bottom
-                    if ((scrollViewer.VerticalOffset < scrollViewer.ScrollableHeight) && (scrollViewer.ScrollableHeight < scrollViewer.VerticalOffset + offset))
-                    {
-                        //Scrolls to the very bottom
-                        scrollViewer.ScrollToBottom();
-                    }
-                    //If Height of scrollBar and position of scroll plus scroll value changed,
-                    //i.e scroll is on the very bottom, and user want to scroll up...
-                    if ((scrollViewer.ScrollableHeight == (scrollViewer.VerticalOffset + (-e.VerticalChange))))
-                    {
-                        //Break auto scrolling to bottom, and scroll a bit more to up
-                        scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - offset - 1);
-                    }
-                };
+                // Scroll content to bottom when context changes
+                scrollViewer.DataContextChanged -= Control_DataContextChanged;
+                scrollViewer.DataContextChanged += Control_DataContextChanged;
+
+                // Scroll content to bottom when context changes
+                scrollViewer.ScrollChanged -= Control_ScrollChanged;
+                scrollViewer.ScrollChanged += Control_ScrollChanged;
+            }
+        }
+        private void Control_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // Scroll to bottom
+            (sender as ScrollViewer).ScrollToBottom();
+        }
+
+        private async void Control_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            //Get a scroll
+            var scroll = sender as ScrollViewer;
+
+            // If we are close enough to the bottom...
+            if (scroll.ScrollableHeight - scroll.VerticalOffset < 20)
+                // Scroll to the bottom
+                scroll.ScrollToEnd();
+
+            //If we are at the very top, and there is more messages...
+            if ((scroll.ScrollableHeight == 0 || scroll.VerticalOffset == 0) && IoC.Get<SideMenuViewModel>().IsMoreMessages)
+            {
+                //Scroll a bit to bottom
+                scroll.ScrollToVerticalOffset(400);
+                //if loading is not running...
+                if (!IoC.Get<SideMenuViewModel>().LoadMoreMessagesIsRunning)
+                    //load more messages
+                    await IoC.Get<SideMenuViewModel>().LoadMoreMessagesAsync();
             }
         }
     }
 }
+

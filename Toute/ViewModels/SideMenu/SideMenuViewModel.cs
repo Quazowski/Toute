@@ -52,17 +52,66 @@ namespace Toute
         /// </summary>
         public bool IsFriendSettingsOpen { get; set; }
 
+        /// <summary>
+        /// If <see cref="SendFriendRequestAsync"/> is running
+        /// set this to true
+        /// </summary>
         public bool SendFriendRequestIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="AcceptFriendRequestAsync(object)"/> is running
+        /// set this to true
+        /// </summary>
         public bool AcceptFriendIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="DeclineFriendRequestAsync(object)"/> is running
+        /// set this to true
+        /// </summary>
         public bool DeclineFriendIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="DeleteFriendAsync"/> is running
+        /// set this to true
+        /// </summary>
         public bool DeleteFriendIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="UnblockFriend(object)"/> is running
+        /// set this to true
+        /// </summary>
         public bool UnblockFriendIsRunning { get; set;}
-        public bool GoToUserIsRunning { get; set;}
-        public bool OpenFriendSettingsIsRunning { get; set;}
-        public bool RequestListIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="BlockFriend"/> is running
+        /// set this to true
+        /// </summary>
         public bool BlocFriendIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="GamesIsRunning"/> is running
+        /// set this to true
+        /// </summary>
         public bool GamesIsRunning { get; set;}
-        public bool SettingsIsRunning { get; set;}
+
+        /// <summary>
+        /// If <see cref="SendFriendRequestAsync"/> is running
+        /// set this to true
+        /// </summary>
+        public bool LoadMoreMessagesIsRunning { get; set;}
+
+        /// <summary>
+        /// Set the last page that is loaded
+        /// with the friend we are currently chat
+        /// </summary>
+        public int LastPageLoaded { get; set; } = 1;
+
+        /// <summary>
+        /// Indicate if there is any more messages to load
+        /// used in <see cref="ScrollToBottomOnValueChangedAttachedProperty"/>
+        /// to prevent not needed loads
+        /// </summary>
+        public bool IsMoreMessages { get; set; } = true;
 
         #endregion
 
@@ -146,7 +195,7 @@ namespace Toute
             DeleteFriendCommand = new RelayCommand(async() => await DeleteFriendAsync());
             BlockFriendCommand = new RelayCommand(async() => await BlockFriend());
             UnblockFriendCommand = new ParametrizedRelayCommand(async (FriendId) => await UnblockFriend(FriendId));
-            GoToUserCommand = new ParametrizedRelayCommand(async (FriendId) => await GoToUser(FriendId));
+            GoToUserCommand = new ParametrizedRelayCommand((FriendId) =>  GoToUser(FriendId));
             OpenFriendSettingsCommand = new ParametrizedRelayCommand((FriendId) => OpenFriendSettings(FriendId));
             RequestListCommand = new RelayCommand(RequestListChangeStatus);
             BlockListCommand = new RelayCommand(BlockListStatusChangeStatus);
@@ -197,9 +246,11 @@ namespace Toute
                     FriendId = FriendId.ToString()
                 };
 
+                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.AddFriend, userToAdd);
 
-                if(result)
+                //If request succeeded
+                if (result)
                 {
                     //Set value of StatusOfFiendship in ApplicationUser friends, to accepted with given friend
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
@@ -224,8 +275,10 @@ namespace Toute
                     FriendId = FriendId.ToString()
                 };
 
+                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.RejectFriendRequest, userToReject);
 
+                //If request succeeded
                 if (result)
                 {
                     //Remove friend from friend list
@@ -250,8 +303,10 @@ namespace Toute
                     FriendId = CurrentIdOfManagedFriend
                 };
 
+                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.DeleteFriend, userToDelete);
 
+                //If request succeeded
                 if (result)
                 {
                     //If user are on page with given friend...
@@ -289,21 +344,27 @@ namespace Toute
                     FriendId = CurrentIdOfManagedFriend
                 };
 
+                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.BlockFriend, userToBlock);
 
+                //If request succeeded
                 if (result)
                 {
                     //If user are on page with given friend...
                     if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friend)
                     {
+                        //If we are on the page with the friend...
                         if (friend.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
                             //Go to GamesPage
                             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
 
                     }
 
+                    //Set friend in friend list to blocked
                     IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
+                    //Set friend in application user to blocked
                     IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
+                    //Set we are not managing this friend
                     CurrentIdOfManagedFriend = "";
                 }
             });
@@ -323,8 +384,10 @@ namespace Toute
                     FriendId = FriendId.ToString()
                 };
 
+                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.UnblockFriend, friendToUnblock);
 
+                //If request succeeded
                 if (result)
                 {
                     //Change StatusOfFriendship with friend to accepted in ApplicationUser 
@@ -341,69 +404,45 @@ namespace Toute
         /// with given friend
         /// </summary>
         /// <param name="FriendId">ID of friend</param>
-        private async Task GoToUser(object FriendId)
+        private void GoToUser(object FriendId)
         {
-            await RunCommandAsync(() => GoToUserIsRunning, async () => 
+            //Remove previous refreshing
+            TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
+
+            //Finds user of given if
+            var chatUser = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
+
+            //Create new ObservableCollection with messages
+            chatUser.Messages = new ObservableCollection<MessageModel>();
+
+            //If StatusOfFriendship is not blocked or pending...
+            if (!(chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending))
             {
-                //Remove previous refreshing
-                TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
-
-                //Finds user of given if
-                var chatUser = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
-
-                //Create new ObservableCollection with messages
-                chatUser.Messages = new ObservableCollection<MessageModel>();
-
-                //If StatusOfFriendship is not blocked or pending...
-                if (!(chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending))
+                //If any user is selected
+                if (!(string.IsNullOrEmpty(IoC.Get<ApplicationViewModel>().CurrentFriendId)))
                 {
-                    //If any user is selected
-                    if (!(string.IsNullOrEmpty(IoC.Get<ApplicationViewModel>().CurrentFriendId)))
+                    //Find if he exists
+                    if(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId) != null)
                     {
-                        //Find if he exists
-                        if(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId) != null)
-                        {
-                            //Deselect him
-                            IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).IsSelected = false;
-                        }
+                        //Deselect him
+                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).IsSelected = false;
                     }
-
-                    //Select new user
-                    chatUser.IsSelected = true;
-
-                    //Set actual friend
-                    IoC.Get<ApplicationViewModel>().CurrentFriendId = FriendId.ToString();
-
-                    //Send request to the API
-                    var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages, new GetMessagesRequest
-                    {
-                        FriendId = FriendId.ToString()
-                    });
-
-                    //If there is any messages...
-                    if(context != null)
-                    {
-                        //For each message...
-                        foreach (var message in context)
-                        {
-                            //add message to Message List
-                            chatUser.Messages.Add(new MessageModel
-                            {
-                                Message = message.Message,
-                                SentByMe = message.SentByMe,
-                                DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                                FriendsImage = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Image
-                            });
-                        }
-                        
-                        //Set chatUser messages to new ObservableCollection and order them by date
-                        chatUser.Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
-                    }
-
-                    //Go to chat page with specific user of given id
-                    IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.ContactPage, chatUser);
                 }
-            });
+
+                //Select new user
+                chatUser.IsSelected = true;
+
+                //Set actual friend
+                IoC.Get<ApplicationViewModel>().CurrentFriendId = FriendId.ToString();
+
+                //Set chatUser messages to new ObservableCollection and order them by date
+                IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
+                //}
+                IsMoreMessages = true;
+                LastPageLoaded = 1;
+                //Go to chat page with specific user of given id
+                IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.ContactPage, chatUser);
+            }
 
         }
 
@@ -461,6 +500,52 @@ namespace Toute
             IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.SettingsPage);
         }
 
+        /// <summary>
+        /// Method that load more messages from database with the friend
+        /// </summary>
+        /// <returns>More messages</returns>
+        public async Task LoadMoreMessagesAsync()
+        {
+            await RunCommandAsync(() => LoadMoreMessagesIsRunning, async () =>
+            {
+                //Gets user id
+                var FriendId = IoC.Get<ApplicationViewModel>().CurrentFriendId;
+
+                //Make a request to API
+                var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages + $"/{LastPageLoaded}", new GetMessagesRequest
+                {
+                    FriendId = FriendId
+                });
+
+                //If there is successful response
+                if (context?.Count > 0)
+                {
+                    //If number is less that 20 (twenty, because its default number of
+                    //returning items from pagination)
+                    if (context.Count < 20)
+                        //Set there is no more messages
+                        IsMoreMessages = false;
+
+                    //Set last page loaded
+                    LastPageLoaded++;
+
+                    //Get friend
+                    var friendUser = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId);
+
+                    //For every message...
+                    foreach (var message in context)
+                    {
+                        friendUser.Messages.Insert(0, new MessageModel
+                        {
+                            Message = message.Message,
+                            SentByMe = message.SentByMe,
+                            DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
+                            FriendsImage = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                        });
+                    }
+                }
+            });
+        }
         #endregion
     }
 }

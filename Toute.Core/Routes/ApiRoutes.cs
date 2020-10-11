@@ -38,6 +38,6 @@
     {
         public const string SendMessage = "api/Chat/SendMessage";
 
-        public const string GetMessages = "api/Chat/GetMessage";
+        public const string GetMessages = "api/Chat/GetMessage/{PageNumber?}/{MessagesNumber?}";
     }
 }

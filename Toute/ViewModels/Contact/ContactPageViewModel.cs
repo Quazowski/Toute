@@ -76,16 +76,11 @@ namespace Toute
             //Convert viewModel to ChatUser ViewModel
             CurrentChatUser = (viewModel as FriendModel);
 
-            //If list is not created...
-            if (CurrentChatUser.Messages == null)
-                //create a list
-                CurrentChatUser.Messages = new ObservableCollection<MessageModel>();
-
             //Set messages as list
             Messages = CurrentChatUser.Messages;
 
             ///Sets refresh time
-            var refreshTime = 2;
+            var refreshTime = 1;
 
             //Make call to API for new messages, every x seconds.
             IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshMessages = new Timer(async(e) =>
@@ -125,7 +120,7 @@ namespace Toute
                     if(result)
                     {
                         //Add message to Message list
-                        Messages.Add(new MessageModel
+                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).Messages.Add(new MessageModel
                         {
                             SentByMe = true,
                             Message = textBox.Text,
@@ -135,6 +130,7 @@ namespace Toute
                         //Clear and Focus TextBox
                         textBox.Text = "";
                         textBox.Focus();
+                        
                     }
                 }
             });
@@ -170,23 +166,19 @@ namespace Toute
                     //Add new message to message list
                     Application.Current.Dispatcher.Invoke(delegate
                     {
-                        if(!message.SentByMe)
-                            Messages.Add(new MessageModel
+                        if (!message.SentByMe)
+                            IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages.Add(new MessageModel
                             {
                                 Message = message.Message,
                                 SentByMe = message.SentByMe,
                                 DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
                                 FriendsImage = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                             });
-                     });
-                }
-                
-                //Orders all messages by DateOfSent
-                Messages = new ObservableCollection<MessageModel>(Messages.OrderBy(x => x.DateOfSent.ToLocalTime()));
-            }
-            
-        }
+                    });
 
+                }
+            }
+        }
         #endregion
     }
 }
