@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -121,7 +122,7 @@ namespace Toute
         {
             //Minimize window
             //_window.WindowState = WindowState.Minimized;
-            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
             {
                 Message = "test",
                 IsError = true

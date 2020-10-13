@@ -10,7 +10,7 @@ namespace Toute
     /// <summary>
     /// View Model for GamesPage
     /// </summary>
-    public class GamesPageViewModel : BaseViewModel
+    public class GamesViewModel : BaseViewModel
     {
         #region Public members
 
@@ -56,7 +56,7 @@ namespace Toute
         /// <summary>
         /// Default Constructor for GamesPageViewModel
         /// </summary>
-        public GamesPageViewModel()
+        public GamesViewModel()
         {
             //Creating new ObservableCollection to store Games
             Items = new ObservableCollection<GameModel>();

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -83,14 +84,14 @@ namespace Toute
                 scroll.ScrollToEnd();
 
             //If we are at the very top, and there is more messages...
-            if ((scroll.ScrollableHeight == 0 || scroll.VerticalOffset == 0) && IoC.Get<SideMenuViewModel>().IsMoreMessages)
+            if ((scroll.ScrollableHeight == 0 || scroll.VerticalOffset == 0) && ViewModelSideMenu.IsMoreMessages)
             {
                 //Scroll a bit to bottom
                 scroll.ScrollToVerticalOffset(400);
                 //if loading is not running...
-                if (!IoC.Get<SideMenuViewModel>().LoadMoreMessagesIsRunning)
+                if (!ViewModelSideMenu.LoadMoreMessagesIsRunning)
                     //load more messages
-                    await IoC.Get<SideMenuViewModel>().LoadMoreMessagesAsync();
+                    await ViewModelSideMenu.LoadMoreMessagesAsync();
             }
         }
     }

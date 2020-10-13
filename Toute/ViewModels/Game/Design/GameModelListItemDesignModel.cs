@@ -6,7 +6,7 @@ namespace Toute
     /// A design Model that display list of GamesModels
     /// in design time
     /// </summary>
-    public class GameModelListItemDesignModel : GamesPageViewModel
+    public class GameModelListItemDesignModel : GamesViewModel
     {
         /// <summary>
         /// Make a static instance of this class

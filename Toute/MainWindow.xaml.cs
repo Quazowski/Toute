@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Microsoft.Extensions.Options;
+using System.Windows;
 
 namespace Toute
 {
@@ -17,8 +18,6 @@ namespace Toute
 
             //Sets DataContext of MainWindow to WindowViewModel
             DataContext = new WindowViewModel(this);
-
-            
         }
 
         /// <summary>

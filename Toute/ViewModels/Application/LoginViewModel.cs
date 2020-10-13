@@ -1,25 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
 using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
     /// <summary>
     /// A ViewModel for LoginPage
     /// </summary>
-    public class LoginPageViewModel : BaseViewModel
+    public class LoginViewModel : BaseViewModel
     {
         #region Public properties
 
@@ -58,7 +55,7 @@ namespace Toute
         /// <summary>
         /// Default constructor
         /// </summary>
-        public LoginPageViewModel()
+        public LoginViewModel()
         {
             //Command that handle login
             LoginCommand = new ParametrizedRelayCommand(async (parameter) => await LoginAsync(parameter));
@@ -77,7 +74,7 @@ namespace Toute
         private void GoToRegisterPage()
         {
             //Go to register page
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.RegisterPage);
+            ViewModelApplication.GoToPage(ApplicationPage.RegisterPage);
         }
 
         /// <summary>
@@ -130,8 +127,30 @@ namespace Toute
                         });
                     }
 
+                    ICollection<FriendDataModel> DBFriends = new List<FriendDataModel>();
+                    foreach (var friendResponse in context.Friends)
+                    {
+                        DBFriends.Add(new FriendDataModel
+                        {
+                            Id =  Guid.NewGuid().ToString(),
+                            FriendId = friendResponse.FriendId,
+                            Messages = new List<MessageDataModel>(),
+                            Status = friendResponse.Status
+                        });
+                    }
+
+                    await SqliteDb.SaveLoginCredentialsAsync(new LoginCredentialsDataModel
+                    {
+                        Id = context.Id,
+                        Username = context.Username,
+                        Email = context.Email,
+                        Friends = DBFriends,
+                        Image = context.Image,
+                        JWTToken = context.JWTToken
+                    });
+
                     //Set current application user to...
-                    IoC.Get<ApplicationViewModel>().ApplicationUser = new ApplicationUserModel
+                    ViewModelApplication.ApplicationUser = new ApplicationUserModel
                     {
                         Id = context.Id,
                         Username = context.Username,
@@ -142,9 +161,9 @@ namespace Toute
                     };
 
                     //foreach friend in Friends of user...
-                    foreach (var friend in IoC.Get<ApplicationViewModel>().ApplicationUser.Friends)
+                    foreach (var friend in ViewModelApplication.ApplicationUser.Friends)
                     {
-                        IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
+                        ViewModelApplication.Friends.Add(new FriendModel
                         {
                             FriendId = friend.FriendId,
                             Name = friend.Name,
@@ -155,93 +174,19 @@ namespace Toute
                     }
 
                     //Start refreshing list of friends every x seconds.
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshFriends = new Timer(async (e) =>
+                    ViewModelApplication.ApplicationUser.RefreshFriends = new Timer(async (e) =>
                     {
-                        await RefreshFriendsAsync(IoC.Get<ApplicationViewModel>().Friends);
+                        await ViewModelSideMenu.RefreshFriendsAsync(ViewModelApplication.Friends);
                     }, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
 
                     //Go to GamesPage page
-                    IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+                    ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
                 }
 
             });
         }
 
-        /// <summary>
-        /// Method that is fired every x second, by timer.
-        /// It used to refresh friend list
-        /// </summary>
-        /// <param name="friends">Actual friend IDs of user</param>
-        private async Task RefreshFriendsAsync(ObservableCollection<FriendModel> friends)
-        {
 
-            //Make a request
-            var listOfFriendsId = new RefreshFriendsRequest();
-
-            //add all friend IDs to the list
-            foreach (var friend in friends)
-            {
-                listOfFriendsId.FriendsId.Add(friend.FriendId);
-            }
-
-            //Make a request to the server with friend IDs
-            var TContext = await HttpExtensions.HandleHttpRequestOfTResponseAsync<UpdateFriendsResponse>(FriendRoutes.GetFriends, listOfFriendsId);
-
-
-            //If there are any friends to add...
-            if (TContext?.FriendsToAdd.Count > 0)
-            {
-                //for every friends...
-                foreach (var friend in TContext.FriendsToAdd)
-                {
-                    //add him to Friends of ApplicatioUser
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Add(new FriendModel
-                    {
-                        FriendId = friend.FriendId,
-                        Name = friend.Name,
-                        Status = friend.Status,
-                    });
-
-                    //Add to friends of Application
-                    Application.Current.Dispatcher.Invoke(delegate
-                    {
-                        IoC.Get<ApplicationViewModel>().Friends.Add(new FriendModel
-                        {
-                            FriendId = friend.FriendId,
-                            BytesImage = friend.BytesImage,
-                            Name = friend.Name,
-                            Status = friend.Status,
-                        });
-                    });
-                }
-            }
-
-            //If there are any friends to remove...
-            if (TContext?.FriendsToRemove.Count > 0)
-            {
-                //For every friend to remove...
-                foreach (var friend in TContext.FriendsToRemove)
-                {
-                    //If user are on page with given friend...
-                    if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friendModel)
-                    {
-                        if (friendModel.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
-                        {
-                            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
-                        }
-                    }
-
-                    //remove form ApplicationUser friends
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
-
-                    //Remove from friends of Application
-                    Application.Current.Dispatcher.Invoke(delegate
-                    {
-                        IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == friend));
-                    });
-                }
-            }
-        }
         #endregion
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
-using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -83,7 +82,7 @@ namespace Toute
             var refreshTime = 1;
 
             //Make call to API for new messages, every x seconds.
-            IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshMessages = new Timer(async(e) =>
+            ViewModelApplication.ApplicationUser.RefreshMessages = new Timer(async(e) =>
             {
                 await RefreshMessagesWithTheUserAsync(CurrentChatUser.FriendId, refreshTime);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(refreshTime));
@@ -111,7 +110,7 @@ namespace Toute
                     //Send request to API
                     var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendMessage, new SendMessageRequest
                     {
-                        FriendId = IoC.Get<ApplicationViewModel>().CurrentFriendId,
+                        FriendId = ViewModelApplication.CurrentFriendId,
                         Message = textBox.Text,
                         DateOfSend = DateTime.UtcNow
                     });
@@ -120,7 +119,7 @@ namespace Toute
                     if(result)
                     {
                         //Add message to Message list
-                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).Messages.Add(new MessageModel
+                        ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
                         {
                             SentByMe = true,
                             Message = textBox.Text,
@@ -167,12 +166,12 @@ namespace Toute
                     Application.Current.Dispatcher.Invoke(delegate
                     {
                         if (!message.SentByMe)
-                            IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages.Add(new MessageModel
+                            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages.Add(new MessageModel
                             {
                                 Message = message.Message,
                                 SentByMe = message.SentByMe,
                                 DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                                FriendsImage = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                                FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                             });
                     });
 

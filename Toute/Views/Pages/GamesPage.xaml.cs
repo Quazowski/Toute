@@ -2,10 +2,10 @@
 {
     /// <summary>
     /// Interaction logic for GamesPage.xaml
-    /// Using <see cref="GamesPageViewModel"/> as ViewModel,
+    /// Using <see cref="GamesViewModel"/> as ViewModel,
     /// <see cref="BasePage"/> as base page
     /// </summary>
-    public partial class GamesPage : BasePage<GamesPageViewModel>
+    public partial class GamesPage : BasePage<GamesViewModel>
     {
         /// <summary>
         /// Default constructor of GamesPage
@@ -20,7 +20,7 @@
         /// Constructor with viewModel given as parameter
         /// </summary>
         /// <param name="viewModel">ViewModel of GamesPage</param>
-        public GamesPage(GamesPageViewModel viewModel) : base(viewModel)
+        public GamesPage(GamesViewModel viewModel) : base(viewModel)
         {
             //Prepares Components
             InitializeComponent();

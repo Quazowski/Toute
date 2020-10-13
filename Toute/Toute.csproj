@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
     <None Remove="Fonts\fontawesome-webfont.ttf" />
     <None Remove="Fonts\FREESCPT.TTF" />
     <None Remove="Fonts\Lato-Bold.ttf" />
@@ -16,6 +17,7 @@
     <None Remove="Images\LOGOToute.png" />
     <None Remove="Images\SampleImageForAGame.png" />
     <None Remove="Images\user.png" />
+    <None Remove="NLog.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +52,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.8" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.8" />
+    <PackageReference Include="NLog" Version="4.7.5" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.3" />
 	  
 	  <PackageReference Include="PropertyChanged.Fody" Version="3.2.9">
 		  <PrivateAssets>all</PrivateAssets>
@@ -69,11 +77,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Toute.Core\Toute.Core.csproj" />
+    <ProjectReference Include="..\Toute.Relational\Toute.Relational.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Files\" />
     <Folder Include="Files\ImagesOfFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Documents;
+using System.Windows;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.DataModels;
 using Toute.Core.Routes;
 using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -253,9 +253,9 @@ namespace Toute
                 if (result)
                 {
                     //Set value of StatusOfFiendship in ApplicationUser friends, to accepted with given friend
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
+                    ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
                     //Set value of StatusOfFiendship in Friends list, to accepted with given friend
-                    IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
+                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
                 }
             });
 
@@ -282,9 +282,9 @@ namespace Toute
                 if (result)
                 {
                     //Remove friend from friend list
-                    IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
+                    ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
                     //Remove friend from friends in ApllicationUser
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
+                    ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
                 }
             });
         }
@@ -310,18 +310,18 @@ namespace Toute
                 if (result)
                 {
                     //If user are on page with given friend...
-                    if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friend)
+                    if (ViewModelApplication.CurrentViewModel is FriendModel friend)
                     {
                         if (friend.FriendId == CurrentIdOfManagedFriend)
                             //Go to GamesPage
-                            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+                            ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
 
                     }
 
                     //Remove friend from friend list
-                    IoC.Get<ApplicationViewModel>().Friends.Remove(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
+                    ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
                     //Remove friend form ApplicationUser friends
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.Remove(IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
+                    ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
                     //Clear CurrentIdOfManagedFriend 
                     CurrentIdOfManagedFriend = "";
                 }
@@ -351,19 +351,19 @@ namespace Toute
                 if (result)
                 {
                     //If user are on page with given friend...
-                    if (IoC.Get<ApplicationViewModel>().CurrentViewModel is FriendModel friend)
+                    if (ViewModelApplication.CurrentViewModel is FriendModel friend)
                     {
                         //If we are on the page with the friend...
-                        if (friend.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId)
+                        if (friend.FriendId == ViewModelApplication.CurrentFriendId)
                             //Go to GamesPage
-                            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+                            ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
 
                     }
 
                     //Set friend in friend list to blocked
-                    IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
+                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     //Set friend in application user to blocked
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
+                    ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     //Set we are not managing this friend
                     CurrentIdOfManagedFriend = "";
                 }
@@ -391,10 +391,10 @@ namespace Toute
                 if (result)
                 {
                     //Change StatusOfFriendship with friend to accepted in ApplicationUser 
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
+                    ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
 
                     //Change StatusOfFriendship in friends to accepted
-                    IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
+                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
                 }
             });
         }
@@ -410,7 +410,7 @@ namespace Toute
             TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
 
             //Finds user of given if
-            var chatUser = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
+            var chatUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
 
             //Create new ObservableCollection with messages
             chatUser.Messages = new ObservableCollection<MessageModel>();
@@ -419,13 +419,13 @@ namespace Toute
             if (!(chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending))
             {
                 //If any user is selected
-                if (!(string.IsNullOrEmpty(IoC.Get<ApplicationViewModel>().CurrentFriendId)))
+                if (!(string.IsNullOrEmpty(ViewModelApplication.CurrentFriendId)))
                 {
                     //Find if he exists
-                    if(IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId) != null)
+                    if(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId) != null)
                     {
                         //Deselect him
-                        IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == IoC.Get<ApplicationViewModel>().CurrentFriendId).IsSelected = false;
+                        ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).IsSelected = false;
                     }
                 }
 
@@ -433,15 +433,15 @@ namespace Toute
                 chatUser.IsSelected = true;
 
                 //Set actual friend
-                IoC.Get<ApplicationViewModel>().CurrentFriendId = FriendId.ToString();
+                ViewModelApplication.CurrentFriendId = FriendId.ToString();
 
                 //Set chatUser messages to new ObservableCollection and order them by date
-                IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
+                ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
                 //}
                 IsMoreMessages = true;
                 LastPageLoaded = 1;
                 //Go to chat page with specific user of given id
-                IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.ContactPage, chatUser);
+                ViewModelApplication.GoToPage(ApplicationPage.ContactPage, chatUser);
             }
 
         }
@@ -457,7 +457,7 @@ namespace Toute
 
             //If StatusOfFriendship is accepted with this friend,
             //i.e open settings only for accepted friend
-            if (IoC.Get<ApplicationViewModel>().ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status == StatusOfFriendship.Accepted)
+            if (ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status == StatusOfFriendship.Accepted)
             {
                 IsFriendSettingsOpen = true;
             }
@@ -488,7 +488,7 @@ namespace Toute
         private void GoToGamesPage()
         {
             //Go to GamesPage
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.GamesPage);
+            ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace Toute
         private void GoToSettingsPage()
         {
             //Go to SettingsPage
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.SettingsPage);
+            ViewModelApplication.GoToPage(ApplicationPage.SettingsPage);
         }
 
         /// <summary>
@@ -509,7 +509,7 @@ namespace Toute
             await RunCommandAsync(() => LoadMoreMessagesIsRunning, async () =>
             {
                 //Gets user id
-                var FriendId = IoC.Get<ApplicationViewModel>().CurrentFriendId;
+                var FriendId = ViewModelApplication.CurrentFriendId;
 
                 //Make a request to API
                 var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages + $"/{LastPageLoaded}", new GetMessagesRequest
@@ -530,7 +530,7 @@ namespace Toute
                     LastPageLoaded++;
 
                     //Get friend
-                    var friendUser = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId);
+                    var friendUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId);
 
                     //For every message...
                     foreach (var message in context)
@@ -540,11 +540,87 @@ namespace Toute
                             Message = message.Message,
                             SentByMe = message.SentByMe,
                             DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                            FriendsImage = IoC.Get<ApplicationViewModel>().Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                            FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                         });
                     }
                 }
             });
+        }
+
+        /// <summary>
+        /// Method that is fired every x second, by timer.
+        /// It used to refresh friend list
+        /// </summary>
+        /// <param name="friends">Actual friend IDs of user</param>
+        public async Task RefreshFriendsAsync(ObservableCollection<FriendModel> friends)
+        {
+
+            //Make a request
+            var listOfFriendsId = new RefreshFriendsRequest();
+
+            //add all friend IDs to the list
+            foreach (var friend in friends)
+            {
+                listOfFriendsId.FriendsId.Add(friend.FriendId);
+            }
+
+            //Make a request to the server with friend IDs
+            var TContext = await HttpExtensions.HandleHttpRequestOfTResponseAsync<UpdateFriendsResponse>(FriendRoutes.GetFriends, listOfFriendsId);
+
+
+            //If there are any friends to add...
+            if (TContext?.FriendsToAdd.Count > 0)
+            {
+                //for every friends...
+                foreach (var friend in TContext.FriendsToAdd)
+                {
+                    //add him to Friends of ApplicatioUser
+                    ViewModelApplication.ApplicationUser.Friends.Add(new FriendModel
+                    {
+                        FriendId = friend.FriendId,
+                        Name = friend.Name,
+                        Status = friend.Status,
+                    });
+
+                    //Add to friends of Application
+                    Application.Current.Dispatcher.Invoke(delegate
+                    {
+                        ViewModelApplication.Friends.Add(new FriendModel
+                        {
+                            FriendId = friend.FriendId,
+                            BytesImage = friend.BytesImage,
+                            Name = friend.Name,
+                            Status = friend.Status,
+                        });
+                    });
+                }
+            }
+
+            //If there are any friends to remove...
+            if (TContext?.FriendsToRemove.Count > 0)
+            {
+                //For every friend to remove...
+                foreach (var friend in TContext.FriendsToRemove)
+                {
+                    //If user are on page with given friend...
+                    if (ViewModelApplication.CurrentViewModel is FriendModel friendModel)
+                    {
+                        if (friendModel.FriendId == ViewModelApplication.CurrentFriendId)
+                        {
+                            ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
+                        }
+                    }
+
+                    //remove form ApplicationUser friends
+                    ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
+
+                    //Remove from friends of Application
+                    Application.Current.Dispatcher.Invoke(delegate
+                    {
+                        ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friend));
+                    });
+                }
+            }
         }
         #endregion
     }

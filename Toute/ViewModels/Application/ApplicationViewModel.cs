@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using Toute.Core;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -19,7 +22,12 @@ namespace Toute
         /// <summary>
         /// Current application page in frame
         /// </summary>
-        private BasePage currentPage;
+        private BasePage _currentPage;
+
+        /// <summary>
+        /// Logger to <see cref="ApplicationViewModel"/>
+        /// </summary>
+        private readonly ILogger<ApplicationViewModel> _logger;
 
         #endregion
 
@@ -68,13 +76,13 @@ namespace Toute
         /// </summary>
         public BasePage CurrentPage
         {
-            get => currentPage;
+            get => _currentPage;
             set
             {
                 if (CurrentPage == value)
                     return;
 
-                currentPage = value;
+                _currentPage = value;
             }
         }
 
@@ -85,7 +93,7 @@ namespace Toute
         /// <summary>
         /// Default constructor for <see cref="ApplicationViewModel"/>
         /// </summary>
-        public ApplicationViewModel()
+        public ApplicationViewModel(ILogger<ApplicationViewModel> _logger)
         {
             //If application is in designer mode...
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -119,7 +127,7 @@ namespace Toute
 
             //Create new List of friends
             Friends = new ObservableCollection<FriendModel>();
-          
+            logger = _logger;
         }
 
         #endregion
@@ -168,19 +176,21 @@ namespace Toute
         /// <summary>
         /// Method that logout user from Application
         /// </summary>
-        public void Logout()
+        public async Task Logout()
         {
             //Remove all method that are periodically fired
             TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
 
             //Set ApplicationUser to null
-            IoC.Get<ApplicationViewModel>().ApplicationUser = null;
+            ViewModelApplication.ApplicationUser = null;
 
             //Clear friends list
-            IoC.Get<ApplicationViewModel>().Friends = new ObservableCollection<FriendModel>();
+            ViewModelApplication.Friends = new ObservableCollection<FriendModel>();
+
+            await SqliteDb.RemoveLoginCredentialsAsync();
 
             //Go to login page
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+            ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
         }
 
         /// <summary>

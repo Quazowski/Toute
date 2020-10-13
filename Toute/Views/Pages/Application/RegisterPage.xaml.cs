@@ -4,11 +4,11 @@ namespace Toute
 {
     /// <summary>
     /// Interaction logic for RegisterPage.xaml
-    /// Using <see cref="RegisterPageViewModel"/> as ViewModel,
+    /// Using <see cref="RegisterViewModel"/> as ViewModel,
     /// <see cref="BasePage"/> as base page, and 
     /// <see cref="IHavePassword"/> to handle password sending to VM
     /// </summary>
-    public partial class RegisterPage : BasePage<RegisterPageViewModel>
+    public partial class RegisterPage : BasePage<RegisterViewModel>
     {
         #region Constructors
 
@@ -25,7 +25,7 @@ namespace Toute
         /// Constructor that accept view model as a parameter
         /// </summary>
         /// <param name="vm">ViewModel for RegisterPage</param>
-        public RegisterPage(RegisterPageViewModel viewModel) : base(viewModel)
+        public RegisterPage(RegisterViewModel viewModel) : base(viewModel)
         {
             //Prepares Components for MainWindow
             InitializeComponent();

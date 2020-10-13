@@ -1,4 +1,6 @@
-﻿namespace Toute.Extensions
+﻿using static Toute.DI;
+
+namespace Toute.Extensions
 {
     /// <summary>
     /// Extension for Popup
@@ -23,7 +25,7 @@
 
         public static void NewInfoPopup(string informationMessage)
         {
-            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
             {
                 Message = informationMessage,
                 IsError = false
@@ -32,7 +34,7 @@
 
         public static void NewErrorPopup(string informationMessage)
         {
-            IoC.Get<ApplicationViewModel>().InformationsAndErrors.Add(new InfoControlViewModel
+            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
             {
                 Message = informationMessage,
                 IsError = true

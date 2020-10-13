@@ -1,4 +1,6 @@
-﻿namespace Toute
+﻿using static Toute.DI;
+
+namespace Toute
 {
     /// <summary>
     /// Extensions for <see cref="System.Threading.Timer"/>
@@ -12,13 +14,13 @@
         public static void RemoveRepetingMessagesFromApplicationUser()
         {
             //if ApplicationUser is not null...
-            if (IoC.Get<ApplicationViewModel>().ApplicationUser != null)
+            if (ViewModelApplication.ApplicationUser != null)
             {
                 //If timer that refresh messages is not null...
-                if (IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshMessages != null)
+                if (ViewModelApplication.ApplicationUser.RefreshMessages != null)
                 {
                     //Clear timer, to stop requesting API for new messages
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshMessages.Dispose();
+                    ViewModelApplication.ApplicationUser.RefreshMessages.Dispose();
                 }
             }
         }
@@ -30,13 +32,13 @@
         public static void RemoveRepetingFriendsFromApplicationUser()
         {
             //if ApplicationUser is not null...
-            if (IoC.Get<ApplicationViewModel>().ApplicationUser != null)
+            if (ViewModelApplication.ApplicationUser != null)
             {
                 //If timer that refresh friends is not null...
-                if (IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshFriends != null)
+                if (ViewModelApplication.ApplicationUser.RefreshFriends != null)
                 {
                     //Clear timer, to stop requesting API for new friends
-                    IoC.Get<ApplicationViewModel>().ApplicationUser.RefreshFriends.Dispose();
+                    ViewModelApplication.ApplicationUser.RefreshFriends.Dispose();
                 }
             }
         }

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Toute.Core;
 using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -23,7 +24,7 @@ namespace Toute
         public static async Task<bool> HandleHttpRequestAsync(string url, object RequestModel)
         {
             //Get user token
-            var token = IoC.Get<ApplicationViewModel>().ApplicationUser?.JWTToken;
+            var token = ViewModelApplication.ApplicationUser?.JWTToken;
 
             try
             {
@@ -59,7 +60,7 @@ namespace Toute
                     //Show error message...
                     PopupExtensions.NewErrorPopup("You are unauthorized. Please login to continue...");
                     //Logout if user is logged, do nothing if is not logged.
-                    IoC.Get<ApplicationViewModel>().Logout();
+                    await ViewModelApplication.Logout();
                 }
                 //if any other error occurred...
                 else
@@ -94,7 +95,7 @@ namespace Toute
         public static async Task<T> HandleHttpRequestOfTResponseAsync<T>(string url, object RequestModel)
         {
             //Get user token
-            var token = IoC.Get<ApplicationViewModel>().ApplicationUser?.JWTToken;
+            var token = ViewModelApplication.ApplicationUser?.JWTToken;
 
             try
             {
@@ -131,7 +132,7 @@ namespace Toute
                     //Show error message...
                     PopupExtensions.NewErrorPopup("You are unauthorized. Please login to continue...");
                     //Logout if user is logged, do nothing if is not logged.
-                    IoC.Get<ApplicationViewModel>().Logout();
+                    await ViewModelApplication.Logout();
                 }
             }
             //If server is not responding...

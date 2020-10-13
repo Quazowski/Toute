@@ -4,10 +4,10 @@ namespace Toute
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
-    /// Using <see cref="SettingsPageViewModel"/> as ViewModel,
+    /// Using <see cref="SettingsViewModel"/> as ViewModel,
     /// <see cref="BasePage"/> as base page, and 
     /// </summary>
-    public partial class SettingsPage : BasePage<SettingsPageViewModel>
+    public partial class SettingsPage : BasePage<SettingsViewModel>
     {
         /// <summary>
         /// Default constructor for <see cref="SettingsPage"/>
@@ -23,7 +23,7 @@ namespace Toute
         /// given as parameter
         /// </summary>
         /// <param name="viewModel">ViewModel for SettingsPage</param>
-        public SettingsPage(SettingsPageViewModel viewModel) : base(viewModel)
+        public SettingsPage(SettingsViewModel viewModel) : base(viewModel)
         {
             //Prepares Components
             InitializeComponent();

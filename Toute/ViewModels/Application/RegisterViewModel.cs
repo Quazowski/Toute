@@ -5,13 +5,14 @@ using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
 using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
     /// <summary>
     /// A ViewModel for RegisterPage
     /// </summary>
-    public class RegisterPageViewModel : BaseViewModel
+    public class RegisterViewModel : BaseViewModel
     {
         #region Public properties
 
@@ -49,7 +50,7 @@ namespace Toute
         /// <summary>
         /// Default constructor
         /// </summary>
-        public RegisterPageViewModel()
+        public RegisterViewModel()
         {
             //Command that handle register
             RegisterCommand = new ParametrizedRelayCommand(async(parameter) => await RegisterAsync(parameter));
@@ -97,7 +98,7 @@ namespace Toute
                     if (context != null)
                     {
                         //Go to login page
-                        IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+                        ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
                     }
                 }
                 else
@@ -116,7 +117,7 @@ namespace Toute
         private void GoToLoginPage()
         {
             //Go to login page
-            IoC.Get<ApplicationViewModel>().GoToPage(ApplicationPage.LoginPage);
+            ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
         }
 
         #endregion

@@ -1,53 +1,48 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Toute.Core;
 using Toute.Core.Routes;
 using Toute.Extensions;
+using static Toute.DI;
 
 namespace Toute
 {
     /// <summary>
     /// ViewModel for <see cref="SettingsPage"/>
     /// </summary>
-    public class SettingsPageViewModel : BaseViewModel
+    public class SettingsViewModel : BaseViewModel
     {
         #region Public members
 
         /// <summary>
         /// Name of user, that is displayed on the top 
         /// </summary>
-        public string HeaderName { get; set; } = IoC.Get<ApplicationViewModel>().ApplicationUser.Username;
+        //public string HeaderName { get; set; } = ViewModelApplication.ApplicationUser.Username;
+        public string HeaderName { get; set; } = ViewModelApplication.ApplicationUser.Username;
 
         /// <summary>
         /// Name of user, that can be edited
         /// </summary>
-        public string Name { get; set; } = IoC.Get<ApplicationViewModel>().ApplicationUser.Username;
+        public string Name { get; set; } = ViewModelApplication.ApplicationUser.Username;
 
         /// <summary>
         /// Email of user, that can be edited
         /// </summary>
-        public string Email { get; set; } = IoC.Get<ApplicationViewModel>().ApplicationUser.Email;
+        public string Email { get; set; } = ViewModelApplication.ApplicationUser.Email;
 
         /// <summary>
         /// Image in bytes
         /// </summary>
-        public byte[] ImageBytes { get; set; } = IoC.Get<ApplicationViewModel>().ApplicationUser.Image;
+        public byte[] ImageBytes { get; set; } = ViewModelApplication.ApplicationUser.Image;
 
         /// <summary>
         /// Image as BitmapImage
         /// </summary>
-        public BitmapImage UserImage => IoC.Get<ApplicationViewModel>().ApplicationUser.UserImage;
+        public BitmapImage UserImage => ViewModelApplication.ApplicationUser.UserImage;
 
         /// <summary>
         /// Status of <see cref="SaveChangesAsync(object)"/>
@@ -85,11 +80,11 @@ namespace Toute
         /// <summary>
         /// Default constructor
         /// </summary>
-        public SettingsPageViewModel()
+        public SettingsViewModel()
         {
             //Create commands
             SaveChangesCommand = new ParametrizedRelayCommand(async (credentials) => await SaveChangesAsync(credentials));
-            LogoutCommand = new RelayCommand(Logout);
+            LogoutCommand = new RelayCommand(async() => await Logout());
             UploadNewPhotoCommand = new RelayCommand(async() => await UploadNewPhotoAsync());
         }
 
@@ -106,7 +101,7 @@ namespace Toute
             await RunCommandAsync(() => SaveChangesIsRunning, async() => 
             {
                 //If username is changed...
-                if (Name != IoC.Get<ApplicationViewModel>().ApplicationUser.Username)
+                if (Name != ViewModelApplication.ApplicationUser.Username)
                 {
                     //If name length is less that four...
                     if (Name.Length < 4)
@@ -129,10 +124,10 @@ namespace Toute
                             HeaderName = Name;
 
                             //Set ApplicationUser Username to new username
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.Username = Name;
+                            ViewModelApplication.ApplicationUser.Username = Name;
 
                             //Get new JWTToken
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken = context.JWTToken;
+                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
 
                             //Show message
                             PopupExtensions.NewInfoPopup($"Name changed successfully. ");
@@ -141,7 +136,7 @@ namespace Toute
                 }
 
                 //If Email is changed...
-                if (Email != IoC.Get<ApplicationViewModel>().ApplicationUser.Email)
+                if (Email != ViewModelApplication.ApplicationUser.Email)
                 {
                     //If Email length is less that four...
                     if (Email.Length < 4)
@@ -167,10 +162,10 @@ namespace Toute
                         if(context != null)
                         {
                             //Set ApplicationUser Email to new Email
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.Email = Email;
+                            ViewModelApplication.ApplicationUser.Email = Email;
 
                             //Get new JWTToken
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken = context.JWTToken;
+                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
 
                             //Show message
                             PopupExtensions.NewInfoPopup("Email changed successfully.");
@@ -195,7 +190,7 @@ namespace Toute
                         if (context != null)
                         {
                             //Get new JWTToken
-                            IoC.Get<ApplicationViewModel>().ApplicationUser.JWTToken = context.JWTToken;
+                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
 
                             //Show message
                             PopupExtensions.NewInfoPopup("Password changed successfully. ");
@@ -208,9 +203,9 @@ namespace Toute
         /// <summary>
         /// Method that logout user from Application
         /// </summary>
-        public void Logout()
+        public async Task Logout()
         {
-            IoC.Get<ApplicationViewModel>().Logout();
+            await ViewModelApplication.Logout();
         }
 
         /// <summary>
@@ -264,7 +259,7 @@ namespace Toute
                         ImageBytes = ImageToChange.Image;
 
                         //Set ApplicationUser Image, to new image
-                        IoC.Get<ApplicationViewModel>().ApplicationUser.Image = ImageToChange.Image;
+                        ViewModelApplication.ApplicationUser.Image = ImageToChange.Image;
                     }
                 }
             });

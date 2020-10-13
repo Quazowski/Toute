@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -23,17 +24,17 @@ namespace Toute
                 //If it is LoginPage
                 case ApplicationPage.LoginPage:
                     //return new LoginPage of LoginPageViewModel
-                    return new LoginPage(new LoginPageViewModel());
+                    return new LoginPage(new LoginViewModel());
                 //If it is RegisterPage
 
                 case ApplicationPage.RegisterPage:
                     //return new LoginPage of RegisterPageViewModel
-                    return new RegisterPage(new RegisterPageViewModel());
+                    return new RegisterPage(new RegisterViewModel());
 
                 //If it is GamesPage
                 case ApplicationPage.GamesPage:
                     //return static GamesPage of static GamesPageViewModel
-                    return new GamesPage(IoC.Get<GamesPageViewModel>());
+                    return new GamesPage(ViewModelGame);
 
                 //If it is ContactPage
                 case ApplicationPage.ContactPage:
@@ -43,7 +44,7 @@ namespace Toute
                 //If it is SettingsPage
                 case ApplicationPage.SettingsPage:
                     //return new SettingsPage of SettingsPageViewModel
-                    return new SettingsPage(new SettingsPageViewModel());
+                    return new SettingsPage(new SettingsViewModel());
 
                 //If none of this
                 default:

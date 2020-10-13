@@ -4,11 +4,11 @@ namespace Toute
 {
     /// <summary>
     /// Interaction logic for LoginPage.xaml
-    /// Using <see cref="LoginPageViewModel"/> as ViewModel,
+    /// Using <see cref="LoginViewModel"/> as ViewModel,
     /// <see cref="BasePage"/> as base page, and 
     /// <see cref="IHavePassword"/> to handle password sending to VM
     /// </summary>
-    public partial class LoginPage : BasePage<LoginPageViewModel>, IHavePassword
+    public partial class LoginPage : BasePage<LoginViewModel>, IHavePassword
     {
         #region Public Members
 
@@ -34,7 +34,7 @@ namespace Toute
         /// Constructor that accept view model as a parameter
         /// </summary>
         /// <param name="vm">ViewModel for LoginPage</param>
-        public LoginPage(LoginPageViewModel vm) : base(vm)
+        public LoginPage(LoginViewModel vm) : base(vm)
         {
             //Prepares Components for MainWindow
             InitializeComponent();
