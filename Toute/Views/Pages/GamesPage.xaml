@@ -67,7 +67,7 @@
 
                                 <!--Image-->
                                 <Border Grid.Column="0" Margin="5">
-                                    <Image Source="{Binding FullPathToImage, Mode=OneWay}"/>
+                                    <Image Source="{Binding BitmapImage}"/>
                                 </Border>
 
                                 <!--Name of game-->
@@ -86,14 +86,14 @@
                                         <Button Style="{StaticResource GameMenuRunButton}"
                                                 Content="Run"
                                                 Command="{Binding RunCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
-                                                CommandParameter="{Binding PathToGame}"
+                                                CommandParameter="{Binding Path}"
                                                 Padding="33 0"
                                                 Margin="0 0 0 6"/>
                                         
                                         <!--Settings button-->
                                         <Button Style="{StaticResource GameMenuSettingsButton}"
                                                 Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
-                                                CommandParameter="{Binding PathToGame}"
+                                                CommandParameter="{Binding FileId}"
                                                 Content="Settings"/>
                                         
                                     </StackPanel>

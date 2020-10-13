@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace Toute
     /// </summary>
     public class LoginViewModel : BaseViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public properties
 
         /// <summary>
@@ -57,11 +64,15 @@ namespace Toute
         /// </summary>
         public LoginViewModel()
         {
+            _logger.Info("Start setting up LoginViewModel");
+
             //Command that handle login
             LoginCommand = new ParametrizedRelayCommand(async (parameter) => await LoginAsync(parameter));
 
             //Command that handle going to register page
             GoToRegister = new RelayCommand(GoToRegisterPage);
+
+            _logger.Info("Done setting up LoginViewModel");
         }
 
         #endregion
@@ -85,6 +96,8 @@ namespace Toute
         {
             await RunCommandAsync(() => LoginIsRunning, async () =>
             {
+                _logger.Info("User is logging to application");
+
                 //If there is any username is given...
                 if (string.IsNullOrEmpty(Username))
                 {
@@ -105,50 +118,21 @@ namespace Toute
                     //Make a list of friends
                     var Friends = new ObservableCollection<FriendModel>();
 
-                    foreach (var friend in context.Friends)
-                    {
-                        var messages = new ObservableCollection<MessageModel>();
-                        foreach (var message in friend.Messages)
-                        {
-                            messages.Add(new MessageModel
-                            {
-                                Message = message.Message,
-                                DateOfSent = message.DateOfSent,
-                                SentByMe = message.SentByMe
-                            });
-                        }
-                        Friends.Add(new FriendModel
-                        {
-                            FriendId = friend.FriendId,
-                            BytesImage = friend.BytesImage,
-                            Name = friend.Name,
-                            Status = friend.Status,
-                            Messages = messages
-                        });
-                    }
-
-                    ICollection<FriendDataModel> DBFriends = new List<FriendDataModel>();
-                    foreach (var friendResponse in context.Friends)
-                    {
-                        DBFriends.Add(new FriendDataModel
-                        {
-                            Id =  Guid.NewGuid().ToString(),
-                            FriendId = friendResponse.FriendId,
-                            Messages = new List<MessageDataModel>(),
-                            Status = friendResponse.Status
-                        });
-                    }
+                    _logger.Debug("Saving user credentials to LocalDB");
 
                     await SqliteDb.SaveLoginCredentialsAsync(new LoginCredentialsDataModel
                     {
                         Id = context.Id,
                         Username = context.Username,
                         Email = context.Email,
-                        Friends = DBFriends,
+                        Friends = new List<FriendDataModel>(),
                         Image = context.Image,
                         JWTToken = context.JWTToken
                     });
 
+                    _logger.Debug("Done saving user credentials to LocalDB");
+
+                    _logger.Debug($"Setting up Application user of ID: {context.Id}");
                     //Set current application user to...
                     ViewModelApplication.ApplicationUser = new ApplicationUserModel
                     {
@@ -172,15 +156,38 @@ namespace Toute
                         });
 
                     }
+                    _logger.Debug($"Application user of is set ID: {context.Id}");
 
+                    _logger.Debug("Trying to get user files from LocalDB");
+                    //Loads all files that were added
+                    var items = SqliteDb.GetGames(ViewModelApplication.ApplicationUser?.Id).Result;
+
+                    _logger.Debug("Got user files from LocalDB");
+
+                    //For every file, that were added.... 
+                    foreach (var file in items)
+                    {
+                        //Add to Item list a GameModel
+                        ViewModelGame.Items.Add(new GameModel
+                        {
+                            Title = file.Title,
+                            FileId = file.Id,
+                            Path = file.Path,
+                            BytesImage = file.Image
+                        });
+                    }
+
+                    _logger.Info("Started to refreshing friend list");
                     //Start refreshing list of friends every x seconds.
                     ViewModelApplication.ApplicationUser.RefreshFriends = new Timer(async (e) =>
                     {
                         await ViewModelSideMenu.RefreshFriendsAsync(ViewModelApplication.Friends);
-                    }, null, TimeSpan.Zero, TimeSpan.FromSeconds(15));
+                    }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
                     //Go to GamesPage page
                     ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
+
+                    _logger.Info("User is successfully logged to application");
                 }
 
             });

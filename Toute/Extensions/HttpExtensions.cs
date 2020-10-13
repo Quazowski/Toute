@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Toute
     /// </summary>
     public static class HttpExtensions
     {
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         /// <summary>
         /// Method that will send request to the API, and 
         /// will except to return Response.
@@ -23,6 +25,7 @@ namespace Toute
         /// it will return true, otherwise false</returns>
         public static async Task<bool> HandleHttpRequestAsync(string url, object RequestModel)
         {
+            _logger.Debug($"Requesting API to url: {url}");
             //Get user token
             var token = ViewModelApplication.ApplicationUser?.JWTToken;
 
@@ -30,6 +33,7 @@ namespace Toute
             {
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
+                _logger.Debug($"Got response from the server from url: {url}. Response is of StatusCode: {response.StatusCode}");
 
                 //If response status code is OK...
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -40,12 +44,14 @@ namespace Toute
                     //If there is successful response
                     if (context.IsSuccessful)
                     {
+                        _logger.Debug($"Response: {url} returned successful status.");
                         return true;
                     }
                     //if it is not...
                     else
                     {
-                        PopupExtensions.NewInfoPopup(context.ErrorMessage);
+                        _logger.Debug($"Response: {url} returned failed status. Reason: {context.ErrorMessage}");
+                        PopupExtensions.NewErrorPopup(context.ErrorMessage);
                         return false;
                     }
                 }
@@ -57,10 +63,11 @@ namespace Toute
                 //If user is not Unauthorized
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
+                    _logger.Debug("Unauthorized request to API");
+
                     //Show error message...
-                    PopupExtensions.NewErrorPopup("You are unauthorized. Please login to continue...");
-                    //Logout if user is logged, do nothing if is not logged.
-                    await ViewModelApplication.Logout();
+                    PopupExtensions.NewErrorPopup("You are not allowed to do this action..");
+                    return false;
                 }
                 //if any other error occurred...
                 else
@@ -69,14 +76,29 @@ namespace Toute
                 }
             }
             //If server is not responding...
-            catch (HttpRequestException)
+            catch (HttpRequestException e)
             {
-                PopupExtensions.NewErrorPopup("There is a problem with server, or you network connection. Please try again later.");
+                try
+                {
+                    using (var client = new WebClient())
+                    using (client.OpenRead("http://google.com/generate_204"))
+
+                        PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
+                    _logger.Error(e);
+
+                }
+                catch
+                {
+                    PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
+                    _logger.Warn(e);
+
+                }
+
             }
-            //Catch any error, and display it to the user.
-            catch (Exception ex)
+            catch (Exception e)
             {
-                PopupExtensions.NewErrorPopup(ex.Message);
+                _logger.Error(e);
+                PopupExtensions.NewErrorPopup("Error occurred, try again later.");
             }
 
             //If try statement failed, return false.
@@ -94,6 +116,8 @@ namespace Toute
         /// <returns></returns>
         public static async Task<T> HandleHttpRequestOfTResponseAsync<T>(string url, object RequestModel)
         {
+            _logger.Debug($"Requesting API to url: {url}");
+
             //Get user token
             var token = ViewModelApplication.ApplicationUser?.JWTToken;
 
@@ -101,6 +125,7 @@ namespace Toute
             {
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
+                _logger.Debug($"Got response from the server from url: {url}. Response is of StatusCode: {response.StatusCode}");
 
                 //If response status code is OK and/or there is a context back...
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -111,6 +136,7 @@ namespace Toute
                     //If there is successful response
                     if (context.IsSuccessful)
                     {
+                        _logger.Debug($"Response: {url} returned successful status.");
                         //return deseralize Response
                         return context.TResponse;
                     }
@@ -119,6 +145,7 @@ namespace Toute
                     {
                         //Display error to the user
                         PopupExtensions.NewErrorPopup(context.ErrorMessage);
+                        _logger.Debug($"Response: {url} returned failed status. Reason: {context.ErrorMessage}");
                     }
                 }
                 //If there is no content back, return null
@@ -129,21 +156,36 @@ namespace Toute
                 //If user is not Unauthorized
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
+                    _logger.Debug("Unauthorized request to API");
+
                     //Show error message...
-                    PopupExtensions.NewErrorPopup("You are unauthorized. Please login to continue...");
-                    //Logout if user is logged, do nothing if is not logged.
-                    await ViewModelApplication.Logout();
+                    PopupExtensions.NewErrorPopup("You are not allowed to do this action..");
+
                 }
             }
-            //If server is not responding...
-            catch (HttpRequestException)
+            catch (HttpRequestException e)
             {
-                PopupExtensions.NewErrorPopup("There is a problem with server, or you network connection. Please try again later.");
+                try
+                {
+                    using (var client = new WebClient())
+                    using (client.OpenRead("http://google.com/generate_204")) 
+
+                    PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
+                    _logger.Error(e);
+
+                }
+                catch
+                {
+                    PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
+                    _logger.Warn(e);
+
+                }
+
             }
-            //Catch any error, and display it to the user.
-            catch (Exception ex)
+            catch (Exception e)
             {
-                PopupExtensions.NewErrorPopup(ex.Message);
+                _logger.Error(e);
+                PopupExtensions.NewErrorPopup("Error occurred, try again later.");
             }
 
             //If try statement failed, return null

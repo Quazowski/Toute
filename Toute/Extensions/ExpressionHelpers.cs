@@ -1,17 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace Toute
 {
+    /// <summary>
+    /// Helpers for expressions
+    /// </summary>
     public static class ExpressionHelpers
     {
         public static T GetPropertyValue<T>(this Expression<Func<T>> lambda)
         {
             return lambda.Compile().Invoke();
         }
+
         public static T GetPropertyValue<In, T>(this Expression<Func<In, T>> lambda, In input)
         {
             return lambda.Compile().Invoke(input);

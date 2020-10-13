@@ -1,9 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using NLog;
+using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using static Toute.DI;
 
 namespace Toute
 {
@@ -12,6 +13,12 @@ namespace Toute
     /// </summary>
     public class GamesViewModel : BaseViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public members
 
         /// <summary>
@@ -22,7 +29,12 @@ namespace Toute
         /// <summary>
         /// Current item chosen in settings
         /// </summary>
-        public GameModel CurrentItem { get; set; }
+        public string CurrentItemId { get; set; }
+
+        /// <summary>
+        /// Is settings popup open
+        /// </summary>
+        public bool SettingsPopupOpen { get; set; }
 
         #endregion
 
@@ -48,6 +60,11 @@ namespace Toute
         /// </summary>
         public ICommand AddGameCommand { get; set; }
 
+        /// <summary>
+        /// Command that set new path for the game
+        /// </summary>
+        public ICommand SetNewValuesCommand { get; set; }
+
 
         #endregion
 
@@ -58,32 +75,21 @@ namespace Toute
         /// </summary>
         public GamesViewModel()
         {
+            _logger.Info("Start setting up GamesViewModel");
+
             //Creating new ObservableCollection to store Games
             Items = new ObservableCollection<GameModel>();
 
-            //Command to run chosen game
+            //Create commands
             RunCommand = new ParametrizedRelayCommand((path) => RunGame((string)path));
-
-            //Command to open settings of chosen game
-            SettingsCommand = new ParametrizedRelayCommand((path) => OpenSettingsGame((string)path));
-
-            //Command that delete game with given path
+            SettingsCommand = new ParametrizedRelayCommand((Id) => OpenSettingsGame((string)Id));
             RemoveGameCommand = new RelayCommand(DeleteGame);
+            AddGameCommand = new RelayCommand(AddFile);
+            SetNewValuesCommand = new RelayCommand(SetNewValues);
 
-            //Command that add game
-            AddGameCommand = new RelayCommand(AddGame);
-
-            //Loads all files that were added
-            var items = FileManaging.ReadAllTextFilesFromFolder("Files");
-
-            //For every file, that were added.... 
-            foreach (var file in items)
-            {
-                //Add to Item list a GameModel
-                Items.Add(JsonSerializer.Deserialize<GameModel>(file));
-            }
-
+            _logger.Info("Done setting up GamesViewModel");
         }
+
 
         #endregion
 
@@ -92,16 +98,35 @@ namespace Toute
         /// <summary>
         /// Adds a game to the application game search list
         /// </summary>
-        private void AddGame()
+        private void AddFile()
         {
+            _logger.Debug("Attempt to add a file");
             //Open a dialog and find a file u want to add...
-            GameModel game = DialogExtensions.FindGame();
+            GameModel game = DialogHelpers.FindGame();
 
             //If file is not null...
             if (game != null)
+            {
                 //Add chosen file
                 Items.Add(game);
 
+                _logger.Debug("Added item to list of files, now attempt to add the file to LocalDB");
+
+                SqliteDb.AddGameAsync(new GameDataModel 
+                {
+                    Id = game.FileId,
+                    Path = game.Path,
+                    Title = game.Title,
+                    UserId = ViewModelApplication.ApplicationUser.Id,
+                    Image = game.BytesImage
+                });
+
+                _logger.Debug("Saved file to LocalDB");
+            }
+            else
+            {
+                _logger.Debug("Not found any file to add");
+            }
         }
 
         /// <summary>
@@ -109,26 +134,18 @@ namespace Toute
         /// </summary>
         private void DeleteGame()
         {
+            _logger.Debug("Attempt to delete a file");
+            var itemToDelete = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
             //Make popup close
-            CurrentItem.PopupOpen = false;
+            SettingsPopupOpen = false;
 
             //Remove chosen item
-            Items.Remove(CurrentItem);
+            Items.Remove(itemToDelete);
 
-            //Run deleting of file and photo async, to prevent blocked UI or thread
-            Task.Run(async () =>
-            {
-                //Wait 100ms to be sure thread won't be block
-                await Task.Delay(100);
+            _logger.Debug("Deleted file from a list of items, now attempt to delete a file from LocalDB");
+            SqliteDb.RemoveGameAsync(itemToDelete.FileId);
 
-                //Delete file of game
-                FileManaging.DeleteFile(CurrentItem.PathToFile);
-
-                //Delete photo of game
-                FileManaging.DeleteFile(CurrentItem.FullPathToImage);
-            });
-
-
+            _logger.Debug("Deleted item from LocalDB");
         }
 
         /// <summary>
@@ -136,21 +153,50 @@ namespace Toute
         /// </summary>
         private void RunGame(string path)
         {
+            _logger.Debug($"Attempt to run a file of path: {path}");
             //Run a file with given path
             new Process().RunFile(path);
+
+            _logger.Debug("File is run");
         }
 
         /// <summary>
         /// Method that handle open settings of chosen game
         /// </summary>
-        private void OpenSettingsGame(string path)
+        private void OpenSettingsGame(string Id)
         {
             //Set Current item to chosen item
-            CurrentItem = Items.FirstOrDefault(x => x.PathToGame == path);
+            CurrentItemId = Items.FirstOrDefault(x => x.FileId == Id).FileId;
 
             //Toggle popup
-            CurrentItem.PopupOpen ^= true;
+            SettingsPopupOpen ^= true;
+            _logger.Debug($"Changed visibility of Settings of File to {SettingsPopupOpen}");
+        }
 
+        private void SetNewValues()
+        {
+            _logger.Debug($"Attempt to change values of file with id: {CurrentItemId}");
+            //Open a dialog and find a file u want to add...
+            var newValues = DialogHelpers.SetNewValueForFile();
+
+            //Find file from the list, and change his values
+            var file = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
+            file.Path = newValues.Path;
+            file.BytesImage = newValues.BytesImage;
+            file.Title = newValues.Title;
+
+            _logger.Debug($"Changed item from list, now trying to change file in LocalDB");
+
+            //Save a new path in db
+            SqliteDb.ChangeValuesAsync(new GameDataModel
+            {
+                Id = CurrentItemId,
+                Image = file.BytesImage,
+                Path = file.Path,
+                Title = file.Title
+            });
+
+            _logger.Debug($"File values changed successfully");
         }
 
         #endregion

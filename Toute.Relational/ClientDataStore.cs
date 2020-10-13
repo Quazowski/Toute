@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Toute.Core;
@@ -87,6 +88,41 @@ namespace Toute.Relational
             DbContext.LoginCredentials.RemoveRange(DbContext.LoginCredentials);
 
             await DbContext.SaveChangesAsync();
+        }
+
+        public async Task AddGameAsync(GameDataModel game)
+        {
+            DbContext.Game.Add(game);
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task RemoveGameAsync(string Id)
+        {
+            var game = DbContext.Game.FirstOrDefault(x => x.Id == Id);
+
+            DbContext.Game.Remove(game);
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task ChangeValuesAsync(GameDataModel model)
+        {
+            var file = DbContext.Game.FirstOrDefault(x => x.Id == model.Id);
+
+            file.Image = model.Image;
+            file.Path = model.Path;
+            file.Title = model.Title;
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public Task<List<GameDataModel>> GetGames(string UserId)
+        {
+            var games = new List<GameDataModel>();
+            games = DbContext.Game.Where(x => x.UserId == UserId)?.ToList();
+
+            return Task.FromResult(games);
         }
 
         #endregion

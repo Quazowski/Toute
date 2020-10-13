@@ -13,6 +13,7 @@ namespace Toute.Relational
         /// The client login credentials
         /// </summary>
         public DbSet<LoginCredentialsDataModel> LoginCredentials { get; set; }
+        public DbSet<GameDataModel> Game { get; set; }
 
         /// <summary>
         /// Default constructor

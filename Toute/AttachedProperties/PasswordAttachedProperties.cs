@@ -5,8 +5,6 @@ namespace Toute
 {
     /// <summary>
     /// Attached Property that will be used to monitor PasswordBox.
-    /// If value of password will be changed, <see cref="HasPasswordAttachedProperty"/>
-    /// will be changed too.
     /// </summary>
     public class MonitorPasswordAttachedProperty : BaseAttachedProperty<MonitorPasswordAttachedProperty, bool>
     {

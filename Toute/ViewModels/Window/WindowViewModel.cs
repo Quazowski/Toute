@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using NLog;
+using System.Windows;
 using System.Windows.Input;
 using static Toute.DI;
 
@@ -20,6 +21,8 @@ namespace Toute
         /// To change when windowState is changed
         /// </summary>
         private Thickness _dropShadowBorderPadding = new Thickness(10);
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         #endregion
 
@@ -95,6 +98,8 @@ namespace Toute
         /// </summary>
         public WindowViewModel(Window window)
         {
+            _logger.Info("Start setting up WindowViewModel");
+
             //Assign main window to private member
             _window = window;
 
@@ -109,6 +114,8 @@ namespace Toute
             MinimizeCommand = new RelayCommand(Minimize);
             MaximizeCommand = new RelayCommand(Maximize);
             CloseCommand = new RelayCommand(Close);
+
+            _logger.Info("Done setting up WindowViewModel");
         }
 
         #endregion
@@ -127,6 +134,8 @@ namespace Toute
                 Message = "test",
                 IsError = true
             });
+
+            _logger.Debug("Window is Minimized");
         }
 
         /// <summary>
@@ -136,6 +145,7 @@ namespace Toute
         {
             //Maximize window
             _window.WindowState ^= WindowState.Maximized;
+            _logger.Debug("Window is Maximized");
         }
 
         /// <summary>
@@ -145,6 +155,7 @@ namespace Toute
         {
             //Close application
             _window.Close();
+            _logger.Info("Application is shutting down...");
             Application.Current.Shutdown();
         }
 

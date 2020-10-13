@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using NLog;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -16,6 +17,12 @@ namespace Toute
     /// </summary>
     public class SettingsViewModel : BaseViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public members
 
         /// <summary>
@@ -82,10 +89,14 @@ namespace Toute
         /// </summary>
         public SettingsViewModel()
         {
+            _logger.Info("Start setting up SettingsViewModel");
+
             //Create commands
             SaveChangesCommand = new ParametrizedRelayCommand(async (credentials) => await SaveChangesAsync(credentials));
             LogoutCommand = new RelayCommand(async() => await Logout());
             UploadNewPhotoCommand = new RelayCommand(async() => await UploadNewPhotoAsync());
+
+            _logger.Info("Done setting up SettingsViewModel");
         }
 
         #endregion
@@ -103,79 +114,71 @@ namespace Toute
                 //If username is changed...
                 if (Name != ViewModelApplication.ApplicationUser.Username)
                 {
-                    //If name length is less that four...
-                    if (Name.Length < 4)
+                    _logger.Debug($"Trying to change username from {ViewModelApplication.ApplicationUser.Username} to {Name}");
+
+                    //Send request to the API
+                    var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<CredentialChangedResponse>(UserRoutes.ChangeUsername, new ChangeUsernameRequest
                     {
-                        //Add error to Final message
-                        PopupExtensions.NewInfoPopup($"Name not changed, reason: Name must contains at least 5 letters. ");
+                        NewUsername = Name
+                    });
+
+                    if(context != null)
+                    {
+                        _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Id} changed Username: {ViewModelApplication.ApplicationUser.Username} to {Name} successfully");
+
+                        //Set header name to new username
+                        HeaderName = Name;
+
+                        //Set ApplicationUser Username to new username
+                        ViewModelApplication.ApplicationUser.Username = Name;
+
+                        //Get new JWTToken
+                        ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
+
+                        //Show message
+                        PopupExtensions.NewInfoPopup($"Name changed successfully.");
                     }
-                    //Otherwise...
                     else
                     {
-                        //Send request to the API
-                        var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<CredentialChangedResponse>(UserRoutes.ChangeUsername, new ChangeUsernameRequest
-                        {
-                            NewUsername = Name
-                        });
-
-                        if(context != null)
-                        {
-                            //Set header name to new username
-                            HeaderName = Name;
-
-                            //Set ApplicationUser Username to new username
-                            ViewModelApplication.ApplicationUser.Username = Name;
-
-                            //Get new JWTToken
-                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
-
-                            //Show message
-                            PopupExtensions.NewInfoPopup($"Name changed successfully. ");
-                        }
+                        _logger.Debug($"Failed to change username from {ViewModelApplication.ApplicationUser.Username} to {Name}");
                     }
                 }
 
                 //If Email is changed...
                 if (Email != ViewModelApplication.ApplicationUser.Email)
                 {
-                    //If Email length is less that four...
-                    if (Email.Length < 4)
+                    _logger.Debug($"Trying to change user email from {ViewModelApplication.ApplicationUser.Email} to {Email}");
+
+                    //Send request to the API
+                    var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<CredentialChangedResponse>(UserRoutes.ChangeEmail, new ChangeEmailRequest
                     {
-                        //Add error to Final message
-                        PopupExtensions.NewInfoPopup($"Email must contains at least 5 letters!");
-                    }
-                    //If email does not have @ letter
-                    else if (!(Email.Contains('@')))
+                        NewEmail = Email
+                    });
+
+                    if(context != null)
                     {
+                        _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Email} changed Email: {ViewModelApplication.ApplicationUser.Email} to {Email} successfully");
+
+                        //Set ApplicationUser Email to new Email
+                        ViewModelApplication.ApplicationUser.Email = Email;
+
+                        //Get new JWTToken
+                        ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
+
                         //Show message
-                        PopupExtensions.NewInfoPopup($"Email is not valid!");
+                        PopupExtensions.NewInfoPopup("Email changed successfully.");
                     }
-                    //Otherwise...
                     else
                     {
-                        //Send request to the API
-                        var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<CredentialChangedResponse>(UserRoutes.ChangeEmail, new ChangeEmailRequest
-                        {
-                            NewEmail = Email
-                        });
-
-                        if(context != null)
-                        {
-                            //Set ApplicationUser Email to new Email
-                            ViewModelApplication.ApplicationUser.Email = Email;
-
-                            //Get new JWTToken
-                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
-
-                            //Show message
-                            PopupExtensions.NewInfoPopup("Email changed successfully.");
-                        }
+                        _logger.Debug($"Failed to change user email from {ViewModelApplication.ApplicationUser.Email} to {Email}");
                     }
+                    
                 }
 
                 //If there is new password sent...
                 if (!(string.IsNullOrEmpty((credentials as SettingsPage).CurrentPassword.SecurePassword.Unsecure())))
                 {
+                    _logger.Debug($"Trying to change password");
                     //And password and confirm password match...
                     if ((credentials as SettingsPage).Password.SecurePassword.Unsecure() == (credentials as SettingsPage).ConfirmPassword.SecurePassword.Unsecure())
                     {
@@ -193,8 +196,18 @@ namespace Toute
                             ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
 
                             //Show message
-                            PopupExtensions.NewInfoPopup("Password changed successfully. ");
+                            PopupExtensions.NewInfoPopup("Password changed successfully.");
+
+                            _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Email} successfully changed password");
                         }
+                        else
+                        {
+                            _logger.Debug($"Failed to change password.");
+                        }
+                    }
+                    else
+                    {
+                        _logger.Debug($"Failed to change password. New password, and confirm new password do not match");
                     }
                 }
             });
@@ -215,6 +228,7 @@ namespace Toute
         {
             await RunCommandAsync(() => UploadNewPhotoIsRunning, async () =>
             {
+                _logger.Debug("User attempt to change image");
                 //Create new OpenFileDialog
                 var Dialog = new OpenFileDialog();
 
@@ -244,9 +258,10 @@ namespace Toute
                         //Set Image in model, as byte[] image
                         ImageToChange.Image = imageFromPC.ImageToBytes();
                     }
-                    catch(Exception)
+                    catch(Exception ex)
                     {
-                        PopupExtensions.NewInfoPopup("Wrong format of photo. Acceptable extensions: .JPG, .JPE, .BMP, .GIF, .PNG");
+                        PopupExtensions.NewErrorPopup("Wrong format of photo. Acceptable extensions: .JPG, .JPE, .BMP, .GIF, .PNG");
+                        _logger.Warn(ex, "User tried to upload wrong image format");
                     }
 
                     //Send request to the API
@@ -260,7 +275,12 @@ namespace Toute
 
                         //Set ApplicationUser Image, to new image
                         ViewModelApplication.ApplicationUser.Image = ImageToChange.Image;
+                        _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Id}");
                     }
+                }
+                else
+                {
+                    _logger.Debug("Did not changed Image.No new image was selected.");
                 }
             });
         }

@@ -1,4 +1,5 @@
-﻿using static Toute.DI;
+﻿using System.Windows;
+using static Toute.DI;
 
 namespace Toute.Extensions
 {
@@ -23,21 +24,36 @@ namespace Toute.Extensions
             newPopup.ShowDialog();
         }
 
+        /// <summary>
+        /// Popup that should contain information message for a user
+        /// appears for short period of time
+        /// </summary>
+        /// <param name="informationMessage"></param>
         public static void NewInfoPopup(string informationMessage)
         {
-            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                Message = informationMessage,
-                IsError = false
+                ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
+                {
+                    Message = informationMessage,
+                    IsError = false
+                });
             });
         }
 
+        /// <summary>
+        /// Popup that should contain error information message for a user
+        /// appears for short period of time
+        /// </summary>
         public static void NewErrorPopup(string informationMessage)
         {
-            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
+            Application.Current.Dispatcher.Invoke(delegate
             {
-                Message = informationMessage,
-                IsError = true
+                ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
+                {
+                    Message = informationMessage,
+                    IsError = true
+                });
             });
         }
     }

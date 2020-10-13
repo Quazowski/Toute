@@ -4,16 +4,14 @@ using System.Windows.Controls;
 namespace Toute
 {
     /// <summary>
-    /// Attached Property, that if set on true, will hide
-    /// Navigation bar, and clear history of navigation
+    /// Attached Property, that clear navigation history from Frame
     /// </summary>
     public class NavigationHistoryAttachedProperty : BaseAttachedProperty<NavigationHistoryAttachedProperty, bool>
     {
         /// <summary>
         /// Override base <see cref="OnValueChanged(DependencyObject, DependencyPropertyChangedEventArgs)"/>
         /// </summary>
-        /// <param name="d">Element on which history will be clear
-        /// And it have to be Frame</param>
+        /// <param name="d">Frame</param>
         /// <param name="e">Value</param>
         public override void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

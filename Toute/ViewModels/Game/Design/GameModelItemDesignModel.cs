@@ -18,8 +18,6 @@
         {
             //Sets title
             Title = "Name of game Design Time";
-            //Sets PathToGame
-            PathToGame = "Path of game Design Time";
         }
     }
 }

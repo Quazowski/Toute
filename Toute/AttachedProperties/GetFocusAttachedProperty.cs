@@ -4,7 +4,7 @@ using System.Windows.Controls;
 namespace Toute
 {
     /// <summary>
-    /// Property that get focus on any control when used
+    /// Property that get focus on any control
     /// </summary>
     public class GetFocusAttachedProperty : BaseAttachedProperty<GetFocusAttachedProperty, bool>
     {
@@ -17,16 +17,15 @@ namespace Toute
         {
             //If it is not a control...
             if (!(d is Control control))
-                //returns
                 return;
 
-            //If new value is true
+            //If value is true
             if ((bool)e.NewValue)
             {
                 //Fires a event, when control is loaded...
                 control.Loaded += (sender, e) =>
                 {
-                    //and focusing given control
+                    //and focus the control
                     control.Focus();
                 };
             }

@@ -1,32 +1,36 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Toute.Core.DataModels;
 
 namespace Toute
 {
     /// <summary>
-    /// Converter that convert boolean value, to HorizontalAlignment value
+    /// Converter that convert boolean value, to Visibility value
     /// </summary>
-    public class StatusOfAcceptedToVisibilityConverter : BaseValueConverter<StatusOfAcceptedToVisibilityConverter>
+    public class BooleanToVisibilityConverter : BaseValueConverter<BooleanToVisibilityConverter>
     {
         /// <summary>
-        /// Converts a value of boolean type to HorizontalAlignment value
+        /// Converts a value of boolean type
         /// </summary>
         /// <param name="value">Boolean value</param>
         /// <param name="targetType">The type of the binding target property.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>Converted value as HorizontalAlignment</returns>
+        /// <returns>Converted value of visibility type</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((StatusOfFriendship)value) switch
+            //if value is true...
+            if((bool)value)
             {
-                StatusOfFriendship.Accepted => Visibility.Visible,
-                StatusOfFriendship.Pending => Visibility.Collapsed,
-                StatusOfFriendship.Blocked => Visibility.Collapsed,
-                _ => null,
-            };
+                //Returns visibility collapsed
+                return Visibility.Collapsed;
+            }
+            //Otherwise...
+            else
+            {
+                //Returns visibility visible
+                return Visibility.Visible;
+            }
         }
 
         /// <summary>

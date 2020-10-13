@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,6 +15,12 @@ namespace Toute
     /// </summary>
     public class RegisterViewModel : BaseViewModel
     {
+        #region Private Members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public properties
 
         /// <summary>
@@ -52,11 +59,15 @@ namespace Toute
         /// </summary>
         public RegisterViewModel()
         {
+            _logger.Info("Start setting up RegisterViewModel");
+
             //Command that handle register
             RegisterCommand = new ParametrizedRelayCommand(async(parameter) => await RegisterAsync(parameter));
 
             //Command that handle going to login page
             GoToLogin = new RelayCommand(GoToLoginPage);
+
+            _logger.Info("Done setting up RegisterViewModel");
         }
 
         #endregion
@@ -71,15 +82,13 @@ namespace Toute
         {
             await RunCommandAsync(() => RegisterIsRunning, async () => 
             {
-                if(string.IsNullOrEmpty(Username)|| string.IsNullOrEmpty(Email))
-                {
-                    PopupExtensions.NewInfoPopup("Provide all values");
-                    return;
-                }
+                _logger.Info("User tries to register...");
 
+                //Checks if user password length is greater than 4 characters...
                 if((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure().Length < 4)
                 {
-                    PopupExtensions.NewInfoPopup("Password must have at least 5 letters");
+                    _logger.Info("User provided too short password. Aborting registration");
+                    PopupExtensions.NewErrorPopup("Password must have at least 5 letters");
                     return;
                 }
                     //If password and confirm new password is the same...
@@ -97,13 +106,15 @@ namespace Toute
                     //If there is content back
                     if (context != null)
                     {
+                        _logger.Info("User successfully registered, moving to login page...");
                         //Go to login page
                         ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
                     }
                 }
                 else
                 {
-                    PopupExtensions.NewInfoPopup("Password, and confirm password must match!");
+                    _logger.Info("User provided different password, and confirm password. Aborting registration");
+                    PopupExtensions.NewErrorPopup("Password, and confirm password must match!");
                 }
             });
 

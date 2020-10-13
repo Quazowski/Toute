@@ -6,8 +6,9 @@ namespace Toute
 {
     /// <summary>
     /// Converter that convert boolean value, to HorizontalAlignment value
+    /// it is reversed <see cref="BooleanToHorizontalAligmentConverter"/> converter
     /// </summary>
-    public class BooleanToHorizontalAligmentConverter : BaseValueConverter<BooleanToHorizontalAligmentConverter>
+    public class InvertedBooleanToHorizontalAligmentConverter : BaseValueConverter<InvertedBooleanToHorizontalAligmentConverter>
     {
         /// <summary>
         /// Converts a value of boolean type to HorizontalAlignment value
@@ -22,11 +23,11 @@ namespace Toute
             //If value is true...
             if ((bool)value)
                 //Returns 
-                return HorizontalAlignment.Right;
+                return HorizontalAlignment.Left;
             //Otherwise...
             else
                 //Returns
-                return HorizontalAlignment.Left;
+                return HorizontalAlignment.Right;
 
         }
 

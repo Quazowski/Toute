@@ -6,6 +6,7 @@ namespace Toute
 {
     /// <summary>
     /// Converter that convert boolean value, to Visibility value
+    /// it is revered <see cref="BooleanToVisibilityConverter"/> converter
     /// </summary>
     public class BooleanToVisibilityRevertedConverter : BaseValueConverter<BooleanToVisibilityRevertedConverter>
     {

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Toute.Core
 {
@@ -37,5 +38,29 @@ namespace Toute.Core
         /// <param name="Id"User Id></param>
         /// <returns>Return task when task is completed</returns>
         Task RemoveLoginCredentialsAsync();
+
+        /// <summary>
+        /// Adds game to the list of games
+        /// </summary>
+        /// <returns></returns>
+        Task<List<GameDataModel>> GetGames(string UserId);
+
+        /// <summary>
+        /// Adds game to the list of games
+        /// </summary>
+        /// <returns></returns>
+        Task AddGameAsync(GameDataModel game);
+
+        /// <summary>
+        /// Remove game from the list of games
+        /// </summary>
+        /// <returns></returns>
+        Task RemoveGameAsync(string Id);
+
+        /// <summary>
+        /// Change path to the game
+        /// </summary>
+        /// <returns></returns>
+        Task ChangeValuesAsync(GameDataModel model);
     }
 }

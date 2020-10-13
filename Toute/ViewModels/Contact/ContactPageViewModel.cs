@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace Toute
     /// </summary>
     public class ContactPageViewModel : BaseViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public members
 
         /// <summary>
@@ -58,11 +65,14 @@ namespace Toute
         /// </summary>
         public ContactPageViewModel()
         {
+            _logger.Info("Start setting up ContactPageViewModel");
             //Create a list
             Messages = new ObservableCollection<MessageModel>();
 
             //Create command
             SendMessageCommand = new ParametrizedRelayCommand(async (message) => await SendMessageAsync(message));
+
+            _logger.Info("Done setting up base constructor of ContactPageViewModel");
         }
 
         /// <summary>
@@ -81,11 +91,14 @@ namespace Toute
             ///Sets refresh time
             var refreshTime = 1;
 
+            _logger.Info("Start refreshing messages with the friend");
             //Make call to API for new messages, every x seconds.
             ViewModelApplication.ApplicationUser.RefreshMessages = new Timer(async(e) =>
             {
                 await RefreshMessagesWithTheUserAsync(CurrentChatUser.FriendId, refreshTime);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(refreshTime));
+
+            _logger.Info("Done setting up ContactPageViewModel");
         }
 
         #endregion
@@ -100,13 +113,17 @@ namespace Toute
         {
             await RunCommandAsync(() => SendMessageIsRunning, async () =>
             {
+
                 //Convert a TextBox
                 if (!(Textbox is TextBox textBox))
                     return;
+                    
 
                 //if text of TextBox is null or empty return
                 if (!(string.IsNullOrEmpty(textBox.Text)))
                 {
+                    _logger.Debug("Starts to send message");
+
                     //Send request to API
                     var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendMessage, new SendMessageRequest
                     {
@@ -129,7 +146,12 @@ namespace Toute
                         //Clear and Focus TextBox
                         textBox.Text = "";
                         textBox.Focus();
+                        _logger.Debug("Message successfully sent");
                         
+                    }
+                    else
+                    {
+                        _logger.Debug("Message not sent. Problem occurred when sending a message.");
                     }
                 }
             });
@@ -145,6 +167,7 @@ namespace Toute
         /// <param name="lastRefresh">Seconds from last refresh</param>
         private async Task RefreshMessagesWithTheUserAsync(string FriendId, int lastRefresh)
         {
+            _logger.Debug("Try to refresh messages");
             //Get current DateTime, and subtract lastRefresh seconds, to get when last refresh was 
             var LastRefresh = DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(lastRefresh));
 
@@ -159,6 +182,7 @@ namespace Toute
             //If there is successful response
             if (context?.Count > 0)
             {
+                _logger.Debug($"Found {context.Count} new messages, adding them to the list of messages");
                 //For every message...
                 foreach (var message in context)
                 {
@@ -177,6 +201,7 @@ namespace Toute
 
                 }
             }
+            _logger.Debug("Did not find any new messages");
         }
         #endregion
     }

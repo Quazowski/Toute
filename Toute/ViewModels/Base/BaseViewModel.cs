@@ -27,6 +27,12 @@ namespace Toute
             PropertyChanged(this, new PropertyChangedEventArgs(name));
         }
 
+        /// <summary>
+        /// Method that runs command asynchronously
+        /// </summary>
+        /// <param name="updatingFlag">Unique boolean value</param>
+        /// <param name="action">Action to perform</param>
+        /// <returns></returns>
         protected async Task RunCommandAsync(Expression<Func<bool>> updatingFlag, Func<Task> action)
         {
             lock (mGlobalLock)

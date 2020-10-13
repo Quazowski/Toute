@@ -1,32 +1,27 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
 
 namespace Toute
 {
     /// <summary>
-    /// Converter that convert boolean value, to HorizontalAlignment value
+    /// Converter that convert boolean value, to Double value (opacity)
     /// </summary>
-    public class InvertedBooleanToHorizontalAligmentConverter : BaseValueConverter<InvertedBooleanToHorizontalAligmentConverter>
+    public class BooleanToOpacityConverter : BaseValueConverter<BooleanToOpacityConverter>
     {
         /// <summary>
-        /// Converts a value of boolean type to HorizontalAlignment value
+        /// Converts a value of boolean type to Double value
         /// </summary>
-        /// <param name="value">Boolean value</param>
+        /// <param name="value">Double value</param>
         /// <param name="targetType">The type of the binding target property.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
         /// <returns>Converted value as HorizontalAlignment</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //If value is true...
             if ((bool)value)
-                //Returns 
-                return HorizontalAlignment.Left;
-            //Otherwise...
+                return 0.8;
             else
-                //Returns
-                return HorizontalAlignment.Right;
+                return 1;
 
         }
 

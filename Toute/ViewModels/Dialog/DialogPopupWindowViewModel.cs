@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Windows;
 
 namespace Toute
@@ -8,6 +9,12 @@ namespace Toute
     /// </summary>
     public class DialogPopupWindowViewModel : WindowViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
@@ -16,6 +23,8 @@ namespace Toute
         /// <param name="window">AddGameWindow</param>
         public DialogPopupWindowViewModel(DialogPopup window) : base(window)
         {
+            _logger.Info("Start setting up DialogPopupWindowViewModel");
+
             //Change DropShadowBorderPadding to 10
             DropShadowBorderPadding = new Thickness(10);
 
@@ -24,6 +33,8 @@ namespace Toute
 
             //Change a CloseCommand to close AddGameWindow
             CloseCommand = new RelayCommand(() => ClosePopup(window));
+
+            _logger.Info("Done setting up DialogPopupWindowViewModel");
         }
 
         #endregion
@@ -36,8 +47,12 @@ namespace Toute
         /// <param name="window">AddGameWindow</param>
         private void ClosePopup(DialogPopup window)
         {
-            //Close window
+            _logger.Debug("Try to close popup window");
+
+            //Close popup window
             window.Close();
+
+            _logger.Debug("Closed popup window");
         }
 
         #endregion

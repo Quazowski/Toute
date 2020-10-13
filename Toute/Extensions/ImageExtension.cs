@@ -28,10 +28,10 @@ namespace Toute
         }
 
         /// <summary>
-        /// Extension that convert byte[] to <see cref="System.Drawing.Image"/>
+        /// Extension that convert byte[] to <see cref="Image"/>
         /// </summary>
         /// <param name="imageInBytes">image in byte[]</param>
-        /// <returns>Image as <see cref="System.Drawing.Image"/></returns>
+        /// <returns>Image as <see cref="Image"/></returns>
         public static Image BytesToImage(this byte[] imageInBytes)
         {
             //using a MemoryStream
@@ -45,10 +45,10 @@ namespace Toute
 
         /// <summary>
         /// Extension that convert from byte[] 
-        /// to <see cref="System.Windows.Media.Imaging.BitmapImage"/>
+        /// to <see cref="BitmapImage"/>
         /// </summary>
         /// <param name="imageInBytes">Image in byte[] format</param>
-        /// <returns><see cref="System.Windows.Media.Imaging.BitmapImage"/></returns>
+        /// <returns><see cref="BitmapImage"/></returns>
         public static BitmapImage BytesToBitMapImage(this byte[] imageInBytes)
         {
             //using a MemoryStream...
@@ -68,11 +68,11 @@ namespace Toute
         }
 
         /// <summary>
-        /// Extension that convert from <see cref="System.Drawing.Image"/>
-        /// to <see cref="System.Windows.Media.Imaging.BitmapImage"/>
+        /// Extension that convert from <see cref="Image"/>
+        /// to <see cref="BitmapImage"/>
         /// </summary>
-        /// <param name="image">Image as <see cref="System.Drawing.Image"/></param>
-        /// <returns><see cref="System.Windows.Media.Imaging.BitmapImage"/></returns>
+        /// <param name="image">Image as <see cref="Image"/></param>
+        /// <returns><see cref="BitmapImage"/></returns>
         public static BitmapImage ImageToBitMapImage(this Image image)
         {
             //using MemoryStream...
@@ -100,6 +100,19 @@ namespace Toute
             return bitMapImage;
         }
 
+        /// <summary>
+        /// Extension that convert <see cref="Icon"/>
+        /// to byte[]
+        /// </summary>
+        /// <param name="icon">Icon to convert</param>
+        /// <returns></returns>
+        public static byte[] IconToBytes(this Icon icon)
+        {
+            //using a memory stream, convert to array
+            using MemoryStream ms = new MemoryStream();
+            icon.Save(ms);
+            return ms.ToArray();
+        }
 
     }
 }

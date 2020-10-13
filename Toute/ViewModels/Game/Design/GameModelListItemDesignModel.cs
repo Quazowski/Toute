@@ -24,17 +24,14 @@ namespace Toute
                 new GameModel
                 {
                     Title = "Name in Design Time",
-                    PathToGame = "Path in Design Time"
                 },
                 new GameModel
                 {
                     Title = "Second Name in Design Time",
-                    PathToGame = "Second Path in Design Time"
                 },
                 new GameModel
                 {
                     Title = "Third Name in Design Time",
-                    PathToGame = "Third Path in Design Time"
                 },
             };
         }

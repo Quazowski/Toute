@@ -9,7 +9,7 @@
              d:DataContext="{x:Static local:InfoControlDesignModel.Instance}">
     <Border Background="{StaticResource BackgroundLightOrangeBrush}"
             CornerRadius="30"
-            Margin="200 3">
+            Margin="100 3">
 
         <Grid>
             <Grid.ColumnDefinitions>

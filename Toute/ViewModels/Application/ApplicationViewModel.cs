@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using NLog;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -27,7 +27,7 @@ namespace Toute
         /// <summary>
         /// Logger to <see cref="ApplicationViewModel"/>
         /// </summary>
-        private readonly ILogger<ApplicationViewModel> _logger;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         #endregion
 
@@ -93,8 +93,10 @@ namespace Toute
         /// <summary>
         /// Default constructor for <see cref="ApplicationViewModel"/>
         /// </summary>
-        public ApplicationViewModel(ILogger<ApplicationViewModel> _logger)
+        public ApplicationViewModel()
         {
+            _logger.Info("Starts setting up ApplicationViewModel for a Application");
+
             //If application is in designer mode...
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             {
@@ -107,7 +109,6 @@ namespace Toute
                     //Hide side menu
                     SideMenuHidden = true;
                 }
-                //Otherwise...
                 else
                 {
                     //Show Side Menu
@@ -118,8 +119,11 @@ namespace Toute
                 CurrentPage = ApplicationPageHelper.GoToBasePage(DesignPage);                
             }
 
+            //Create new list for infos and errors
             InformationsAndErrors = new ObservableCollection<InfoControlViewModel>();
 
+            _logger.Info("Refreshing DeleteInfoAndErrors has started");
+            //Makes timer to clear this list over time
             DeleteInfoAndErrors = new Timer((e) =>
             {
                 RefreshList(InformationsAndErrors);
@@ -127,7 +131,8 @@ namespace Toute
 
             //Create new List of friends
             Friends = new ObservableCollection<FriendModel>();
-            logger = _logger;
+
+            _logger.Info("Done setting up ApplicationViewModel for a Application");
         }
 
         #endregion
@@ -143,6 +148,10 @@ namespace Toute
         /// pass new viewModel here</param>
         public void GoToPage(ApplicationPage page, BaseViewModel viewModel = null)
         {
+            _logger.Debug($"User attempt to go to {page} page");
+
+            //Be sure, the timer that refresh messages are removed
+            _logger.Info("Timer that refresh messages are removed");
             TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
 
             //If it is the same page and view model return
@@ -170,7 +179,8 @@ namespace Toute
 
             //Sets frame to given page
             CurrentPage = ApplicationPageHelper.GoToBasePage(CurrentApplicationPage, viewModel);
-            
+
+            _logger.Debug($"User successfully went to {page} page");
         }
 
         /// <summary>
@@ -178,8 +188,13 @@ namespace Toute
         /// </summary>
         public async Task Logout()
         {
+            _logger.Info($"User is logging out");
+
+            _logger.Info("Try to stop refresh messages and friend list");
             //Remove all method that are periodically fired
             TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
+            _logger.Info("Stopped refreshing messages and friend list");
+
 
             //Set ApplicationUser to null
             ViewModelApplication.ApplicationUser = null;
@@ -187,10 +202,16 @@ namespace Toute
             //Clear friends list
             ViewModelApplication.Friends = new ObservableCollection<FriendModel>();
 
+            ViewModelGame.Items = new ObservableCollection<GameModel>();
+
+            _logger.Debug("Removing user credentials from LocalDB");
             await SqliteDb.RemoveLoginCredentialsAsync();
+            _logger.Debug("Removed user credentials from LocalDB");
 
             //Go to login page
             ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
+
+            _logger.Info($"User logged out");
         }
 
         /// <summary>
@@ -200,6 +221,7 @@ namespace Toute
         /// <param name="informationsAndErrors">List to remove unneeded items</param>
         private void RefreshList(ObservableCollection<InfoControlViewModel> informationsAndErrors)
         {
+            _logger.Debug("RefreshList is called, start to clear not needed infos and errors...");
             //If there is any item...
             if (informationsAndErrors.Count > 0)
             {
@@ -218,6 +240,7 @@ namespace Toute
                     }
                 });
             }
+            _logger.Debug("Done clearing  not needed infos and errors");
         }
         #endregion
     }

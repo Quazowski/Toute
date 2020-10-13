@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,6 +20,12 @@ namespace Toute
     /// </summary>
     public class SideMenuViewModel : BaseViewModel
     {
+        #region Private members
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
         #region Public properties
 
         /// <summary>
@@ -188,6 +195,8 @@ namespace Toute
         /// </summary>
         public SideMenuViewModel()
         {
+            _logger.Info("Start setting up SideMenuViewModel");
+
             //Create commands
             SendFriendRequestCommand = new RelayCommand(async() => await SendFriendRequestAsync());
             AcceptFriendRequestCommand = new ParametrizedRelayCommand(async (FriendId) => await AcceptFriendRequestAsync(FriendId));
@@ -202,6 +211,7 @@ namespace Toute
             GamesCommand = new RelayCommand(GoToGamesPage);
             SettingsCommand = new RelayCommand(GoToSettingsPage);
 
+            _logger.Info("Done setting up SideMenuViewModel");
         }
 
         #endregion
@@ -219,7 +229,7 @@ namespace Toute
                 //If user is not logged, or TextBox is empty...
                 if (string.IsNullOrEmpty(NameOfFriendToAdd))
                     return;
-
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to send friend request to {NameOfFriendToAdd}");
                 //Sets values of friend request
                 var userToAdd = new SendFriendRequest
                 {
@@ -228,7 +238,15 @@ namespace Toute
 
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.SendFriendRequest, userToAdd);
                 if (result)
+                {
                     PopupExtensions.NewInfoPopup("Friend request sent");
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} sent friend request to {NameOfFriendToAdd}");
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} failed to send friend request to {NameOfFriendToAdd}");
+                }
+                    
             });
         }
 
@@ -240,6 +258,7 @@ namespace Toute
         {
             await RunCommandAsync(() => AcceptFriendIsRunning, async() => 
             {
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to accept friend request with ID: {FriendId}");
                 //Make a request Model
                 var userToAdd = new AddFriendRequest
                 {
@@ -256,6 +275,11 @@ namespace Toute
                     ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
                     //Set value of StatusOfFiendship in Friends list, to accepted with given friend
                     ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is accepted friend request with ID: {FriendId}");
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is failed  to accept friend request of friend with ID: {FriendId}");
                 }
             });
 
@@ -269,6 +293,7 @@ namespace Toute
         {
             await RunCommandAsync(() => DeclineFriendIsRunning, async () =>
             {
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to decline friend request with ID: {FriendId}");
                 //Make a request Model
                 var userToReject = new AddFriendRequest
                 {
@@ -285,6 +310,11 @@ namespace Toute
                     ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
                     //Remove friend from friends in ApllicationUser
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is declined friend request of friend ID: {FriendId}");
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is failed to decline friend request of friend with ID: {FriendId}");
                 }
             });
         }
@@ -297,6 +327,7 @@ namespace Toute
         {
             await RunCommandAsync(() => DeleteFriendIsRunning, async () =>
             {
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to delete friend with ID: {CurrentIdOfManagedFriend}");
                 //Make a request Model
                 var userToDelete = new AddFriendRequest
                 {
@@ -324,6 +355,11 @@ namespace Toute
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
                     //Clear CurrentIdOfManagedFriend 
                     CurrentIdOfManagedFriend = "";
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} deleted friend with friend ID: {CurrentIdOfManagedFriend}");
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is failed to delete friend request of friend with ID: {CurrentIdOfManagedFriend}");
                 }
             });
         }
@@ -335,6 +371,8 @@ namespace Toute
         {
             await RunCommandAsync(() => BlocFriendIsRunning, async () =>
             {
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to block friend with ID: {CurrentIdOfManagedFriend}");
+
                 //Close friend settings popup
                 IsFriendSettingsOpen = false;
 
@@ -365,7 +403,13 @@ namespace Toute
                     //Set friend in application user to blocked
                     ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     //Set we are not managing this friend
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} blocked friend with friend ID: {CurrentIdOfManagedFriend}");
                     CurrentIdOfManagedFriend = "";
+
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is failed to block friend request of friend with ID: {CurrentIdOfManagedFriend}");
                 }
             });
         }
@@ -378,6 +422,7 @@ namespace Toute
         {
             await RunCommandAsync(() => UnblockFriendIsRunning, async () =>
             {
+                _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to unblock friend with ID: {FriendId}");
                 //Make a request Model
                 var friendToUnblock = new UnblockFriendRequest
                 {
@@ -395,6 +440,12 @@ namespace Toute
 
                     //Change StatusOfFriendship in friends to accepted
                     ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} unblocked friend with friend ID: {FriendId}");
+
+                }
+                else
+                {
+                    _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is failed to unblock friend request of friend with ID: {FriendId}");
                 }
             });
         }
@@ -406,6 +457,9 @@ namespace Toute
         /// <param name="FriendId">ID of friend</param>
         private void GoToUser(object FriendId)
         {
+            _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}");
+
+            _logger.Info("Deleted refreshing messages");
             //Remove previous refreshing
             TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
 
@@ -424,7 +478,7 @@ namespace Toute
                     //Find if he exists
                     if(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId) != null)
                     {
-                        //Deselect him
+                        //De-select him
                         ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).IsSelected = false;
                     }
                 }
@@ -443,6 +497,10 @@ namespace Toute
                 //Go to chat page with specific user of given id
                 ViewModelApplication.GoToPage(ApplicationPage.ContactPage, chatUser);
             }
+            else
+            {
+                _logger.Debug($"Failed to go to chat with friend of ID: {FriendId}. User is blocked, or status of friendship is pending");
+            }
 
         }
 
@@ -452,13 +510,15 @@ namespace Toute
         /// <param name="FriendId">Friend ID that is clicked</param>
         private void OpenFriendSettings(object FriendId)
         {
+            _logger.Debug($"User is trying to open settings of friend ID: {FriendId}");
+
             //Set CurrentIdOfManagedFriend
             CurrentIdOfManagedFriend = FriendId.ToString();
 
-            //If StatusOfFriendship is accepted with this friend,
-            //i.e open settings only for accepted friend
+            //Open settings only for accepted friend
             if (ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status == StatusOfFriendship.Accepted)
             {
+                _logger.Debug($"User opened settings of friend ID: {FriendId}");
                 IsFriendSettingsOpen = true;
             }
         }
@@ -511,6 +571,8 @@ namespace Toute
                 //Gets user id
                 var FriendId = ViewModelApplication.CurrentFriendId;
 
+                _logger.Debug($"Attempt to refresh messages with {FriendId}");
+
                 //Make a request to API
                 var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages + $"/{LastPageLoaded}", new GetMessagesRequest
                 {
@@ -520,6 +582,7 @@ namespace Toute
                 //If there is successful response
                 if (context?.Count > 0)
                 {
+                    _logger.Debug($"Found {context.Count} new messages. Now adding them into the message list");
                     //If number is less that 20 (twenty, because its default number of
                     //returning items from pagination)
                     if (context.Count < 20)
@@ -544,6 +607,10 @@ namespace Toute
                         });
                     }
                 }
+                else
+                {
+                    _logger.Debug($"No new messages with friend of ID: {FriendId} were found");
+                }
             });
         }
 
@@ -554,7 +621,7 @@ namespace Toute
         /// <param name="friends">Actual friend IDs of user</param>
         public async Task RefreshFriendsAsync(ObservableCollection<FriendModel> friends)
         {
-
+            _logger.Debug("Attempt to refresh friend list");
             //Make a request
             var listOfFriendsId = new RefreshFriendsRequest();
 
@@ -571,6 +638,7 @@ namespace Toute
             //If there are any friends to add...
             if (TContext?.FriendsToAdd.Count > 0)
             {
+                _logger.Debug($"Found {TContext.FriendsToAdd.Count} new friends to add");
                 //for every friends...
                 foreach (var friend in TContext.FriendsToAdd)
                 {
@@ -593,12 +661,14 @@ namespace Toute
                             Status = friend.Status,
                         });
                     });
+                    _logger.Debug($"Added Friend with ID: {friend.FriendId} to friend list");
                 }
             }
 
             //If there are any friends to remove...
             if (TContext?.FriendsToRemove.Count > 0)
             {
+                _logger.Debug($"Found {TContext.FriendsToRemove.Count} new friends to remove");
                 //For every friend to remove...
                 foreach (var friend in TContext.FriendsToRemove)
                 {
@@ -610,7 +680,7 @@ namespace Toute
                             ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
                         }
                     }
-
+                    
                     //remove form ApplicationUser friends
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
 
@@ -619,8 +689,11 @@ namespace Toute
                     {
                         ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friend));
                     });
+
+                    _logger.Debug($"Remove Friend with ID: {ViewModelApplication.CurrentFriendId} from friend list");
                 }
             }
+            _logger.Debug("Done refreshing friend list");
         }
         #endregion
     }

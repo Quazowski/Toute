@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace Toute
+﻿namespace Toute
 {
+    /// <summary>
+    /// Attached property that shows if command attached to the
+    /// button is running
+    /// </summary>
     public class IsButtonBusy : BaseAttachedProperty<IsButtonBusy, bool>
     {
 

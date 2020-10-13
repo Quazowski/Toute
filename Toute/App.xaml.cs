@@ -16,20 +16,7 @@ namespace Toute
     {
         #region Private members
 
-        private readonly ILogger<App> _logger;
-
-        #endregion
-
-        #region Constructor
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        /// <param name="logger">Default logger for application</param>
-        public App(ILogger<App> logger)
-        {
-            _logger = logger;
-        }
+        private readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         #endregion
 
@@ -42,7 +29,7 @@ namespace Toute
         /// <param name="e"></param>
         protected override async void OnStartup(StartupEventArgs e)
         {
-            _logger.LogInformation("Application starting...");
+            _logger.Info("Application starting...");
 
             //Set base settings for app
             base.OnStartup(e);
@@ -81,21 +68,24 @@ namespace Toute
             }).BuildDI();
 
 
-            _logger.LogInformation("Configured IWebHost for application");
+            _logger.Info("Configured IWebHost for application");
 
-
+            _logger.Debug("Checking if LocalDB is created, if not, create one");
             await SqliteDb.EnsureDataStoreAsync();
 
+            _logger.Debug("Checking if user credentials exists in database");
             //If user credentials were saved...
             if (SqliteDb.HasCredentials())
             {
+                _logger.Debug($"Found User");
                 //If user credentials exists, get all user credentials
                 //and go to GamesPage
-                await UserApplicationHelpers.LoginToApp(_logger);
+                await UserApplicationHelpers.LoginToApp();
                 ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
             }
             else
             {
+                _logger.Debug("Did not found user");
                 ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
             }
         }

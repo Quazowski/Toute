@@ -9,7 +9,7 @@
 
 
     <!--Main cointerner of popup-->
-    <Popup IsOpen="{Binding CurrentItem.PopupOpen}"
+    <Popup IsOpen="{Binding SettingsPopupOpen}"
            StaysOpen="False"
            Placement="MousePoint" 
            HorizontalOffset="-105" 
@@ -35,6 +35,7 @@
                             Style="{StaticResource PopupButton}"
                             Background="{StaticResource BackgroundOrangeBrush}"
                             Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Command="{Binding SetNewValuesCommand}"
                             Padding="15 5"/>
 
                     <!--Delete game button-->

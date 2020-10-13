@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Toute.Core;
 
 namespace Toute
 {
+    /// <summary>
+    /// Static class that will get basic services from DI, and make them static
+    /// </summary>
     public static class DI
     {
         public static ApplicationViewModel ViewModelApplication => CoreDI.ServiceProvider.GetService<ApplicationViewModel>();

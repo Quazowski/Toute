@@ -202,7 +202,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local:UserChatControl 
-                                                           Visibility="{Binding Status, Converter={local:StatusOfBlockedToVisibilityConverter}}"/>
+                                                           Visibility="{Binding Status, Converter={local:StatusOfBlockToVisibilityConverter}}"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

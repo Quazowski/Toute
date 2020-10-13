@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System.Windows.Media.Imaging;
 
 namespace Toute
 {
@@ -9,33 +9,28 @@ namespace Toute
     public class GameModel : BaseViewModel
     {
         /// <summary>
+        /// Unique ID of the file
+        /// </summary>
+        public string FileId { get; set; }
+
+        /// <summary>
         /// File name
         /// </summary>
         public string Title { get; set; }
 
         /// <summary>
-        /// Path to the image of a file
+        /// Image of BitmapImage format
         /// </summary>
-        public string PathToImage { get; set; }
+        public BitmapImage BitmapImage => BytesImage.BytesToBitMapImage();
 
         /// <summary>
-        /// Full path to the image of a file
+        /// Image of byte[] format
         /// </summary>
-        public string FullPathToImage => string.IsNullOrEmpty(PathToImage) ? null : Path.GetFullPath(PathToImage);
+        public byte[] BytesImage { get; set; }
 
         /// <summary>
         /// Full path to the file
         /// </summary>
-        public string PathToFile { get; set; }
-
-        /// <summary>
-        /// Path to file
-        /// </summary>
-        public string PathToGame { get; set; }
-
-        /// <summary>
-        /// Is settings popup open
-        /// </summary>
-        public bool PopupOpen { get; set; }
+        public string Path { get; set; }
     }
 }

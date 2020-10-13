@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Globalization;
+using System.Windows;
 
 namespace Toute
 {
     /// <summary>
     /// Converter that convert boolean value, to HorizontalAlignment value
     /// </summary>
-    public class BooleanToOpacityConverter : BaseValueConverter<BooleanToOpacityConverter>
+    public class BooleanToHorizontalAligmentConverter : BaseValueConverter<BooleanToHorizontalAligmentConverter>
     {
         /// <summary>
         /// Converts a value of boolean type to HorizontalAlignment value
@@ -18,10 +19,14 @@ namespace Toute
         /// <returns>Converted value as HorizontalAlignment</returns>
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            //If value is true...
             if ((bool)value)
-                return 0.8;
+                //Returns 
+                return HorizontalAlignment.Right;
+            //Otherwise...
             else
-                return 1;
+                //Returns
+                return HorizontalAlignment.Left;
 
         }
 
@@ -32,7 +37,7 @@ namespace Toute
         /// <param name="targetType">The type to convert to.</param>
         /// <param name="parameter">The converter parameter to use.</param>
         /// <param name="culture">The culture to use in the converter.</param>
-        /// <returns>Converted value. If the method returns null, the valid null value is used.</returns>
+        /// <returns>Always null</returns>
         public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;

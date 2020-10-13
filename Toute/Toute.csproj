@@ -69,20 +69,9 @@
 	  
   </ItemGroup>
 
-	<ItemGroup>
-		<Resource Include="Files\ImagesOfFiles\*.png">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Resource>
-	</ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Toute.Core\Toute.Core.csproj" />
     <ProjectReference Include="..\Toute.Relational\Toute.Relational.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Files\" />
-    <Folder Include="Files\ImagesOfFiles\" />
   </ItemGroup>
 
   <ItemGroup>
