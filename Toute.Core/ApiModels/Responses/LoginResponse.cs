@@ -35,6 +35,7 @@ namespace Toute.Core
         /// <summary>
         /// Authorization Token
         /// </summary>
-        public string JWTToken { get; set; }
+
+        public TokenResponse Token { get; set; }
     }
 }

@@ -42,6 +42,7 @@ namespace Toute
         /// Model that hold actual ID, of friend that is managed
         /// </summary>
         public string CurrentFriendId { get; set; }
+        public bool LogoutIsRunning { get; set; }
 
         public ObservableCollection<InfoControlViewModel> InformationsAndErrors { get; set; }
 
@@ -150,9 +151,12 @@ namespace Toute
         {
             _logger.Debug($"User attempt to go to {page} page");
 
-            //Be sure, the timer that refresh messages are removed
-            _logger.Info("Timer that refresh messages are removed");
-            TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
+            //Remove refreshing messages, only when user was on chat page 
+            if (CurrentApplicationPage == ApplicationPage.ContactPage)
+            {
+                _logger.Info("Timer that refresh messages are removed");
+                TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
+            }
 
             //If it is the same page and view model return
             if (CurrentApplicationPage == page && CurrentViewModel == viewModel)
@@ -177,8 +181,11 @@ namespace Toute
             //Sets CurrentApplicationPage to given page
             CurrentApplicationPage = page;
 
-            //Sets frame to given page
-            CurrentPage = ApplicationPageHelper.GoToBasePage(CurrentApplicationPage, viewModel);
+            Application.Current.Dispatcher.Invoke(delegate
+            {
+                //Sets frame to given page
+                CurrentPage = ApplicationPageHelper.GoToBasePage(CurrentApplicationPage, viewModel);
+            });
 
             _logger.Debug($"User successfully went to {page} page");
         }
@@ -186,32 +193,35 @@ namespace Toute
         /// <summary>
         /// Method that logout user from Application
         /// </summary>
-        public async Task Logout()
+        public async Task LogoutAsync()
         {
-            _logger.Info($"User is logging out");
+            await RunCommandAsync(() => LogoutIsRunning, async () =>
+            {
+                _logger.Info($"User is logging out");
 
-            _logger.Info("Try to stop refresh messages and friend list");
-            //Remove all method that are periodically fired
-            TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
-            _logger.Info("Stopped refreshing messages and friend list");
+                _logger.Debug("Try to stop refresh messages and friend list");
+                //Remove all method that are periodically fired
+                TimerExtensions.RemoveRepetingMethodsFromApplicationUser();
+                _logger.Info("Stopped refreshing messages and friend list");
 
 
-            //Set ApplicationUser to null
-            ViewModelApplication.ApplicationUser = null;
+                //Set ApplicationUser to null
+                ViewModelApplication.ApplicationUser = null;
+                ViewModelSideMenu.NameOfFriendToAdd = "";
+                //Clear friends list
+                ViewModelApplication.Friends = new ObservableCollection<FriendModel>();
 
-            //Clear friends list
-            ViewModelApplication.Friends = new ObservableCollection<FriendModel>();
+                ViewModelGame.Items = new ObservableCollection<GameModel>();
 
-            ViewModelGame.Items = new ObservableCollection<GameModel>();
+                _logger.Debug("Removing user credentials from LocalDB");
+                await SqliteDb.RemoveLoginCredentialsAsync();
+                _logger.Debug("Removed user credentials from LocalDB");
 
-            _logger.Debug("Removing user credentials from LocalDB");
-            await SqliteDb.RemoveLoginCredentialsAsync();
-            _logger.Debug("Removed user credentials from LocalDB");
+                //Go to login page
+                ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
 
-            //Go to login page
-            ViewModelApplication.GoToPage(ApplicationPage.LoginPage);
-
-            _logger.Info($"User logged out");
+                _logger.Info($"User logged out");
+            });
         }
 
         /// <summary>

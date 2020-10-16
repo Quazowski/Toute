@@ -22,6 +22,8 @@ namespace Toute.Core.Routes
         public const string ChangePassword = BaseUrl + "api/ChangePassword";
 
         public const string ChangeImage = BaseUrl + "api/ChangeImage";
+
+        public const string RefreshToken = BaseUrl + "api/RefreshToken";
     }
 
     public class FriendRoutes : BaseRoute

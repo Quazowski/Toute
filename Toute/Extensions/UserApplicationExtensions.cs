@@ -38,7 +38,7 @@ namespace Toute
                 Email = credentials.Email,
                 Friends = Friends,
                 Image = credentials.Image,
-                JWTToken = credentials.JWTToken
+                Token = credentials.Token
             };
 
             //Set application user to made user
@@ -66,15 +66,13 @@ namespace Toute
 
             _logger.Trace($"Got all files from local DB");
 
-            _logger.Info("Refreshing friends of the user is running...");
-
             //Run refreshing friend list
             ViewModelApplication.ApplicationUser.RefreshFriends = new Timer(async (e) =>
             {
                 await ViewModelSideMenu.RefreshFriendsAsync(ViewModelApplication.Friends);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
-
+            _logger.Info("Refreshing friends of the user is running...");
         }
     }
 }

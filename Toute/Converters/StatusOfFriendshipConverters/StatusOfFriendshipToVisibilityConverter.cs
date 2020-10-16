@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows;
-using Toute.Core.DataModels;
+using Toute.Core;
 
 namespace Toute
 {

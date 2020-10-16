@@ -42,14 +42,9 @@ namespace Toute
         public string Email { get; set; } = ViewModelApplication.ApplicationUser.Email;
 
         /// <summary>
-        /// Image in bytes
-        /// </summary>
-        public byte[] ImageBytes { get; set; } = ViewModelApplication.ApplicationUser.Image;
-
-        /// <summary>
         /// Image as BitmapImage
         /// </summary>
-        public BitmapImage UserImage => ViewModelApplication.ApplicationUser.UserImage;
+        public BitmapImage UserImage { get; set; } = ViewModelApplication.ApplicationUser.UserImage;
 
         /// <summary>
         /// Status of <see cref="SaveChangesAsync(object)"/>
@@ -133,7 +128,7 @@ namespace Toute
                         ViewModelApplication.ApplicationUser.Username = Name;
 
                         //Get new JWTToken
-                        ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
+                        ViewModelApplication.ApplicationUser.Token = context.Token;
 
                         //Show message
                         PopupExtensions.NewInfoPopup($"Name changed successfully.");
@@ -163,7 +158,7 @@ namespace Toute
                         ViewModelApplication.ApplicationUser.Email = Email;
 
                         //Get new JWTToken
-                        ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
+                        ViewModelApplication.ApplicationUser.Token = context.Token;
 
                         //Show message
                         PopupExtensions.NewInfoPopup("Email changed successfully.");
@@ -193,7 +188,7 @@ namespace Toute
                         if (context != null)
                         {
                             //Get new JWTToken
-                            ViewModelApplication.ApplicationUser.JWTToken = context.JWTToken;
+                            ViewModelApplication.ApplicationUser.Token = context.Token;
 
                             //Show message
                             PopupExtensions.NewInfoPopup("Password changed successfully.");
@@ -218,7 +213,7 @@ namespace Toute
         /// </summary>
         public async Task Logout()
         {
-            await ViewModelApplication.Logout();
+            await ViewModelApplication.LogoutAsync();
         }
 
         /// <summary>
@@ -270,12 +265,13 @@ namespace Toute
                     //If ApiResponse is successful
                     if (result)
                     {
-                        //Set current image of user, to new image
-                        ImageBytes = ImageToChange.Image;
-
                         //Set ApplicationUser Image, to new image
                         ViewModelApplication.ApplicationUser.Image = ImageToChange.Image;
-                        _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Id}");
+
+                        //Set new image in settings page
+                        UserImage = ImageToChange.Image.BytesToBitMapImage();
+
+                        _logger.Info($"User with [ID]: [{ViewModelApplication.ApplicationUser.Id}] changed photo");
                     }
                 }
                 else

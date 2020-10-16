@@ -4,6 +4,7 @@ using NLog.Web;
 using System.Threading.Tasks;
 using System.Windows;
 using Toute.Core;
+using Toute.Relational;
 using static Toute.Core.CoreDI;
 using static Toute.DI;
 

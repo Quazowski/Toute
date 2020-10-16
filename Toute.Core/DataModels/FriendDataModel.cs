@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Toute.Core.DataModels;
 
-namespace Toute
+namespace Toute.Core
 {
     /// <summary>
     /// A Model for Friend, that will be saved to DB

@@ -62,5 +62,13 @@ namespace Toute.Core
         /// </summary>
         /// <returns></returns>
         Task ChangeValuesAsync(GameDataModel model);
+
+        /// <summary>
+        /// Change user token and refresh token
+        /// </summary>
+        /// <param name="Token">JWToken</param>
+        /// <param name="RefreshToken">Refresh token</param>
+        /// <returns></returns>
+        Task ChangeUserTokens(string Token, string RefreshToken);
     }
 }

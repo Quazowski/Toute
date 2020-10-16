@@ -19,7 +19,6 @@
             <RowDefinition Height="auto"/>
 
         </Grid.RowDefinitions>
-
         <!--Messages-->
         <Grid Grid.Row="0"
                 d:DataContext="{x:Static local:MessageBoxListDesignModel.Instance}">
@@ -31,7 +30,7 @@
                        VerticalAlignment="Top"
                        FontSize="32"
                        HorizontalAlignment="Center"/>
-            
+
             <ScrollViewer x:Name="ScrollMessages"
                           local:ScrollToBottomOnLoadAttachedProperty.Value="True"                        
                           local:ScrollToBottomOnValueChangedAttachedProperty.Value="True">

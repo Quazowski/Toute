@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using Toute.Core;
 
 namespace Toute
 {
@@ -24,23 +25,23 @@ namespace Toute
                 new FriendModel
                 {
                     Name = "Design",
-                    Status = Core.DataModels.StatusOfFriendship.Accepted,
+                    Status = StatusOfFriendship.Accepted,
                     IsSelected = true
                 },
                 new FriendModel
                 {
                     Name = "Short Design",
-                    Status = Core.DataModels.StatusOfFriendship.Blocked
+                    Status = StatusOfFriendship.Blocked
                 },
                 new FriendModel
                 {
                     Name = "Long name in design",
-                    Status = Core.DataModels.StatusOfFriendship.Pending
+                    Status = StatusOfFriendship.Pending
                 },
                 new FriendModel
                 {
                     Name = "Second Design",
-                    Status = Core.DataModels.StatusOfFriendship.Accepted
+                    Status = StatusOfFriendship.Accepted
                 },
             };
         }

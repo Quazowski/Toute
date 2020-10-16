@@ -12,7 +12,6 @@ namespace Toute.Core
         /// </summary>
         public virtual string Id { get; set; }
 
-
         /// <summary>
         /// Username of the user
         /// </summary>
@@ -36,8 +35,16 @@ namespace Toute.Core
         /// <summary>
         /// Authorization token
         /// </summary>
-        public virtual string JWTToken { get; set; }
+        public virtual string Token { get; set; }
 
+        /// <summary>
+        /// Refresh authorization token
+        /// </summary>
+        public virtual string RefreshToken { get; set; }
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LoginCredentialsDataModel()
         {
             Friends = new List<FriendDataModel>();

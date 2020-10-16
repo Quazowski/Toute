@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Toute.Core.DataModels;
+using Toute.Core;
 
 namespace Toute.Core
 {

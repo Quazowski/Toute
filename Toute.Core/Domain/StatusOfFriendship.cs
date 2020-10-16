@@ -1,4 +1,4 @@
-﻿namespace Toute.Core.DataModels
+﻿namespace Toute.Core
 {
     /// <summary>
     /// All status than user can have with a friend

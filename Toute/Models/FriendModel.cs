@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
-using Toute.Core.DataModels;
+using Toute.Core;
 
 namespace Toute
 {

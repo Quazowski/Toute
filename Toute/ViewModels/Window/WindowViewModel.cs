@@ -116,6 +116,9 @@ namespace Toute
             CloseCommand = new RelayCommand(Close);
 
             _logger.Info("Done setting up WindowViewModel");
+
+            //FIx window resize issue
+            var resizer = new WindowResizer(_window);
         }
 
         #endregion
@@ -128,12 +131,7 @@ namespace Toute
         private void Minimize()
         {
             //Minimize window
-            //_window.WindowState = WindowState.Minimized;
-            ViewModelApplication.InformationsAndErrors.Add(new InfoControlViewModel
-            {
-                Message = "test",
-                IsError = true
-            });
+            _window.WindowState = WindowState.Minimized;
 
             _logger.Debug("Window is Minimized");
         }
