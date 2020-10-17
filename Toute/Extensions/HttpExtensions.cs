@@ -18,18 +18,19 @@ namespace Toute
     public static class HttpExtensions
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Method that will send request to the API, and 
         /// will except to return Response.
         /// </summary>
-        /// <param name="url">Url where to make a call to API</param>
+        /// <param name="url">URL where to make a call to API</param>
         /// <param name="RequestModel">Model that will be sent with the request</param>
         /// <returns>Returns boolean. If request is successful
         /// it will return true, otherwise false</returns>
         public static async Task<bool> HandleHttpRequestAsync(string url, object RequestModel)
         {
-            _logger.Debug($"Requesting API to url: {url}");
+            _logger.Debug($"Requesting API to URL: {url}");
             //Get user token
             var token = ViewModelApplication.ApplicationUser?.Token;
 
@@ -37,7 +38,7 @@ namespace Toute
             {
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
-                _logger.Debug($"Got response from the server from url: {url}. Response is of StatusCode: {response.StatusCode}");
+                _logger.Debug($"Got response from the server from URL: {url}. Response is of StatusCode: {response.StatusCode}");
 
                 //If response status code is OK...
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -67,15 +68,17 @@ namespace Toute
                 //If user is not Unauthorized
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
+                    //Check if the token is expired, or user want to access to the page, where he is not allowed
                     if (response.Headers.FirstOrDefault(x => x.Key == "Token-Expired").Value != null)
                     {
+                        //If token was expired, and user got new token request page again
                         if (await RefreshTokenAsync())
                             return await HandleHttpRequestAsync(url, RequestModel);
                     }
                 }
                 else if (response.StatusCode == HttpStatusCode.InternalServerError)
                 {
-                    _logger.Warn($"Internal server error from Url: {url}");
+                    _logger.Warn($"Internal server error from URL: {url}");
 
                     //Show error message...
                     PopupExtensions.NewErrorPopup("Server not responding, try again later.");
@@ -108,7 +111,7 @@ namespace Toute
             catch (Exception e)
             {
                 _logger.Error(e);
-                PopupExtensions.NewErrorPopup("Error occurred, try again later.");
+                PopupExtensions.NewErrorPopup("Can not request server. Try again later.");
             }
 
             //If try statement failed, return false.
@@ -121,12 +124,12 @@ namespace Toute
         /// will except to return Response of T type.
         /// </summary>
         /// <typeparam name="T">The type of expected return type</typeparam>
-        /// <param name="url">Url where to make a call to API</param>
+        /// <param name="url">URL where to make a call to API</param>
         /// <param name="RequestModel">Model that will be sent with the request</param>
         /// <returns></returns>
         public static async Task<T> HandleHttpRequestOfTResponseAsync<T>(string url, object RequestModel)
         {
-            _logger.Debug($"Requesting API to url: {url}");
+            _logger.Debug($"Requesting API to URL: {url}");
 
             //Get user token
             var token = ViewModelApplication.ApplicationUser?.Token;
@@ -135,7 +138,7 @@ namespace Toute
             {
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
-                _logger.Debug($"Got response from the server from url: {url}. Response is of StatusCode: {response.StatusCode}");
+                _logger.Debug($"Got response from the server from URL: {url}. Response is of StatusCode: {response.StatusCode}");
 
                 //If response status code is OK and/or there is a context back...
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -166,15 +169,17 @@ namespace Toute
                 //If user is not Unauthorized
                 else if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    if(response.Headers.FirstOrDefault(x => x.Key == "Token-Expired").Value != null)
+                    //Check if the token is expired, or user want to access to the page, where he is not allowed
+                    if (response.Headers.FirstOrDefault(x => x.Key == "Token-Expired").Value != null)
                     {
-                        if(await RefreshTokenAsync())
+                        //If token was expired, and user got new token request page again
+                        if (await RefreshTokenAsync())
                             return await HandleHttpRequestOfTResponseAsync<T>(url, RequestModel);
                     }
                 }
                 else if(response.StatusCode == HttpStatusCode.InternalServerError)
                 {
-                    _logger.Warn($"Internal server error from Url: {url}");
+                    _logger.Warn($"Internal server error from URL: {url}");
 
                     //Show error message...
                     PopupExtensions.NewErrorPopup("Server not responding, try again later.");
@@ -213,91 +218,102 @@ namespace Toute
             return default;
         }
 
-
-
         private static async Task<bool> RefreshTokenAsync()
         {
-            _logger.Debug($"Got Expired-Token response. Try to refresh token. Requesting API to url: {UserRoutes.RefreshToken}");
-
-            var userFromLocalDB = await SqliteDb.GetLoginCredentialsAsync();
-
-            if (userFromLocalDB == null)
-                return false;
-
+            await semaphoreSlim.WaitAsync();
             try
             {
-                var authorizationResponse = await WebRequests.PostAsync(UserRoutes.RefreshToken, new RefreshTokenRequest
-                {
-                    Token = ViewModelApplication.ApplicationUser.Token,
-                    RefreshToken = userFromLocalDB.RefreshToken
-                });
+                _logger.Debug($"Got Expired-Token response. Try to refresh token. Requesting API to URL: {UserRoutes.RefreshToken}");
 
-                if (authorizationResponse.StatusCode == HttpStatusCode.OK)
-                {
-                    var AuthContext = authorizationResponse.DeseralizeHttpResponse<ApiResponse<TokenResponse>>();
+                //Get user from DB
+                var userFromLocalDB = await SqliteDb.GetLoginCredentialsAsync();
 
-                    if (AuthContext.IsSuccessful)
+                //If no user was found in DB, our user it not logged, return false
+                if (userFromLocalDB == null || ViewModelApplication.ApplicationUser == null)
+                    return false;
+
+                try
+                {
+                    //Make a request, to get new token
+                    var response = await WebRequests.PostAsync(UserRoutes.RefreshToken, new RefreshTokenRequest
                     {
-                        _logger.Debug($"Response from  url: {UserRoutes.RefreshToken} is successful. Saving new token to localDB");
-                        //Set new token for a user
-                        ViewModelApplication.ApplicationUser.Token = AuthContext.TResponse.Token;
+                        Token = ViewModelApplication.ApplicationUser.Token,
+                        RefreshToken = userFromLocalDB.RefreshToken
+                    });
 
-                        //Set new refresh token for a user
-                        await SqliteDb.ChangeUserTokens(AuthContext.TResponse.Token, AuthContext.TResponse.RefreshToken);
+                    if (response.StatusCode == HttpStatusCode.OK)
+                    {
+                        //If user responded OK, deseralize response
+                        var AuthContext = response.DeseralizeHttpResponse<ApiResponse<TokenResponse>>();
 
-                        return true;
+                        //If response contain new tokens...
+                        if (AuthContext.IsSuccessful)
+                        {
+                            _logger.Debug($"Response from  URL: {UserRoutes.RefreshToken} is successful. Saving new token to localDB");
+                            //Set new token for a user
+                            ViewModelApplication.ApplicationUser.Token = AuthContext.TResponse.Token;
+
+                            //Set new refresh token for a user
+                            await SqliteDb.ChangeUserTokens(AuthContext.TResponse.Token, AuthContext.TResponse.RefreshToken);
+
+                            return true;
+                        }
+                        else
+                        {
+                            await ViewModelApplication.LogoutAsync();
+                            PopupExtensions.NewErrorPopup("Authorization failed. Please login again...");
+                            _logger.Info($"Response: {UserRoutes.RefreshToken} returned failed status. Status code is: {response.StatusCode}. Did not refreshed token for a user.");
+                            return false;
+                        }
+                    }
+                    else if (response.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        _logger.Error($"Internal server error from when requesting URL: {UserRoutes.RefreshToken}");
+
+                        //Show error message...
+                        PopupExtensions.NewErrorPopup("Server not responding, try again later.");
+
+                        return false;
                     }
                     else
                     {
                         await ViewModelApplication.LogoutAsync();
                         PopupExtensions.NewErrorPopup("Authorization failed. Please login again...");
-                        _logger.Info($"Response: {UserRoutes.RefreshToken} returned failed status. Status code is: {authorizationResponse.StatusCode}. Did not refreshed token for a user.");
+                        _logger.Info($"Response: {UserRoutes.RefreshToken} returned failed status. Status code is: {response.StatusCode}. Did not refreshed token for a user.");
                         return false;
                     }
                 }
-                else if (authorizationResponse.StatusCode == HttpStatusCode.InternalServerError)
+                catch (HttpRequestException e)
                 {
-                    _logger.Error($"Internal server error from when requesting URL: {UserRoutes.RefreshToken}");
+                    try
+                    {
+                        using (var client = new WebClient())
+                        using (client.OpenRead("http://google.com/generate_204"))
 
-                    //Show error message...
-                    PopupExtensions.NewErrorPopup("Server not responding, try again later.");
+                            PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
+                        _logger.Error(e);
 
-                    return false;
+                    }
+                    catch
+                    {
+                        PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
+                        _logger.Warn(e);
+
+                    }
+
                 }
-                else
+                catch (Exception e)
                 {
-                    await ViewModelApplication.LogoutAsync();
-                    PopupExtensions.NewErrorPopup("Authorization failed. Please login again...");
-                    _logger.Info($"Response: {UserRoutes.RefreshToken} returned failed status. Status code is: {authorizationResponse.StatusCode}. Did not refreshed token for a user.");
-                    return false;
-                }
-            }
-            catch (HttpRequestException e)
-            {
-                try
-                {
-                    using (var client = new WebClient())
-                    using (client.OpenRead("http://google.com/generate_204"))
-
-                    PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
                     _logger.Error(e);
-
-                }
-                catch
-                {
-                    PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
-                    _logger.Warn(e);
-
+                    PopupExtensions.NewErrorPopup("Can not request server. Try again later.");
                 }
 
+                return false;
             }
-            catch (Exception e)
+            finally
             {
-                _logger.Error(e);
-                PopupExtensions.NewErrorPopup("Can not request server. Try again later.");
+                semaphoreSlim.Release();
             }
-
-            return false;
         }
     }
 

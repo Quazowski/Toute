@@ -219,7 +219,7 @@ namespace Toute
 
         /// <summary>
         /// Method that will process sending friend request
-        /// to the web server
+        /// to the API
         /// </summary>
         private async Task SendFriendRequestAsync()
         {
@@ -234,8 +234,10 @@ namespace Toute
                 {
                     FriendUsername = NameOfFriendToAdd
                 };
-
+                
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.SendFriendRequest, userToAdd);
+
+                //If response is successful
                 if (result)
                 {
                     NameOfFriendToAdd = "";
@@ -265,7 +267,6 @@ namespace Toute
                     FriendId = FriendId.ToString()
                 };
 
-                //Gets a result
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.AddFriend, userToAdd);
 
                 //If request succeeded
@@ -457,10 +458,8 @@ namespace Toute
         /// <param name="FriendId">ID of friend</param>
         private void GoToUser(object FriendId)
         {
-            if(ViewModelApplication.ApplicationUser.Id == FriendId.ToString())
-            {
+            if (ViewModelApplication.CurrentFriendId == FriendId.ToString())
                 return;
-            }
 
             _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}");
 
@@ -470,6 +469,13 @@ namespace Toute
 
             //Finds user of given if
             var chatUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
+
+            if (chatUser == null)
+            {
+                _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}, but user does not exist.");
+                return;
+            }
+                
 
             //Create new ObservableCollection with messages
             chatUser.Messages = new ObservableCollection<MessageModel>();
@@ -700,6 +706,12 @@ namespace Toute
             }
             _logger.Debug("Done refreshing friend list");
         }
+        #endregion
+
+        #region Public helpers
+
+
+
         #endregion
     }
 }
