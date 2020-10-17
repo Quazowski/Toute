@@ -19,7 +19,7 @@ namespace Toute
         {
             await this.AddSlideAndFadeAnimation(PageAnimation.TopSlides, false, keepMargin: false);
 
-            await Task.Delay(2000);
+            await Task.Delay(5000);
 
             await this.AddSlideAndFadeAnimation(PageAnimation.TopSlides, true, keepMargin: false);
         }

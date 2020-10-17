@@ -109,7 +109,7 @@ namespace Toute
                         new LoginRequest
                         {
                             Username = Username,
-                            Password = "Mypassword1!" ?? (parameter as IHavePassword).SecureString.Unsecure()
+                            Password = /*"Mypassword1!" ?? */(parameter as IHavePassword).SecureString.Unsecure()
                         });
 
                 //If there is any context back
@@ -127,7 +127,8 @@ namespace Toute
                         Email = context.Email,
                         Friends = new List<FriendDataModel>(),
                         Image = context.Image,
-                        JWTToken = context.JWTToken
+                        Token = context.Token.Token,
+                        RefreshToken = context.Token.RefreshToken
                     });
 
                     _logger.Debug("Done saving user credentials to LocalDB");
@@ -141,7 +142,7 @@ namespace Toute
                         Email = context.Email,
                         Friends = Friends,
                         Image = context.Image,
-                        JWTToken = context.JWTToken
+                        Token = context.Token.Token
                     };
 
                     //foreach friend in Friends of user...

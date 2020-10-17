@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Toute.Core.DataModels;
+using Toute.Core;
 
 namespace Toute
 {

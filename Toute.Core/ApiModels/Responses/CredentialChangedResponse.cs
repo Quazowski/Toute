@@ -8,6 +8,6 @@
         /// <summary>
         /// Authorization token
         /// </summary>
-        public string JWTToken { get; set; }
+        public string Token { get; set; }
     }
 }

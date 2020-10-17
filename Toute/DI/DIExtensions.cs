@@ -22,21 +22,21 @@ namespace Toute
             services.AddSingleton<GamesViewModel>();
         }
 
-        /// <summary>
-        /// Extensions that adds SQliteDB
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddSqliteDb(this IServiceCollection services)
-        {
-            //Add a DB to our application
-            services.AddDbContext<ClientDataStoreDbContext>(options =>
-            {
-                options.UseSqlite(CoreDI.Configuration.GetConnectionString("ClientDataStoreConnection"));
-            });
+        ///// <summary>
+        ///// Extensions that adds SQliteDB
+        ///// </summary>
+        ///// <param name="services"></param>
+        //public static void AddSqliteDb(this IServiceCollection services)
+        //{
+        //    //Add a DB to our application
+        //    services.AddDbContext<ClientDataStoreDbContext>(options =>
+        //    {
+        //        options.UseSqlite(CoreDI.Configuration.GetConnectionString("ClientDataStoreConnection"));
+        //    });
 
-            //Add scoped services to DI
-            services.AddScoped<IClientDataStore>(provider =>
-                new ClientDataStore(provider.GetService<ClientDataStoreDbContext>()));
-        }
+        //    //Add scoped services to DI
+        //    services.AddTransient<IClientDataStore>(provider =>
+        //        new ClientDataStore(provider.GetService<ClientDataStoreDbContext>()));
+        //}
     }
 }

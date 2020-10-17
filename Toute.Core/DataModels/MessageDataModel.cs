@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Toute
+namespace Toute.Core
 {
     /// <summary>
     /// Model of message that is saved in DB

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Toute.Core;
-using Toute.Core.DataModels;
 using Toute.Core.Routes;
 using Toute.Extensions;
 using static Toute.DI;
@@ -239,6 +238,7 @@ namespace Toute
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.SendFriendRequest, userToAdd);
                 if (result)
                 {
+                    NameOfFriendToAdd = "";
                     PopupExtensions.NewInfoPopup("Friend request sent");
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} sent friend request to {NameOfFriendToAdd}");
                 }
@@ -457,11 +457,16 @@ namespace Toute
         /// <param name="FriendId">ID of friend</param>
         private void GoToUser(object FriendId)
         {
+            if(ViewModelApplication.ApplicationUser.Id == FriendId.ToString())
+            {
+                return;
+            }
+
             _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}");
 
-            _logger.Info("Deleted refreshing messages");
-            //Remove previous refreshing
-            TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
+            //_logger.Info("Deleted refreshing messages");
+            ////Remove previous refreshing
+            //TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
 
             //Finds user of given if
             var chatUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
@@ -680,7 +685,7 @@ namespace Toute
                             ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
                         }
                     }
-                    
+
                     //remove form ApplicationUser friends
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friend));
 

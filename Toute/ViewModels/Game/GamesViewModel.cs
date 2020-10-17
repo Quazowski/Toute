@@ -1,9 +1,10 @@
 ﻿using NLog;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Toute.Core;
 using static Toute.DI;
 
 namespace Toute
@@ -35,6 +36,9 @@ namespace Toute
         /// Is settings popup open
         /// </summary>
         public bool SettingsPopupOpen { get; set; }
+        public bool AddFileIsRunning { get; set; }
+        public bool RemoveGameIsRunning { get; set; }
+        public bool ChangeValuesIsRunning { get; set; }
 
         #endregion
 
@@ -83,9 +87,9 @@ namespace Toute
             //Create commands
             RunCommand = new ParametrizedRelayCommand((path) => RunGame((string)path));
             SettingsCommand = new ParametrizedRelayCommand((Id) => OpenSettingsGame((string)Id));
-            RemoveGameCommand = new RelayCommand(DeleteGame);
-            AddGameCommand = new RelayCommand(AddFile);
-            SetNewValuesCommand = new RelayCommand(SetNewValues);
+            RemoveGameCommand = new RelayCommand(async() => await DeleteGame());
+            AddGameCommand = new RelayCommand(async() => await AddFile());
+            SetNewValuesCommand = new RelayCommand(async () => await SetNewValues());
 
             _logger.Info("Done setting up GamesViewModel");
         }
@@ -98,54 +102,60 @@ namespace Toute
         /// <summary>
         /// Adds a game to the application game search list
         /// </summary>
-        private void AddFile()
+        private async Task AddFile()
         {
-            _logger.Debug("Attempt to add a file");
-            //Open a dialog and find a file u want to add...
-            GameModel game = DialogHelpers.FindGame();
-
-            //If file is not null...
-            if (game != null)
+            await RunCommandAsync(() => AddFileIsRunning, async() =>
             {
-                //Add chosen file
-                Items.Add(game);
+                _logger.Debug("Attempt to add a file");
+                //Open a dialog and find a file u want to add...
+                GameModel game = DialogHelpers.FindGame();
 
-                _logger.Debug("Added item to list of files, now attempt to add the file to LocalDB");
-
-                SqliteDb.AddGameAsync(new GameDataModel 
+                //If file is not null...
+                if (game != null)
                 {
-                    Id = game.FileId,
-                    Path = game.Path,
-                    Title = game.Title,
-                    UserId = ViewModelApplication.ApplicationUser.Id,
-                    Image = game.BytesImage
-                });
+                    //Add chosen file
+                    Items.Add(game);
 
-                _logger.Debug("Saved file to LocalDB");
-            }
-            else
-            {
-                _logger.Debug("Not found any file to add");
-            }
+                    _logger.Debug("Added item to list of files, now attempt to add the file to LocalDB");
+
+                    await SqliteDb.AddGameAsync(new GameDataModel
+                    {
+                        Id = game.FileId,
+                        Path = game.Path,
+                        Title = game.Title,
+                        UserId = ViewModelApplication.ApplicationUser.Id,
+                        Image = game.BytesImage
+                    });
+
+                    _logger.Debug("Saved file to LocalDB");
+                }
+                else
+                {
+                    _logger.Debug("Not found any file to add");
+                }
+            });
         }
 
         /// <summary>
         /// Deletes a game from whole application
         /// </summary>
-        private void DeleteGame()
+        private async Task DeleteGame()
         {
-            _logger.Debug("Attempt to delete a file");
-            var itemToDelete = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
-            //Make popup close
-            SettingsPopupOpen = false;
+            await RunCommandAsync(() => RemoveGameIsRunning, async () =>
+            {
+                _logger.Debug("Attempt to delete a file");
+                var itemToDelete = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
+                //Make popup close
+                SettingsPopupOpen = false;
 
-            //Remove chosen item
-            Items.Remove(itemToDelete);
+                //Remove chosen item
+                Items.Remove(itemToDelete);
 
-            _logger.Debug("Deleted file from a list of items, now attempt to delete a file from LocalDB");
-            SqliteDb.RemoveGameAsync(itemToDelete.FileId);
+                _logger.Debug("Deleted file from a list of items, now attempt to delete a file from LocalDB");
+                await SqliteDb.RemoveGameAsync(itemToDelete.FileId);
 
-            _logger.Debug("Deleted item from LocalDB");
+                _logger.Debug("Deleted item from LocalDB");
+            });
         }
 
         /// <summary>
@@ -173,30 +183,33 @@ namespace Toute
             _logger.Debug($"Changed visibility of Settings of File to {SettingsPopupOpen}");
         }
 
-        private void SetNewValues()
+        private async Task SetNewValues()
         {
-            _logger.Debug($"Attempt to change values of file with id: {CurrentItemId}");
-            //Open a dialog and find a file u want to add...
-            var newValues = DialogHelpers.SetNewValueForFile();
-
-            //Find file from the list, and change his values
-            var file = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
-            file.Path = newValues.Path;
-            file.BytesImage = newValues.BytesImage;
-            file.Title = newValues.Title;
-
-            _logger.Debug($"Changed item from list, now trying to change file in LocalDB");
-
-            //Save a new path in db
-            SqliteDb.ChangeValuesAsync(new GameDataModel
+            await RunCommandAsync(() => ChangeValuesIsRunning, async () =>
             {
-                Id = CurrentItemId,
-                Image = file.BytesImage,
-                Path = file.Path,
-                Title = file.Title
-            });
+                _logger.Debug($"Attempt to change values of file with id: {CurrentItemId}");
+                //Open a dialog and find a file u want to add...
+                var newValues = DialogHelpers.SetNewValueForFile();
 
-            _logger.Debug($"File values changed successfully");
+                //Find file from the list, and change his values
+                var file = Items.FirstOrDefault(x => x.FileId == CurrentItemId);
+                file.Path = newValues.Path;
+                file.BytesImage = newValues.BytesImage;
+                file.Title = newValues.Title;
+
+                _logger.Debug($"Changed item from list, now trying to change file in LocalDB");
+
+                //Save a new path in db
+                await SqliteDb.ChangeValuesAsync(new GameDataModel
+                {
+                    Id = CurrentItemId,
+                    Image = file.BytesImage,
+                    Path = file.Path,
+                    Title = file.Title
+                });
+
+                _logger.Debug($"File values changed successfully");
+            });
         }
 
         #endregion

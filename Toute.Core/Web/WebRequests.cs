@@ -38,7 +38,6 @@ namespace Toute.Core
             //Make request to API
             var response = await client.PostAsync(url, content);
             
-            //return response
             return response;
         }
     }

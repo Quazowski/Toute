@@ -38,7 +38,7 @@ namespace Toute
                 Email = credentials.Email,
                 Friends = Friends,
                 Image = credentials.Image,
-                JWTToken = credentials.JWTToken
+                Token = credentials.Token
             };
 
             //Set application user to made user

@@ -76,10 +76,10 @@ namespace Toute.Relational
             //Clear first
             DbContext.LoginCredentials.RemoveRange(DbContext.LoginCredentials);
 
-            //Add
+            //Add user to local DB
             DbContext.LoginCredentials.Add(loginCredentials);
 
-            //
+            //Save local DB
             await DbContext.SaveChangesAsync();
         }
 
@@ -123,6 +123,16 @@ namespace Toute.Relational
             games = DbContext.Game.Where(x => x.UserId == UserId)?.ToList();
 
             return Task.FromResult(games);
+        }
+
+        public async Task ChangeUserTokens(string Token, string RefreshToken)
+        {
+            var user = DbContext.LoginCredentials.FirstOrDefault();
+
+            user.RefreshToken = RefreshToken;
+            user.Token = Token;
+
+            await DbContext.SaveChangesAsync();
         }
 
         #endregion
