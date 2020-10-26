@@ -93,7 +93,7 @@ namespace Toute
                 if ((parameter as RegisterPage).MyPassword.SecurePassword.Unsecure() == (parameter as RegisterPage).MyConfirmPassword.SecurePassword.Unsecure())
                 {
                     //Make a request to register, with the credentials
-                    var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<RegisterRequest>(UserRoutes.Register,
+                    var context = await HttpExtensions.HandleHttpRequestAsync(UserRoutes.Register,
                                     new RegisterRequest
                                     {
                                         Username = Username,
@@ -102,7 +102,7 @@ namespace Toute
                                     });
 
                     //If there is content back
-                    if (context != null)
+                    if (context)
                     {
                         _logger.Info("User successfully registered, moving to login page...");
                         //Go to login page
