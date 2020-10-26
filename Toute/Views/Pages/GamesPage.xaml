@@ -54,7 +54,7 @@
                         Command="{Binding SearchFilesOpenCommand}"/>
             </Grid>
         </Border>
-
+        
         <Grid Grid.Row="1">
             <TextBlock Text="No games in library! You can add them by clicking on buttons bellow!"
                        Width="450"
@@ -132,22 +132,23 @@
 
                                     <!--Buttons-->
                                     <Border Grid.Column="2">
-                                        <StackPanel Orientation="Vertical">
+                                        <StackPanel Orientation="Horizontal">
+
+                                            <!--Settings button-->
+                                            <Button Style="{StaticResource TextButton}"
+                                                    FontFamily="{StaticResource FontAwesome}"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalAlignment="Center"
+                                                    Content="{StaticResource FontAwesomeCogIcon}"
+                                                    Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
+                                                    CommandParameter="{Binding FileId}"/>
 
                                             <!--Run button-->
                                             <Button Style="{StaticResource GameMenuRunButton}"
-                                                Content="Run"
-                                                Command="{Binding RunCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
-                                                CommandParameter="{Binding FileId}"
-                                                Padding="33 0"
-                                                Margin="0 0 10 6"/>
-
-                                            <!--Settings button-->
-                                            <Button Style="{StaticResource GameMenuSettingsButton}"
-                                                Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
-                                                CommandParameter="{Binding FileId}"
-                                                Margin="0 0 10 0"
-                                                Content="Settings"/>
+                                                    FontFamily="{StaticResource FontAwesome}"
+                                                    Content="{StaticResource FontAwesomeRunIcon}"
+                                                    Command="{Binding RunCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
+                                                    CommandParameter="{Binding FileId}"/>
 
                                         </StackPanel>
                                     </Border>

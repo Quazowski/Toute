@@ -18,7 +18,7 @@
 
 
     <system:String x:Key="FontAwesomeMinimalizeIcon">&#xf2d1;</system:String>
-    <system:String x:Key="FontAwesomeMaximalizeIcon">&#xf096;</system:String>
+    <system:String x:Key="FontAwesomeMaximalizeIcon">&#xf2d0;</system:String>
     <system:String x:Key="FontAwesomeCloseIcon">&#xf00d;</system:String>
     <system:String x:Key="FontAwesomeGamePadIcon">&#xf11b;</system:String>
     <system:String x:Key="FontAwesomeUserIcon">&#xf007;</system:String>
@@ -28,6 +28,7 @@
     <system:String x:Key="FontAwesomeDeclineIcon">&#xf05c;</system:String>
     <system:String x:Key="FontAwesomeSpinIcon">&#xf110;</system:String>
     <system:String x:Key="FontAwesomeSearchIcon">&#xf002;</system:String>
+    <system:String x:Key="FontAwesomeRunIcon">&#xf0da;</system:String>
     
     <system:String x:Key="FontAwesomeArrowDownIcon">&#xf175;</system:String>
     <system:String x:Key="FontAwesomeArrowDownFriendRequestIcon">&#xf175;  Friend Requests  &#xf175;</system:String>

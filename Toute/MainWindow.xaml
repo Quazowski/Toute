@@ -13,6 +13,7 @@
         Deactivated="Window_Deactivated"
         MinHeight="400"
         MinWidth="700"
+        Foreground="White"
         Height="700" 
         Width="1200">
 
@@ -44,19 +45,13 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <!--Caption Height-->
-                                <RowDefinition Height="{Binding CaptionHeight, FallbackValue=68}" />
+                                <RowDefinition Height="{Binding CaptionHeight, FallbackValue=48}" />
                                 <!--Main Content-->
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
                             <!--Caption Height-->
-                            <Border Grid.Row="0">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                        <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                    </LinearGradientBrush>
-                                </Border.Background>
+                            <Border Grid.Row="0" Background="{StaticResource HeaderBackground}">
 
                                 <!--Grid that split Header Bar-->
                                 <Grid>
@@ -74,7 +69,7 @@
                                         <TextBlock Text="Toute"
                                                        FontFamily="{StaticResource FontScript}"
                                                        FontSize="{Binding HeaderFontSize, FallbackValue=48}"
-                                                       Foreground="{StaticResource BackgroundGrayBrush}"
+                                                       Foreground="{StaticResource BackgroundLightGrayBrush}"
                                                        Padding="{Binding HeaderTitlePadding, FallbackValue=25 10 25 10}"
                                                        />
                                     </Border>
@@ -84,23 +79,30 @@
                                     </Border>
                                     <!--Buttons-->
                                     <Border  Grid.Column="2">
-                                        <StackPanel Orientation="Horizontal">
+                                        <StackPanel Orientation="Horizontal"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center">
                                             <!--Minimize button-->
                                             <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Foreground="{StaticResource BackgroundLightGrayBrush}"
                                                     Command="{Binding MinimizeCommand}" />
 
                                             <!--Maximize button-->
                                             <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemButton}"
                                                     Content="{StaticResource FontAwesomeMaximalizeIcon}"
+                                                    Foreground="{StaticResource BackgroundLightGrayBrush}"
                                                     Command="{Binding MaximizeCommand}"/>
 
                                             <!--Close button-->
                                             <Button FontFamily="{StaticResource FontAwesome}"
                                                     Style="{StaticResource SystemCloseButton}"
                                                     Content="{StaticResource FontAwesomeCloseIcon}"
+                                                    Foreground="{StaticResource BackgroundLightGrayBrush}"
                                                     Command="{Binding CloseCommand}"
                                                     VerticalAlignment="Top" />
                                         </StackPanel>
@@ -129,7 +131,7 @@
     </WindowChrome.WindowChrome>
 
     <!--Content-->
-    <Border>
+    <Border Background="{StaticResource WindowBackground}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <!--Side menu control-->
@@ -215,26 +217,18 @@
                 <!--Content-->
                 <Border Panel.ZIndex="2"
                         Grid.Row="1">
-                <ItemsControl ItemsSource="{Binding InformationsAndErrors}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <local:InfoControl />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>
+                    <ItemsControl ItemsSource="{Binding InformationsAndErrors}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:InfoControl />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
                 <Frame Content="{Binding CurrentPage}" Grid.Row="1"
                        
                     local:NavigationHistoryAttachedProperty.Value="True"/>
             </Grid>
         </Grid>
-
-        <!--Background of main content-->
-        <Border.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Border.Background>
     </Border>
 </Window>

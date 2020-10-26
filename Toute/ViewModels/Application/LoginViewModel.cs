@@ -101,6 +101,9 @@ namespace Toute
                 //PopupExtensions.NewPopupWithMessage("By registering in this application, " +
                 //                "u can get access to messaging with friend. Guest version need no net for work.");
 
+                ViewModelApplication.InternetHealth = false;
+                ViewModelApplication.ServerHealth = false;
+
                 //Get games from DB for not logged user
                 var items = await SqliteDb.GetGames("");
 

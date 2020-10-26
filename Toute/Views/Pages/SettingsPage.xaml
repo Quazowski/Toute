@@ -11,13 +11,7 @@
       x:Name="SettingsPageName">
 
     <!--Content-->
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Grid.Background>
+    <Grid Background="{StaticResource WindowBackground}"> 
         <Grid.RowDefinitions>
             <!--Header title with username-->
             <RowDefinition Height="auto" />

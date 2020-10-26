@@ -34,13 +34,7 @@
                         </Grid.RowDefinitions>
                                                 
                         <!--Caption Height-->
-                        <Border Grid.Row="0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border Grid.Row="0" Background="{StaticResource HeaderBackground}">
 
                             <!--Grid that split Header Bar-->
                             <Grid>
@@ -96,7 +90,7 @@
 
     <!--Content-->
 
-    <Border>
+    <Border Background="{StaticResource WindowBackground}">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
@@ -153,6 +147,7 @@
                                Width="500"
                                TextWrapping="Wrap"
                                TextAlignment="Center"
+                               Foreground="{StaticResource BackgroundWhiteBrush}"
                                HorizontalAlignment="Center"
                                FontSize="{StaticResource FontSizeXLarge}"
                                Visibility="{Binding LongTimeTextVisibility, Converter={local:InvertedBooleanToVisibilityConverter}}"/>
@@ -189,24 +184,18 @@
                             Content="Cancel"
                             Style="{StaticResource CancelFullWidthButton}"
                             Margin="0"
+                            IsCancel="True"
                             Command="{Binding CancelQuickSearchCommand}"
                             FontSize="{StaticResource FontSizeRegular}"
                             Padding="0"/>
                     <Button Grid.Column="1"
                             Style="{StaticResource AddFullWidthButton}"
                             FontSize="{StaticResource FontSizeRegular}"
+                            IsDefault="True"
                             Command="{Binding AddFilesCommand}"
                             Content="Add selected games"/>
                 </Grid>
             </Grid>
         </Grid>
-        
-        <!--Background of main content-->
-        <Border.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Border.Background>
     </Border>
 </Window>

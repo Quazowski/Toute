@@ -33,13 +33,7 @@
                         </Grid.RowDefinitions>
 
                         <!--Caption Height-->
-                        <Border Grid.Row="0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border Grid.Row="0" Background="{StaticResource HeaderBackground}">
 
                             <!--Grid that split Header Bar-->
                             <Grid>
@@ -94,7 +88,7 @@
 
     <!--Content-->
 
-    <Border>
+    <Border Background="{StaticResource WindowBackground}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -114,14 +108,5 @@
                     Style="{StaticResource AddGameButton}"
                     Command="{Binding CloseCommand}"/>
         </Grid>
-
-
-        <!--Background of main content-->
-        <Border.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Border.Background>
     </Border>
 </Window>

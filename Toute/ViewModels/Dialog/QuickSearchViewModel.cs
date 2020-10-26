@@ -310,7 +310,8 @@ namespace Toute
             _logger.Debug("Try to close popup window");
 
             //Cancel all running tasks
-            _tokenSource.Cancel();
+            if (_tokenSource != null)
+                _tokenSource.Cancel();
 
             //Close popup window
             window.Close();

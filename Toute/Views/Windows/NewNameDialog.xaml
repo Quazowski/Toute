@@ -33,13 +33,7 @@
                         </Grid.RowDefinitions>
 
                         <!--Caption Height-->
-                        <Border Grid.Row="0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border Grid.Row="0" Background="{StaticResource HeaderBackground}">
 
                             <!--Grid that split Header Bar-->
                             <Grid>
@@ -59,16 +53,18 @@
                                     <StackPanel Orientation="Horizontal">
                                         <!--Minimize button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemButton}"
-                                                    Content="{StaticResource FontAwesomeMinimalizeIcon}"
-                                                    Command="{Binding MinimizeCommand}" />
+                                                Style="{StaticResource SystemButton}"
+                                                Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                Foreground="White"
+                                                Command="{Binding MinimizeCommand}" />
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemCloseButton}"
-                                                    Content="{StaticResource FontAwesomeCloseIcon}"
-                                                    Command="{Binding CloseCommand}"
-                                                    VerticalAlignment="Top" />
+                                                Style="{StaticResource SystemCloseButton}"
+                                                Content="{StaticResource FontAwesomeCloseIcon}"
+                                                Command="{Binding CloseCommand}"
+                                                Foreground="White"
+                                                VerticalAlignment="Top" />
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -94,7 +90,7 @@
 
     <!--Content-->
     <AdornerDecorator>
-        <Grid>
+        <Grid Background="{StaticResource WindowBackground}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -103,9 +99,10 @@
         </Grid.RowDefinitions>
         
             <TextBlock Text="New name"
-                   HorizontalAlignment="Center"
-                   Margin="0 20"
-                   FontSize="{StaticResource FontSizeXLarge}"/>
+                       HorizontalAlignment="Center"
+                       Margin="0 20"
+                       Foreground="{StaticResource BackgroundWhiteBrush}"
+                       FontSize="{StaticResource FontSizeXLarge}"/>
         
            
         <TextBox Grid.Row="1"
@@ -138,15 +135,15 @@
             </TextBox.Style>
         </TextBox>
 
-        
 
-        <Grid Grid.Row="2" VerticalAlignment="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0"
+            <Grid Grid.Row="2" VerticalAlignment="Bottom">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0"
                     Content="Cancel"
                     Style="{StaticResource CancelFullWidthButton}"
                     Margin="0"
@@ -154,35 +151,26 @@
                     FontSize="{StaticResource FontSizeRegular}"
                     Padding="0"
                     IsCancel="True"/>
-            <Button Grid.Column="1"
+                <Button Grid.Column="1"
                     FontSize="{StaticResource FontSizeRegular}"
                     Command="{Binding SetNewNameCommand}"
                     Content="Change"
                     IsDefault="True">
-                <Button.Style>
-                    <Style TargetType="Button" BasedOn="{StaticResource AddFullWidthButton}">
-                    <Setter Property="IsEnabled" Value="False"/>
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding Path=(Validation.HasError), ElementName=NewNameTxt}" Value="False"/>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="IsEnabled" Value="True"/>
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-                </Button.Style>
-            </Button>
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource AddFullWidthButton}">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=(Validation.HasError), ElementName=NewNameTxt}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
             </Grid>
-    
-
-    <!--Background of main content-->
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Grid.Background>
-    </Grid>
+        </Grid>
     </AdornerDecorator>
 </Window>

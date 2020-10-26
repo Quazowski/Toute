@@ -20,29 +20,26 @@
     <Color x:Key="LightRed">#cd5858</Color>
     <SolidColorBrush x:Key="BackgroundLightRedBrush" Color="{StaticResource LightRed}"/>
 
-    <Color x:Key="Red">#d21313</Color>
+    <Color x:Key="Red">#a50a0a</Color>
     <SolidColorBrush x:Key="BackgroundRedBrush" Color="{StaticResource Red}"/>
 
     <Color x:Key="VeryLightGreen">#c7f3c4</Color>
     <SolidColorBrush x:Key="BackgroundVeryLightGreenBrush" Color="{StaticResource VeryLightGreen}"/>
 
-    <Color x:Key="Green">#44ff44</Color>
+    <Color x:Key="Green">#15a80b</Color>
     <SolidColorBrush x:Key="BackgroundGreenBrush" Color="{StaticResource Green}"/>
 
-    <Color x:Key="DarkGreen">#55aa55</Color>
+    <Color x:Key="DarkGreen">#119209</Color>
     <SolidColorBrush x:Key="BackgroundDarkGreenBrush" Color="{StaticResource DarkGreen}"/>
 
     <Color x:Key="DarkOrange">#fe7f0f</Color>
     <SolidColorBrush x:Key="BackgroundDarkOrangeBrush" Color="{StaticResource DarkOrange}"/>
 
-    <Color x:Key="Orange">#fe9c0f</Color>
+    <Color x:Key="Orange">#a6a4a4</Color>
     <SolidColorBrush x:Key="BackgroundOrangeBrush" Color="{StaticResource Orange}"/>
 
     <Color x:Key="LightOrange">#ffb74f</Color>
     <SolidColorBrush x:Key="BackgroundLightOrangeBrush" Color="{StaticResource LightOrange}"/>
-
-    <Color x:Key="VeryLightYellow">#f0eda0</Color>
-    <SolidColorBrush x:Key="BackgroundVeryLightYellowBrush" Color="{StaticResource VeryLightYellow}"/>
 
     <Color x:Key="Yellow">#e8e460</Color>
     <SolidColorBrush x:Key="BackgroundYellowBrush" Color="{StaticResource Yellow}"/>
@@ -52,5 +49,27 @@
 
     <Color x:Key="Black">#000000</Color>
     <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource Black}"/>
+
+    <LinearGradientBrush x:Key="WindowBackground" StartPoint="1,0" EndPoint="1,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#191919" Offset="0.0" />
+                <GradientStop Color="#333333" Offset="0.1" />
+                <GradientStop Color="#313131" Offset="0.5" />
+                <GradientStop Color="#333333" Offset="0.8" />
+                <GradientStop Color="#111111" Offset="1" />
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="HeaderBackground" StartPoint="1,0" EndPoint="1,1">
+        <LinearGradientBrush.GradientStops>
+            <GradientStopCollection>
+                <GradientStop Color="#111111" Offset="0" />
+                <GradientStop Color="#202020" Offset="0.5" />
+                <GradientStop Color="#111111" Offset="1" />
+            </GradientStopCollection>
+        </LinearGradientBrush.GradientStops>
+    </LinearGradientBrush>
 
 </ResourceDictionary>

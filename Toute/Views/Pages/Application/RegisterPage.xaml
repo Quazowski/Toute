@@ -112,7 +112,7 @@
                                  ValidatesOnDataErrors="True"
                                  UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:IsEmailRule />
+                                <local:IsEmailRule ValidatesOnTargetUpdated="True"/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>
@@ -183,7 +183,7 @@
 
                 <!--Sing In button-->
                 <Button Grid.Row="9"
-                    Content="Sing in"
+                    Content="Sign in"
                     Margin="0"
                     Command="{Binding GoToLogin}"
                     Style="{StaticResource TextButton}"

@@ -75,6 +75,7 @@
                     <!--Username-->
                     <TextBlock Text="{Binding Name}"
                                Grid.Column="0"
+                               Foreground="{StaticResource BackgroundBlackBrush}"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
                                FontSize="14"/>

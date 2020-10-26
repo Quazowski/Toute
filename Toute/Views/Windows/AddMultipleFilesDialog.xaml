@@ -9,6 +9,7 @@
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
+        Foreground="White"
         WindowStartupLocation="CenterOwner"
         Height="300"
         Width="500">
@@ -34,13 +35,7 @@
                         </Grid.RowDefinitions>
 
                         <!--Caption Height-->
-                        <Border Grid.Row="0">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
-                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
-                                </LinearGradientBrush>
-                            </Border.Background>
+                        <Border Grid.Row="0" Background="{StaticResource HeaderBackground}">
 
                             <!--Grid that split Header Bar-->
                             <Grid>
@@ -60,16 +55,18 @@
                                     <StackPanel Orientation="Horizontal">
                                         <!--Minimize button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemButton}"
-                                                    Content="{StaticResource FontAwesomeMinimalizeIcon}"
-                                                    Command="{Binding MinimizeCommand}" />
+                                                Style="{StaticResource SystemButton}"
+                                                Foreground="White"
+                                                Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                Command="{Binding MinimizeCommand}" />
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemCloseButton}"
-                                                    Content="{StaticResource FontAwesomeCloseIcon}"
-                                                    Command="{Binding CloseCommand}"
-                                                    VerticalAlignment="Top" />
+                                                Style="{StaticResource SystemCloseButton}"
+                                                Foreground="White"
+                                                Content="{StaticResource FontAwesomeCloseIcon}"
+                                                Command="{Binding CloseCommand}"
+                                                VerticalAlignment="Top" />
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -95,7 +92,7 @@
 
     <!--Content-->
 
-    <Border>
+    <Border Background="{StaticResource WindowBackground}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
@@ -120,26 +117,26 @@
                          Padding="5"
                          FontSize="{StaticResource FontSizeRegular}"
                          Validation.ErrorTemplate="{StaticResource errorTemplate}">
-                <TextBox.Text>
-                    <Binding Path="NameForLaunch" ValidatesOnDataErrors="True" 
+                    <TextBox.Text>
+                        <Binding Path="NameForLaunch" ValidatesOnDataErrors="True" 
                                  UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <local:MinimumCharacterRule ValidatesOnTargetUpdated="True" MinimumCharacters="2"/>
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-                <TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
-                        <Style.Triggers>
-                            <Trigger Property="Validation.HasError" Value="true">
-                                <Setter Property="Control.ToolTip" 
+                            <Binding.ValidationRules>
+                                <local:MinimumCharacterRule ValidatesOnTargetUpdated="True" MinimumCharacters="2"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource BaseTextBox}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="true">
+                                    <Setter Property="Control.ToolTip" 
                                             Value="{Binding RelativeSource={RelativeSource Self},
                                             Path=(Validation.Errors)[0].ErrorContent}"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
             </AdornerDecorator>
             <TextBlock Grid.Row="2" 
                        HorizontalAlignment="Center"
@@ -154,15 +151,17 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <RadioButton GroupName="ImageFrom" 
                                  Margin="10 0" 
+                                 Foreground="White"
                                  Command="{Binding FromImageSelectedCommand}"
                                  IsChecked="{Binding FromImageChecked ,FallbackValue=True}">From image</RadioButton>
                     <RadioButton GroupName="ImageFrom" 
                                  IsChecked="{Binding FromIconChecked}"
+                                 Foreground="White"
                                  Command="{Binding FromIconSelectedCommand}"
                                  Margin="10 0">From icon</RadioButton>
                 </StackPanel>
             </Grid>
-            
+
             <TextBlock DockPanel.Dock="Top" Grid.Row="4" Width="50"> 
                 <Hyperlink Command="{Binding ChangeImageCommand}" TextDecorations="{x:Null}">
                    <Image Source="{Binding ImageShow}" />
@@ -178,16 +177,18 @@
             <StackPanel Grid.Row="6"  Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Cancel"
                         Margin="10 3"
+                        IsCancel="True"
                         Style="{StaticResource CancelGameButton}"
                         Command="{Binding CancelMultiLaunchCommand}">
-                    
+
                 </Button>
                 <Button Content="Save"
                         Margin="10 3"
-                        Padding="30 8"
+                        IsDefault="True"
+                        Padding="24 5 24 4"
                         Command="{Binding SaveMultiLaunchCommand}">
                     <Button.Style>
-                        <Style TargetType="Button" BasedOn="{StaticResource AddGameButton}">
+                        <Style TargetType="Button" BasedOn="{StaticResource SendMessageButton}">
                             <Setter Property="IsEnabled" Value="False"/>
                             <Style.Triggers>
                                 <MultiDataTrigger>
@@ -203,14 +204,5 @@
             </StackPanel>
 
         </Grid>
-
-
-        <!--Background of main content-->
-        <Border.Background>
-            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
-                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
-                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
-            </LinearGradientBrush>
-        </Border.Background>
     </Border>
 </Window>

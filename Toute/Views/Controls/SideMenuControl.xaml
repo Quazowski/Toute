@@ -108,7 +108,7 @@
                             <Button FontFamily="{StaticResource FontAwesome}"
                                     Grid.Row="0"
                                     x:Name="ExpandFriendRequestListButton"
-                                    Background="{StaticResource BackgroundVeryLightYellowBrush}"
+                                    Background="{StaticResource BackgroundYellowBrush}"
                                     Command="{Binding RequestListCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
@@ -126,14 +126,14 @@
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource Yellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                                <ColorAnimation To="{StaticResource DarkYellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>
                                     <EventTrigger RoutedEvent="MouseLeave">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource VeryLightYellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                                <ColorAnimation To="{StaticResource Yellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>

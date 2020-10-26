@@ -59,7 +59,7 @@ namespace Toute
         /// <summary>
         /// Font size of the header Title
         /// </summary>
-        public int HeaderFontSize { get; set; } = 48;
+        public int HeaderFontSize { get; set; } = 28;
 
         /// <summary>
         /// Value of capitonHeight
