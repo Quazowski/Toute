@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Toute.Core
 {
@@ -23,13 +25,17 @@ namespace Toute.Core
         public virtual string Title { get; set; }
 
         /// <summary>
-        /// Path to game
+        /// Path to file
         /// </summary>
-        public virtual string Path { get; set; }
+        public List<StringDataModel> Paths { get; set; }
 
         /// <summary>
         /// Image in byte[]
         /// </summary>
         public virtual byte[] Image{ get; set; }
+        public GameDataModel()
+        {
+            Paths = new List<StringDataModel>();
+        }
     }
 }

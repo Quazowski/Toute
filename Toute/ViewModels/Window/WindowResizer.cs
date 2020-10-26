@@ -138,72 +138,72 @@ namespace Toute
         }
     }
 
-        #region Dll Helper Structures
+    #region Dll Helper Structures
 
-        enum MonitorOptions : uint
+    enum MonitorOptions : uint
+    {
+        MONITOR_DEFAULTTONULL = 0x00000000,
+        MONITOR_DEFAULTTOPRIMARY = 0x00000001,
+        MONITOR_DEFAULTTONEAREST = 0x00000002
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public class MONITORINFO
+    {
+        public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
+        public Rectangle rcMonitor = new Rectangle();
+        public Rectangle rcWork = new Rectangle();
+        public int dwFlags = 0;
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rectangle
+    {
+        public int Left, Top, Right, Bottom;
+
+        public Rectangle(int left, int top, int right, int bottom)
         {
-            MONITOR_DEFAULTTONULL = 0x00000000,
-            MONITOR_DEFAULTTOPRIMARY = 0x00000001,
-            MONITOR_DEFAULTTONEAREST = 0x00000002
+            this.Left = left;
+            this.Top = top;
+            this.Right = right;
+            this.Bottom = bottom;
         }
+    }
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MINMAXINFO
+    {
+        public POINT ptReserved;
+        public POINT ptMaxSize;
+        public POINT ptMaxPosition;
+        public POINT ptMinTrackSize;
+        public POINT ptMaxTrackSize;
+    };
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public class MONITORINFO
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+        /// <summary>
+        /// x coordinate of point.
+        /// </summary>
+        public int X;
+        /// <summary>
+        /// y coordinate of point.
+        /// </summary>
+        public int Y;
+
+        /// <summary>
+        /// Construct a point of coordinates (x,y).
+        /// </summary>
+        public POINT(int x, int y)
         {
-            public int cbSize = Marshal.SizeOf(typeof(MONITORINFO));
-            public Rectangle rcMonitor = new Rectangle();
-            public Rectangle rcWork = new Rectangle();
-            public int dwFlags = 0;
+            this.X = x;
+            this.Y = y;
         }
+    }
 
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Rectangle
-        {
-            public int Left, Top, Right, Bottom;
-
-            public Rectangle(int left, int top, int right, int bottom)
-            {
-                this.Left = left;
-                this.Top = top;
-                this.Right = right;
-                this.Bottom = bottom;
-            }
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct MINMAXINFO
-        {
-            public POINT ptReserved;
-            public POINT ptMaxSize;
-            public POINT ptMaxPosition;
-            public POINT ptMinTrackSize;
-            public POINT ptMaxTrackSize;
-        };
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct POINT
-        {
-            /// <summary>
-            /// x coordinate of point.
-            /// </summary>
-            public int X;
-            /// <summary>
-            /// y coordinate of point.
-            /// </summary>
-            public int Y;
-
-            /// <summary>
-            /// Construct a point of coordinates (x,y).
-            /// </summary>
-            public POINT(int x, int y)
-            {
-                this.X = x;
-                this.Y = y;
-            }
-        }
-
-        #endregion
+    #endregion
 }
 

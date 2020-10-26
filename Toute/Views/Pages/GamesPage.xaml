@@ -8,115 +8,187 @@
       d:DesignHeight="450" d:DesignWidth="800"
       
       Title="GamesPage">
-    
+
     <Grid Background="Transparent">
-        
+
         <Grid.RowDefinitions>
+            <!--Search-->
+            <RowDefinition Height="auto" />
             <!--Games list-->
             <RowDefinition Height="*" />
-            <!--Add Game button--> 
+            <!--Search/Add files grid-->
             <RowDefinition Height="auto" />
             <!--Popup for settings-->
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        
         <!--Games list-->
-        <ScrollViewer Grid.Row="0" d:DataContext="{x:Static local:GameModelListItemDesignModel.Instance}">
-            <ItemsControl Background="Transparent"
-                          ItemsSource="{Binding Items}"
+        <Border BorderThickness="0 0 0 1" 
+                BorderBrush="#ffffff"
+                Margin="0 0 0 3"
+                MinHeight="40">
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Margin="50 4 0 4"
+                         Padding="0"
+                         x:Name="FileFindTxt"
+                         Text="{Binding NameOfFiles, UpdateSourceTrigger=PropertyChanged}"
+                         HorizontalContentAlignment="Center"
+                         VerticalContentAlignment="Center"
+                         Tag="What a file are you looking for?" 
+                         local:GetFocusWhenVisibleIsUpAttachedProperty.Value="True"
+                         Visibility="Collapsed"
+                         local:FadeAnimationAttachedProperty.Value="{Binding LookingForFilesClosed}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Key="Esc" 
+                                    Command="{Binding TextBoxCommand}"
+                                    CommandParameter="{Binding ElementName=FileFindTxt}"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="1" 
+                        Style="{StaticResource TextButton}"
+                        FontFamily="{StaticResource FontAwesome}"
+                        Content="{StaticResource FontAwesomeSearchIcon}"
+                        Command="{Binding SearchFilesOpenCommand}"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <TextBlock Text="No games in library! You can add them by clicking on buttons bellow!"
+                       Width="450"
+                       TextWrapping="WrapWithOverflow"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Foreground="White"
+                       FontSize="{StaticResource FontSizeXLarge}"
+                       Visibility="{Binding NoGamesHiddenTxt, 
+                       Converter={local:BooleanToVisibilityConverter}, 
+                       UpdateSourceTrigger=PropertyChanged}"/>
+            <ScrollViewer  d:DataContext="{x:Static local:GameModelListItemDesignModel.Instance}">
+                <ItemsControl Background="Transparent"
+                          ItemsSource="{Binding FilteredItems}"
                           Foreground="{StaticResource BackgroundWhiteBrush}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <!--Single item of list-->
-                        <Grid x:Name="grid" Background="Transparent" Margin="0 0 0 2">
-                            <Grid.Triggers>
-                                <EventTrigger RoutedEvent="MouseEnter">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation To="#c4bfbe"
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--Single item of list-->
+                            <Grid x:Name="grid" Background="Transparent" Margin="0 0 0 2">
+                                <Grid.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="#c4bfbe"
                                                             Duration="0:0:0.2"
                                                             Storyboard.TargetProperty="Background.Color"
                                                             Storyboard.TargetName="grid"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                                <EventTrigger RoutedEvent="MouseLeave">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <ColorAnimation To="Transparent"
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <ColorAnimation To="Transparent"
                                                             Duration="0:0:0.2"
                                                             Storyboard.TargetProperty="Background.Color"
                                                             Storyboard.TargetName="grid"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </Grid.Triggers>
-                            
-                            <Border Background="Black" Opacity="0.05"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
 
-                            <!--Content of single item-->
-                            <Grid Margin="5" >
-                                <Grid.ColumnDefinitions>
+                                </Grid.Triggers>
+                                <Grid.InputBindings>
+                                    <MouseBinding MouseAction="LeftDoubleClick"
+                                              Command="{Binding RunCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
+                                              CommandParameter="{Binding FileId}" />
+                                </Grid.InputBindings>
+
+                                <Border Background="Black" Opacity="0.05"/>
+
+                                <!--Content of single item-->
+                                <Grid Margin="5" >
+                                    <Grid.ColumnDefinitions>
+                                        <!--Image-->
+                                        <ColumnDefinition Width="auto" />
+                                        <!--Name of game-->
+                                        <ColumnDefinition Width="*" />
+                                        <!--Buttons-->
+                                        <ColumnDefinition Width="auto" />
+                                    </Grid.ColumnDefinitions>
+
                                     <!--Image-->
-                                    <ColumnDefinition Width="auto" />
+                                    <Border Grid.Column="0" Margin="5">
+                                        <Image Source="{Binding BitmapImage}" Width="30"/>
+                                    </Border>
+
                                     <!--Name of game-->
-                                    <ColumnDefinition Width="*" />
-                                    <!--Buttons-->
-                                    <ColumnDefinition Width="auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <!--Image-->
-                                <Border Grid.Column="0" Margin="5">
-                                    <Image Source="{Binding BitmapImage}"/>
-                                </Border>
-
-                                <!--Name of game-->
-                                <Border Grid.Column="1">
-                                    <TextBlock Text="{Binding Title}" 
+                                    <Border Grid.Column="1">
+                                        <TextBlock Text="{Binding Title}" 
                                                VerticalAlignment="Center"
                                                HorizontalAlignment="Center"
                                                FontSize="{StaticResource FontSizeXLarge}"/>
-                                </Border>
+                                    </Border>
 
-                                <!--Buttons-->
-                                <Border Grid.Column="2">
-                                    <StackPanel Orientation="Vertical">
-                                        
-                                        <!--Run button-->
-                                        <Button Style="{StaticResource GameMenuRunButton}"
+                                    <!--Buttons-->
+                                    <Border Grid.Column="2">
+                                        <StackPanel Orientation="Vertical">
+
+                                            <!--Run button-->
+                                            <Button Style="{StaticResource GameMenuRunButton}"
                                                 Content="Run"
                                                 Command="{Binding RunCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
-                                                CommandParameter="{Binding Path}"
+                                                CommandParameter="{Binding FileId}"
                                                 Padding="33 0"
                                                 Margin="0 0 10 6"/>
-                                        
-                                        <!--Settings button-->
-                                        <Button Style="{StaticResource GameMenuSettingsButton}"
+
+                                            <!--Settings button-->
+                                            <Button Style="{StaticResource GameMenuSettingsButton}"
                                                 Command="{Binding SettingsCommand, Source={x:Static local:ViewModelLocator.GamesPageViewModel}}"
                                                 CommandParameter="{Binding FileId}"
                                                 Margin="0 0 10 0"
                                                 Content="Settings"/>
-                                        
-                                    </StackPanel>
-                                </Border>
+
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                             </Grid>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
 
         <!--Add Game button-->
-        <Border Grid.Row="1" VerticalAlignment="Bottom">
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Content="Quick Search"
+                    Grid.Column="0"
+                    Style="{StaticResource AddGameButton}"
+                    Command="{Binding QuickSearchCommand}"
+                    />
+            <Button Style="{StaticResource AddGameButton}"
+                    Grid.Column="1"
+                    
+                    Command="{Binding AddMultiLaunchCommand}"
+                    Content="Add multi launch"/>
             <Button Content="Add game"
+                    Grid.Column="2"
+                    
                     Style="{StaticResource AddGameButton}"
                     Command="{Binding AddGameCommand}"/>
-        </Border>
-        
+        </Grid>
+
         <!--Popup for settings-->
-        <Border Grid.Row="2">
+        <Border Grid.Row="3">
             <local:GameSettingsPopup />
         </Border>
-        
+
     </Grid>
 </local:BasePage>

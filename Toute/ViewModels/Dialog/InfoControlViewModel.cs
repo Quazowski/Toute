@@ -8,7 +8,7 @@ namespace Toute
     /// ViewModel of <see cref="InfoControl"/>
     /// </summary>
     public class InfoControlViewModel : BaseViewModel
-    {     
+    {
         /// <summary>
         /// Determines if there is any error
         /// </summary>
@@ -32,7 +32,7 @@ namespace Toute
         /// <summary>
         /// Image that is displayed, depending on <see cref="IsError"/>
         /// </summary>
-        public BitmapImage ImageToDisplay => IsError ? Image.FromFile(DirectoryExtensions.GetPathToImageFromImages("cancelIcon.png")).ImageToBitMapImage() : 
+        public BitmapImage ImageToDisplay => IsError ? Image.FromFile(DirectoryExtensions.GetPathToImageFromImages("cancelIcon.png")).ImageToBitMapImage() :
             Image.FromFile(DirectoryExtensions.GetPathToImageFromImages("info.png")).ImageToBitMapImage();
     }
 }

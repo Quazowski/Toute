@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using Toute.Core;

@@ -73,16 +73,27 @@
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
 
-                        <!--ItemsControl with friends-->
-                        <ItemsControl Grid.Row="0" d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}"
+                        <Grid Grid.Row="0">
+                            <TextBlock Text="You have no friends! Maybe it is time, to add someone?"
+                                       Width="200"
+                                       TextWrapping="WrapWithOverflow"
+                                       TextAlignment="Center"
+                                       Margin="0 10"
+                                       FontStyle="Italic"
+                                       Visibility="{Binding IsAnyFriendsTxtHidden, 
+                                       Converter={local:BooleanToVisibilityConverter},
+                                       UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--ItemsControl with friends-->
+                            <ItemsControl d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}"
                                       ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <local:UserChatControl 
-                                                           Visibility="{Binding Status, Converter={local:StatusOfAcceptedToVisibilityConverter}}"/>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:UserChatControl Visibility="{Binding Status, Converter={local:StatusOfAcceptedToVisibilityConverter}}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </Grid>
 
                         <!--Friend request-->
                         <Grid Grid.Row="1">
@@ -102,10 +113,10 @@
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding RequestListOpen}" Value="True">
+                                            <DataTrigger Binding="{Binding RequestListHidden}" Value="True">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownFriendRequestIcon}" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding RequestListOpen}" Value="False">
+                                            <DataTrigger Binding="{Binding RequestListHidden}" Value="False">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowUpFriendRequestIcon}" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -135,7 +146,7 @@
                                                           VerticalScrollBarVisibility="Disabled">
                                     <ItemsControl Grid.Row="0" 
                                                   ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
-                                                  local:TopFadeSlideAttachedProperty.Value="{Binding RequestListOpen}">
+                                                  local:TopFadeSlideAttachedProperty.Value="{Binding RequestListHidden}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local:UserChatControl
@@ -166,10 +177,10 @@
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding BlockListOpen}" Value="True">
+                                            <DataTrigger Binding="{Binding BlockListHidden}" Value="True">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowDownBlockUsersIcon}" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding BlockListOpen}" Value="False">
+                                            <DataTrigger Binding="{Binding BlockListHidden}" Value="False">
                                                 <Setter Property="Content" Value="{StaticResource FontAwesomeArrowUpBlockUsersIcon}" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -198,7 +209,7 @@
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
                                                           VerticalScrollBarVisibility="Disabled">
                                     <ItemsControl Grid.Row="0" ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
-                                                  local:TopFadeSlideAttachedProperty.Value="{Binding BlockListOpen}">
+                                                  local:TopFadeSlideAttachedProperty.Value="{Binding BlockListHidden}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <local:UserChatControl 
@@ -212,16 +223,6 @@
                     </Grid>
                 </ScrollViewer>
                 
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="1,0" 
-                                         EndPoint="1,1">
-                        <GradientStop Color="{StaticResource VeryLightGray}" 
-                                      Offset="0" />
-                        <GradientStop Color="{StaticResource Gray}" 
-                                      Offset="2" />
-                    </LinearGradientBrush>
-                </Border.Background>
-
             </Border>
 
             <!--Add Friend-->
@@ -245,9 +246,20 @@
                              Tag="Username of friend to add..."
                              Style="{StaticResource AddFriendTextbox}"
                              FontSize="18"
-                             Text="{Binding NameOfFriendToAdd}"
+                             x:Name="FriendAddTxt"
+                             Text="{Binding NameOfFriendToAdd, UpdateSourceTrigger=PropertyChanged}"
                              VerticalContentAlignment="Center"
-                             HorizontalContentAlignment="Center" />
+                             HorizontalContentAlignment="Center"
+                             local:GetFocusWhenVisibleIsUpAttachedProperty.Value="True"
+                             local:FadeAnimationAttachedProperty.Value="{Binding AddFriendTextBoxShown, Converter={local:BooleanInverterConverter}}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Esc" 
+                                        Command="{Binding ClearTextBoxCommand}"
+                                        CommandParameter="{Binding ElementName=FriendAddTxt}"/>
+                            <KeyBinding Key="Return" 
+                                        Command="{Binding SendFriendRequestCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
                 </Grid>
             </Border>
 
@@ -255,5 +267,14 @@
             <local:FriendSettingsPopup 
                 Grid.Row="3"/>
         </Grid>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="1,0" 
+                                         EndPoint="1,1">
+                <GradientStop Color="{StaticResource VeryLightGray}" 
+                                      Offset="0" />
+                <GradientStop Color="{StaticResource Gray}" 
+                                      Offset="2" />
+            </LinearGradientBrush>
+        </Border.Background>
     </Border>
 </UserControl>

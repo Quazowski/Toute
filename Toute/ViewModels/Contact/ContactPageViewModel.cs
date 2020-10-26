@@ -93,7 +93,7 @@ namespace Toute
 
             _logger.Info("Start refreshing messages with the friend");
             //Make call to API for new messages, every x seconds.
-            ViewModelApplication.ApplicationUser.RefreshMessages = new Timer(async(e) =>
+            ViewModelApplication.ApplicationUser.RefreshMessages = new Timer(async (e) =>
             {
                 await RefreshMessagesWithTheUserAsync(CurrentChatUser.FriendId, refreshTime);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(refreshTime));
@@ -117,7 +117,7 @@ namespace Toute
                 //Convert a TextBox
                 if (!(Textbox is TextBox textBox))
                     return;
-                    
+
 
                 //if text of TextBox is null or empty return
                 if (!(string.IsNullOrEmpty(textBox.Text)))
@@ -133,21 +133,28 @@ namespace Toute
                     });
 
                     //If response is successful
-                    if(result)
+                    if (result)
                     {
-                        //Add message to Message list
-                        ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                        if (ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
                         {
-                            SentByMe = true,
-                            Message = textBox.Text,
-                            DateOfSent = DateTime.Now
-                        });
+                            await ViewModelSideMenu.LoadMoreMessagesAsync();
+                        }
+                        else
+                        {
+                            //Add message to Message list
+                            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                            {
+                                SentByMe = true,
+                                Message = textBox.Text,
+                                DateOfSent = DateTime.Now
+                            });
+                        }
 
                         //Clear and Focus TextBox
                         textBox.Text = "";
                         textBox.Focus();
                         _logger.Debug("Message successfully sent");
-                        
+
                     }
                     else
                     {
@@ -197,6 +204,7 @@ namespace Toute
                                 DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
                                 FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                             });
+
                     });
 
                 }

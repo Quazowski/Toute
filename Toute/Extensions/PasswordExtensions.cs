@@ -33,7 +33,7 @@ namespace Toute
                 //Free secureString from memory
                 Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
             }
-            
+
         }
     }
 }

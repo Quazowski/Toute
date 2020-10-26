@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace Toute
+﻿namespace Toute
 {
     /// <summary>
     /// Interaction logic for SettingsPage.xaml

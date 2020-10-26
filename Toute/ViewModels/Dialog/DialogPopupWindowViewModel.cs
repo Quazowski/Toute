@@ -1,5 +1,4 @@
 ﻿using NLog;
-using System;
 using System.Windows;
 
 namespace Toute
@@ -21,7 +20,7 @@ namespace Toute
         /// Constructor that pass window as parameter
         /// </summary>
         /// <param name="window">AddGameWindow</param>
-        public DialogPopupWindowViewModel(DialogPopup window) : base(window)
+        public DialogPopupWindowViewModel(Window window) : base(window)
         {
             _logger.Info("Start setting up DialogPopupWindowViewModel");
 
@@ -45,7 +44,7 @@ namespace Toute
         /// Method that Close Window
         /// </summary>
         /// <param name="window">AddGameWindow</param>
-        private void ClosePopup(DialogPopup window)
+        private void ClosePopup(Window window)
         {
             _logger.Debug("Try to close popup window");
 

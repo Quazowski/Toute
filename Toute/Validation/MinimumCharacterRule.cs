@@ -25,11 +25,11 @@ namespace Toute
             string charString = value as string;
 
             //Check if string is not null or empty, if yes, return false
-            if(string.IsNullOrEmpty(charString))
+            if (string.IsNullOrEmpty(charString))
                 return new ValidationResult(false, $"Minimum length is {MinimumCharacters} characters.");
 
             //Check if string is of minimum character length, if not return false
-            if (charString.Length <= MinimumCharacters)
+            if (charString.Length < MinimumCharacters)
                 return new ValidationResult(false, $"Minimum length is {MinimumCharacters} characters.");
 
             //If both condition are passed, return true

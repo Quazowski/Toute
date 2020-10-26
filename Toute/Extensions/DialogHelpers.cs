@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using Toute.Core;
 
 namespace Toute
 {
@@ -21,7 +23,7 @@ namespace Toute
             Dialog.ShowDialog();
 
             //If there is any chosen file...
-            if(!(string.IsNullOrEmpty(Dialog.FileName)) && !(string.IsNullOrEmpty(Dialog.SafeFileName)))
+            if (!(string.IsNullOrEmpty(Dialog.FileName)) && !(string.IsNullOrEmpty(Dialog.SafeFileName)))
             {
                 //Extract Icon from a file
                 Icon icon = Icon.ExtractAssociatedIcon(Dialog.FileName);
@@ -32,7 +34,7 @@ namespace Toute
                     Title = Dialog.SafeFileName.Remove(Dialog.SafeFileName.IndexOf('.')),
                     FileId = Guid.NewGuid().ToString(),
                     BytesImage = icon.IconToBytes(),
-                    Path = Dialog.FileName
+                    Paths = new List<StringDataModel> { new StringDataModel { Value = Dialog.FileName } },
 
                 };
 
@@ -47,7 +49,7 @@ namespace Toute
         /// Dialog helper that help to change path for the game
         /// </summary>
         /// <returns>New path</returns>
-        public static GameModel SetNewValueForFile()
+        public static GameModel SetNewIconAndPathForFile()
         {
             //Create new OpenFileDialog
             var Dialog = new Microsoft.Win32.OpenFileDialog();
@@ -64,9 +66,8 @@ namespace Toute
                 //Create new GameModel
                 var gameModel = new GameModel
                 {
-                    Title = Dialog.SafeFileName.Remove(Dialog.SafeFileName.IndexOf('.')),
                     BytesImage = icon.IconToBytes(),
-                    Path = Dialog.FileName
+                    Paths = new List<StringDataModel> { new StringDataModel { Value = Dialog.FileName } },
                 };
 
                 return gameModel;

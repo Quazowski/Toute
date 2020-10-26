@@ -18,7 +18,7 @@ namespace Toute
     public static class HttpExtensions
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Method that will send request to the API, and 
@@ -39,6 +39,8 @@ namespace Toute
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
                 _logger.Debug($"Got response from the server from URL: {url}. Response is of StatusCode: {response.StatusCode}");
+                ViewModelApplication.InternetHealth = false;
+                ViewModelApplication.ServerHealth = false;
 
                 //If response status code is OK...
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -96,14 +98,14 @@ namespace Toute
                     using (var client = new WebClient())
                     using (client.OpenRead("http://google.com/generate_204"))
 
-                        PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
+                    ViewModelApplication.InternetHealth = true;
                     _logger.Error(e);
 
                 }
                 catch
                 {
-                    PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
-                    _logger.Warn(e);
+                    ViewModelApplication.ServerHealth = true;
+                    _logger.Debug(e);
 
                 }
 
@@ -139,10 +141,12 @@ namespace Toute
                 //Make a request to API
                 var response = await WebRequests.PostAsync(url, RequestModel, token);
                 _logger.Debug($"Got response from the server from URL: {url}. Response is of StatusCode: {response.StatusCode}");
-
+                ViewModelApplication.InternetHealth = false;
+                ViewModelApplication.ServerHealth = false;
                 //If response status code is OK and/or there is a context back...
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
+                    
                     //Read context as ApiResponse<T>
                     var context = response.DeseralizeHttpResponse<ApiResponse<T>>();
 
@@ -177,7 +181,7 @@ namespace Toute
                             return await HandleHttpRequestOfTResponseAsync<T>(url, RequestModel);
                     }
                 }
-                else if(response.StatusCode == HttpStatusCode.InternalServerError)
+                else if (response.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     _logger.Warn($"Internal server error from URL: {url}");
 
@@ -194,16 +198,15 @@ namespace Toute
                 try
                 {
                     using (var client = new WebClient())
-                    using (client.OpenRead("http://google.com/generate_204")) 
-
-                    PopupExtensions.NewInfoPopup("Server currently is down, please try again later.");
+                    using (client.OpenRead("http://google.com/generate_204"))
+                    ViewModelApplication.InternetHealth = true;
                     _logger.Error(e);
 
                 }
                 catch
                 {
-                    PopupExtensions.NewErrorPopup("No network connection. Please check your net before continuing...");
-                    _logger.Warn(e);
+                    ViewModelApplication.ServerHealth = true;
+                    _logger.Debug(e);
 
                 }
 

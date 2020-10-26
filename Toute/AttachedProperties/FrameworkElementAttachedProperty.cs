@@ -136,7 +136,7 @@ namespace Toute
     /// <summary>
     /// Attached property that are responsible for handling fade in or out animation
     /// </summary>
-    public class FadeAnimationAttachedProperty : BaseAnimationAttachedProperty<LeftFadeSlideAttachedProperty>
+    public class FadeAnimationAttachedProperty : BaseAnimationAttachedProperty<FadeAnimationAttachedProperty>
     {
         /// <summary>
         /// Animation that fade in or out depends on vanish value

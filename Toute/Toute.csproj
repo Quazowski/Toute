@@ -14,6 +14,7 @@
     <None Remove="Fonts\Lato-Bold.ttf" />
     <None Remove="Fonts\Lato-Regular.ttf" />
     <None Remove="Fonts\Lato-Thin.ttf" />
+    <None Remove="Images\cancelIcon.png" />
     <None Remove="Images\LOGOToute.png" />
     <None Remove="Images\SampleImageForAGame.png" />
     <None Remove="Images\user.png" />
@@ -34,6 +35,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Fonts\Lato-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\cancelIcon.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\LOGOToute.png">
@@ -81,6 +85,12 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Windows\QuickSearchPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

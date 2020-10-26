@@ -23,7 +23,7 @@ namespace Toute
         /// </summary>
         public DateTime DateOfSent { get; set; }
 
-        public BitmapImage FriendsImage{ get; set; }
+        public BitmapImage FriendsImage { get; set; }
 
         /// <summary>
         /// Set Background color depends on <see cref="SentByMe"/>
@@ -34,6 +34,6 @@ namespace Toute
         /// Set Foreground color depends on <see cref="SentByMe"/>
         /// </summary>
         public string ForegroundColorOfMessage => SentByMe ? "#ffffff" : "#000000";
-        
+
     }
 }

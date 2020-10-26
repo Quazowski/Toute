@@ -1,5 +1,6 @@
 ﻿using NLog;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace Toute
 
             _logger.Trace($"Trying to get all files from local DB");
             //Loads all files that were added
-            var items = SqliteDb.GetGames(ViewModelApplication.ApplicationUser?.Id).Result;
+            var items = await SqliteDb.GetGames(ViewModelApplication.ApplicationUser?.Id);
 
             //For every file, that were added.... 
             foreach (var file in items)
@@ -59,10 +60,12 @@ namespace Toute
                 {
                     Title = file.Title,
                     FileId = file.Id,
-                    Path = file.Path,
+                    Paths = file.Paths,
                     BytesImage = file.Image
                 });
             }
+
+            ViewModelGame.FilteredItems = ViewModelGame.Items;
 
             _logger.Trace($"Got all files from local DB");
 

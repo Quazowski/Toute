@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using Toute.Extensions;
 
 namespace Toute
 {
@@ -32,8 +34,16 @@ namespace Toute
             //Set process StartInfo to info
             process.StartInfo = info;
 
-            //Run the process
-            process.Start();
+            try
+            {
+                //Run the process
+                process.Start();
+            }
+            catch(Win32Exception)
+            {
+                PopupExtensions.NewErrorPopup("File is moved or removed.");
+            }
+
         }
     }
 }

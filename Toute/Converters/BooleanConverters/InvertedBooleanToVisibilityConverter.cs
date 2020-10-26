@@ -20,7 +20,7 @@ namespace Toute
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             //if value is true...
-            if((bool)value)
+            if ((bool)value)
             {
                 //Returns visibility collapsed
                 return Visibility.Visible;

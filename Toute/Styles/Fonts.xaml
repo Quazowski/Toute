@@ -27,6 +27,7 @@
     <system:String x:Key="FontAwesomeBlockIcon">&#xf056;</system:String>
     <system:String x:Key="FontAwesomeDeclineIcon">&#xf05c;</system:String>
     <system:String x:Key="FontAwesomeSpinIcon">&#xf110;</system:String>
+    <system:String x:Key="FontAwesomeSearchIcon">&#xf002;</system:String>
     
     <system:String x:Key="FontAwesomeArrowDownIcon">&#xf175;</system:String>
     <system:String x:Key="FontAwesomeArrowDownFriendRequestIcon">&#xf175;  Friend Requests  &#xf175;</system:String>

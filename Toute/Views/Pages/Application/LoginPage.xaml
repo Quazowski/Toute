@@ -7,7 +7,7 @@
       mc:Ignorable="d" 
       Width="300" 
       x:Name="LoginPageName"
-      Height="360"
+      Height="410"
       Title="LoginPage">
 
     <!--Border for whole Page-->
@@ -35,6 +35,10 @@
                 <RowDefinition Height="auto" />
                 <!--Bottom Line for UI purpose-->
                 <RowDefinition Height="auto" />
+                <!--Login as guest Button-->
+                <RowDefinition Height="auto" />
+                <!--Forgot password Button-->
+                <RowDefinition Height="auto" />
                 <!--Sing Up button-->
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
@@ -61,7 +65,7 @@
 
             <!--Login TextBox-->
             <TextBox Grid.Row="3"
-                     Tag="Username"
+                     Tag="Username or email"
                      Text="{Binding Username}"
                      Height="50"        
                      Margin="20 5"
@@ -95,12 +99,27 @@
                     BorderThickness="1"
                     BorderBrush="{StaticResource BackgroundWhiteBrush}"
                     Margin="20 0"/>
+            
+            <!--Sign in Button-->
+            <Button Grid.Row="7"
+                    Content="Login as guest"
+                    Style="{StaticResource TextButton}"
+                    local:IsButtonBusy.Value="{Binding LoginIsRunning}"
+                    Command="{Binding LoginAsGuestCommand}"/>
+
+            <!--Forgot password button-->
+            <Button Grid.Row="8"
+                    Content="Restart password"
+                    Command="{Binding GoToRestartPasswordCommand}"
+                    Style="{StaticResource TextButton}"
+                    Foreground="{StaticResource BackgroundWhiteBrush}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
 
             <!--Sing Up button-->
-            <Button Grid.Row="7"
+            <Button Grid.Row="9"
                     Content="Sign up"
-                    Margin="0"
-                    Command="{Binding GoToRegister}"
+                    Command="{Binding GoToRegisterCommand}"
                     Style="{StaticResource TextButton}"
                     Foreground="{StaticResource BackgroundWhiteBrush}"
                     VerticalAlignment="Center"

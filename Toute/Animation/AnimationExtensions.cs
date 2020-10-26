@@ -164,9 +164,12 @@ namespace Toute
             //Adds Fade out Animation
             storyboard.AddFadeAnimation(vanish, seconds, decelerationRatio);
 
-            //Sets the element Visibility to Visible before
-            //doing the animation
-            element.Visibility = Visibility.Visible;
+            if(!vanish)
+            {
+                //Sets the element Visibility to Visible before
+                //doing the animation
+                element.Visibility = Visibility.Visible;
+            }
 
             //Start animating the animation
             storyboard.Begin(element);

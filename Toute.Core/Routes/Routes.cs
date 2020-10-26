@@ -23,7 +23,11 @@ namespace Toute.Core.Routes
 
         public const string ChangeImage = BaseUrl + "api/ChangeImage";
 
+        public const string RestartPassword = BaseUrl + "api/RestartPassword";
+
         public const string RefreshToken = BaseUrl + "api/RefreshToken";
+
+        public const string ConfirmEmail = BaseUrl + "api/ConfirmEmail/{token}/{userId}";
     }
 
     public class FriendRoutes : BaseRoute

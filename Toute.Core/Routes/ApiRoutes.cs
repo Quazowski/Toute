@@ -14,7 +14,13 @@
 
         public const string ChangeImage = "api/ChangeImage";
 
+        public const string RestartPassword = "api/RestartPassword";
+
+        public const string SetNewPassword = "api/SetNewPassword";
+
         public const string RefreshToken = "api/RefreshToken";
+
+        public const string ConfirmEmail = "api/ConfirmEmail";
     }
 
     public class ApiFriendRoutes

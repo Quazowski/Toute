@@ -158,11 +158,51 @@
 
     <!--Add Game Button -->
     <Style x:Key="AddGameButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
-        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontSize" Value="22" />
         <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
-        <Setter Property="Padding" Value="60 8" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{TemplateBinding Content}" 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Green}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource DarkGreen}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Cancel Game Button -->
+    <Style x:Key="CancelGameButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundRedBrush}" />
+        <Setter Property="Padding" Value="20 8" />
         <Setter Property="Margin" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
@@ -176,6 +216,87 @@
                             Name="border"
                             SnapsToDevicePixels="True">
                         <TextBlock Text="{TemplateBinding Content}" />
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Cancel Game Full Width Button -->
+    <Style x:Key="CancelFullWidthButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundRedBrush}" />
+        <Setter Property="Padding" Value="5 5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{TemplateBinding Content}" 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource Red}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Add Game Full Width Button -->
+    <Style x:Key="AddFullWidthButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkGreenBrush}" />
+        <Setter Property="Padding" Value="5 5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            Name="border"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{TemplateBinding Content}" 
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="{TemplateBinding FontSize}"/>
                         <Border.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>
@@ -323,10 +444,10 @@
                 <ControlTemplate TargetType="{x:Type Button}">
                     <TextBlock Text="{TemplateBinding Content}"
                                Name="textblock"
-                               FontFamily="{StaticResource LatoRegular}"
+                               FontFamily="{TemplateBinding FontFamily}"
                                FontSize="{StaticResource FontSizeLarge}"
                                HorizontalAlignment="Center"
-                               Padding="10"
+                               Padding="10 5 10 0"
                                Foreground="White">
                         <TextBlock.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
@@ -597,6 +718,47 @@
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <ColorAnimation To="{StaticResource LightOrange}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Border.Triggers>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="QuickSearchButton" TargetType="{x:Type Button}" BasedOn="{StaticResource Hoverless}">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeRegular}" />
+        <Setter Property="FontFamily" Value="{StaticResource LatoBold}" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            Margin="{TemplateBinding Margin}"
+                            Name="border"
+                            CornerRadius="6">
+                        <Grid>
+                            <TextBlock Text="{TemplateBinding Content}" 
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Padding="5"/>
+                        </Grid>
+                        <Border.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="{StaticResource LightGray}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Transparent" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="border"/>
                                     </Storyboard>
                                 </BeginStoryboard>
                             </EventTrigger>

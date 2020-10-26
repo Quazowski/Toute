@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
@@ -30,7 +29,7 @@ namespace Toute
         /// <summary>
         /// Username of user
         /// </summary>
-        public string Username { get; set; } = "Testuser";
+        public string Username { get; set; } = "wardls";
 
         /// <summary>
         /// Status of <see cref="LoginAsync(object)"/>
@@ -43,17 +42,32 @@ namespace Toute
         /// </summary>
         public bool RefreshFriendIsRunning { get; set; }
 
+        /// <summary>
+        /// Indicate if <see cref="LoginAsGuestAsync"/> is running
+        /// </summary>
+        public bool LoginAsGuestIsRunning { get; set; }
+
         #endregion
 
         #region Commands
         /// <summary>
-        /// Command that handle login
+        /// Command to login
         /// </summary>
         public ICommand LoginCommand { get; set; }
         /// <summary>
-        /// Command that handle going to register page
+        /// Command to redirect user to register page
         /// </summary>
-        public ICommand GoToRegister { get; set; }
+        public ICommand GoToRegisterCommand { get; set; }
+
+        /// <summary>
+        /// Command to redirect user to restart password page
+        /// </summary>
+        public ICommand GoToRestartPasswordCommand { get; set; }
+
+        /// <summary>
+        /// Command to login as guest to application
+        /// </summary>
+        public ICommand LoginAsGuestCommand { get; set; }
 
         #endregion
 
@@ -66,25 +80,65 @@ namespace Toute
         {
             _logger.Info("Start setting up LoginViewModel");
 
-            //Command that handle login
+            //Create commands
             LoginCommand = new ParametrizedRelayCommand(async (parameter) => await LoginAsync(parameter));
-
-            //Command that handle going to register page
-            GoToRegister = new RelayCommand(GoToRegisterPage);
+            GoToRegisterCommand = new RelayCommand(GoToRegisterPage);
+            GoToRestartPasswordCommand = new RelayCommand(GoToRestartPassword);
+            LoginAsGuestCommand = new RelayCommand(async() => await LoginAsGuestAsync());
 
             _logger.Info("Done setting up LoginViewModel");
         }
-
         #endregion
 
-        #region Helper methods
+        #region Private Command methods
+
+
+        private async Task LoginAsGuestAsync()
+        {
+            await RunCommandAsync(() => LoginAsGuestIsRunning, async () =>
+            {
+                //Set popup, to give user basic information
+                //PopupExtensions.NewPopupWithMessage("By registering in this application, " +
+                //                "u can get access to messaging with friend. Guest version need no net for work.");
+
+                //Get games from DB for not logged user
+                var items = await SqliteDb.GetGames("");
+
+                //For every file, that were added.... 
+                foreach (var file in items)
+                {
+                    //Add to Item list a GameModel
+                    ViewModelGame.Items.Add(new GameModel
+                    {
+                        Title = file.Title,
+                        FileId = file.Id,
+                        Paths = file.Paths,
+                        BytesImage = file.Image
+                    });
+                }
+
+                //Set items and move user to games page.
+                ViewModelGame.FilteredItems = ViewModelGame.Items;
+
+                ViewModelApplication.GoToPage(ApplicationPage.GamesPage);
+            });
+
+        }
+
 
         /// <summary>
-        /// Method that handle login
+        /// Method to redirect user to the RestartPasswordPage
+        /// </summary>
+        private void GoToRestartPassword()
+        {
+            ViewModelApplication.GoToPage(ApplicationPage.RestartPasswordPage);
+        }
+
+        /// <summary>
+        /// Method redirect user to register page
         /// </summary>
         private void GoToRegisterPage()
         {
-            //Go to register page
             ViewModelApplication.GoToPage(ApplicationPage.RegisterPage);
         }
 
@@ -92,7 +146,7 @@ namespace Toute
         /// Method that handle going to register page
         /// </summary>
         /// <param name="parameter"></param>
-        public async Task LoginAsync(object parameter)
+        private async Task LoginAsync(object parameter)
         {
             await RunCommandAsync(() => LoginIsRunning, async () =>
             {
@@ -109,11 +163,11 @@ namespace Toute
                         new LoginRequest
                         {
                             Username = Username,
-                            Password = "Mypassword1!" ?? (parameter as IHavePassword).SecureString.Unsecure()
+                            Password = (parameter as IHavePassword).SecureString.Unsecure()
                         });
 
                 //If there is any context back
-                if(context != null)
+                if (context != null)
                 {
                     //Make a list of friends
                     var Friends = new ObservableCollection<FriendModel>();
@@ -173,10 +227,11 @@ namespace Toute
                         {
                             Title = file.Title,
                             FileId = file.Id,
-                            Path = file.Path,
+                            Paths = file.Paths,
                             BytesImage = file.Image
                         });
                     }
+                    ViewModelGame.FilteredItems = ViewModelGame.Items;
 
                     _logger.Info("Started to refreshing friend list");
                     //Start refreshing list of friends every x seconds.

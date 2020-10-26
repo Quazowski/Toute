@@ -13,7 +13,7 @@
            StaysOpen="False"
            Placement="MousePoint" 
            HorizontalOffset="-105" 
-           VerticalOffset="-50"
+           VerticalOffset="0"
            AllowsTransparency="True">
         
             <!--Main content, buttons-->
@@ -23,14 +23,25 @@
                     Padding="3">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <!--Set new path button-->
+                        <!--Set new title button-->
+                        <RowDefinition Height="*" />
+                    <!--Set new path button-->
                         <RowDefinition Height="*" />
                         <!--Delete game button-->
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <!--Set new path button-->
-                    <Button Grid.Row="0"
+                <!--Set new title button-->
+                <Button Grid.Row="0"
+                            Content="Set new title"
+                            Style="{StaticResource PopupButton}"
+                            Background="{StaticResource BackgroundOrangeBrush}"
+                            Foreground="{StaticResource BackgroundWhiteBrush}"
+                            Command="{Binding SetNewTitleCommand}"
+                            Padding="15 5"/>
+
+                <!--Set new path button-->
+                    <Button Grid.Row="1"
                             Content="Set new path"
                             Style="{StaticResource PopupButton}"
                             Background="{StaticResource BackgroundOrangeBrush}"
@@ -39,7 +50,7 @@
                             Padding="15 5"/>
 
                     <!--Delete game button-->
-                    <Button Grid.Row="1"
+                    <Button Grid.Row="2"
                             Style="{StaticResource PopupButton}"
                             x:Name="Button"
                             Background="{StaticResource BackgroundRedBrush}"

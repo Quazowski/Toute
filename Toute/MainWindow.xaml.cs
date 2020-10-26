@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Toute
 {

@@ -17,7 +17,7 @@ namespace Toute.Extensions
             //Creates new DialogPopup
             var newPopup = new DialogPopup();
 
-            //Sets message of dialog popup...
+            //Sets message of dialog popup...0
             newPopup.MainMessage.Text = Message;
 
             //Show DialogPopup with message

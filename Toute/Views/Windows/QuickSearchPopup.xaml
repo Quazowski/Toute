@@ -1,0 +1,212 @@
+﻿<Window x:Class="Toute.QuickSearchDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Toute"
+        mc:Ignorable="d"
+        Title="AddGameWindow" 
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterOwner"
+        Height="400"
+        Width="700">
+    <!--Override default template-->
+    <Window.Template>
+        <ControlTemplate TargetType="{x:Type Window}">
+            <!--Border for drop shadow effect-->
+            <Border Padding="{Binding DropShadowBorderPadding, FallbackValue=10}">
+                <!--Drop shadow of the Main Window-->
+                <Border.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="1" Color="Black"/>
+                </Border.Effect>
+
+                <!--Border for a whole application content-->
+                <Border>
+                    <!--Grid that set application on Title and Main Content-->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <!--Caption Height-->
+                            <RowDefinition Height="{Binding CaptionHeight, FallbackValue=38}" />
+                            <!--Main Content-->
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                                                
+                        <!--Caption Height-->
+                        <Border Grid.Row="0">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                                    <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
+                                    <GradientStop Color="{StaticResource LightGray}" Offset="2" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <!--Grid that split Header Bar-->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <!--Middle content-->
+                                    <ColumnDefinition Width="*"/>
+                                    <!--Buttons-->
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--Middle content-->
+                                <Border Grid.Column="0">
+
+                                </Border>
+                                <!--Buttons-->
+                                <Border  Grid.Column="1">
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--Minimize button-->
+                                        <Button FontFamily="{StaticResource FontAwesome}"
+                                                    Style="{StaticResource SystemButton}"
+                                                    Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                    Command="{Binding MinimizeCommand}" />
+
+                                        <!--Close button-->
+                                        <Button FontFamily="{StaticResource FontAwesome}"
+                                                    Style="{StaticResource SystemCloseButton}"
+                                                    Content="{StaticResource FontAwesomeCloseIcon}"
+                                                    Command="{Binding CloseCommand}"
+                                                    VerticalAlignment="Top" />
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+
+                        <!--Main Content-->
+                        <Border Grid.Row="1" ClipToBounds="True">
+                            <ContentPresenter Content="{TemplateBinding Content}" />
+                        </Border>
+
+                    </Grid>
+                </Border>
+            </Border>
+        </ControlTemplate>
+    </Window.Template>
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="{Binding ResizeBorderThickness}"
+                      CaptionHeight="{Binding CaptionHeight}"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      />
+    </WindowChrome.WindowChrome>
+
+    <!--Content-->
+
+    <Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" Padding="3 0 3 1">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="HorizontalContentAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="5" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button Content="Steam"
+                            Style="{StaticResource QuickSearchButton}"
+                            Command="{Binding SteamGamesCommand}"/>
+                    <Button Content="Battle.net"
+                            Style="{StaticResource QuickSearchButton}"
+                            Command="{Binding BattleNetGamesCommand}"/>
+                </StackPanel>
+
+                <ScrollViewer.Background>
+                    <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                        <GradientStop Color="{StaticResource VeryLightGray}" Offset="0" />
+                        <GradientStop Color="{StaticResource Gray}" Offset="2" />
+                    </LinearGradientBrush>
+                </ScrollViewer.Background>
+            </ScrollViewer>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid Visibility="{Binding Loading, Converter={local:InvertedBooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock Style="{StaticResource SpinningText}"
+                               FontSize="75"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                        <ProgressBar HorizontalAlignment="Center"
+                                     VerticalAlignment="Bottom"
+                                     Width="300"
+                                     Height="30"
+                                     Margin="20"
+                                     Minimum="0"
+                                     Maximum="{Binding LogicalDrivesOnPc}"
+                                     Value="{Binding ProgressOfSearching}"/>
+                    </Grid>
+
+                    <TextBlock VerticalAlignment="Bottom" 
+                               Text="Choose one launcher on the left. Be aware, operation may take a while..."
+                               Width="500"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontSize="{StaticResource FontSizeXLarge}"
+                               Visibility="{Binding LongTimeTextVisibility, Converter={local:InvertedBooleanToVisibilityConverter}}"/>
+
+                    <ScrollViewer Visibility="{Binding LookForSteamGamesIsRunning, Converter={local:BooleanToVisibilityConverter}}">
+                        <ItemsControl ItemsSource="{Binding Items}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate >
+                                    <CheckBox Margin="5 5 10 0"
+                                              IsChecked="{Binding IsSelected}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding BitmapImage}"
+                                               Margin="0 1 0 0"
+                                               Width="15"
+                                               VerticalAlignment="Top"/>
+                                            <TextBlock Text="{Binding FirstPath}"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="500"
+                                                   Padding="5 0"/>
+                                        </StackPanel>
+                                    </CheckBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0"
+                            Content="Cancel"
+                            Style="{StaticResource CancelFullWidthButton}"
+                            Margin="0"
+                            Command="{Binding CancelQuickSearchCommand}"
+                            FontSize="{StaticResource FontSizeRegular}"
+                            Padding="0"/>
+                    <Button Grid.Column="1"
+                            Style="{StaticResource AddFullWidthButton}"
+                            FontSize="{StaticResource FontSizeRegular}"
+                            Command="{Binding AddFilesCommand}"
+                            Content="Add selected games"/>
+                </Grid>
+            </Grid>
+        </Grid>
+        
+        <!--Background of main content-->
+        <Border.Background>
+            <LinearGradientBrush StartPoint="1,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource LightGray}" Offset="0" />
+                <GradientStop Color="{StaticResource VeryLightRed}" Offset="2" />
+            </LinearGradientBrush>
+        </Border.Background>
+    </Border>
+</Window>

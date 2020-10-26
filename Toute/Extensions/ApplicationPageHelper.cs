@@ -25,11 +25,16 @@ namespace Toute
                 case ApplicationPage.LoginPage:
                     //return new LoginPage of LoginPageViewModel
                     return new LoginPage(new LoginViewModel());
-                //If it is RegisterPage
 
+                //If it is RegisterPage
                 case ApplicationPage.RegisterPage:
                     //return new LoginPage of RegisterPageViewModel
                     return new RegisterPage(new RegisterViewModel());
+
+                //If it is RestartPasswordPage
+                case ApplicationPage.RestartPasswordPage:
+                    //return new RestartPasswordPage of RestartPasswordViewModel
+                    return new RestartPasswordPage(new RestartPasswordViewModel());
 
                 //If it is GamesPage
                 case ApplicationPage.GamesPage:

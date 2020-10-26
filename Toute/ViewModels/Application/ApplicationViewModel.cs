@@ -42,6 +42,10 @@ namespace Toute
         /// Model that hold actual ID, of friend that is managed
         /// </summary>
         public string CurrentFriendId { get; set; }
+
+        /// <summary>
+        /// Indicate if <see cref="LogoutAsync"/> is running
+        /// </summary>
         public bool LogoutIsRunning { get; set; }
 
         public ObservableCollection<InfoControlViewModel> InformationsAndErrors { get; set; }
@@ -55,7 +59,7 @@ namespace Toute
         /// Information about user, that are already logged to application
         /// </summary>
         public ApplicationUserModel ApplicationUser { get; set; }
-        
+
         /// <summary>
         /// Current viewModel of application
         /// </summary>
@@ -87,6 +91,16 @@ namespace Toute
             }
         }
 
+        /// <summary>
+        /// True if user have no net connection
+        /// </summary>
+        public bool InternetHealth { get; set; } = false;   
+        
+        /// <summary>
+        /// True if server is down
+        /// </summary>
+        public bool ServerHealth { get; set; } = false;
+
         #endregion
 
         #region Constructor
@@ -117,7 +131,7 @@ namespace Toute
                 }
 
                 //Set current page to DesignPage value
-                CurrentPage = ApplicationPageHelper.GoToBasePage(DesignPage);                
+                CurrentPage = ApplicationPageHelper.GoToBasePage(DesignPage);
             }
 
             //Create new list for infos and errors
@@ -156,6 +170,14 @@ namespace Toute
             {
                 _logger.Info("Timer that refresh messages are removed");
                 TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
+                
+            }
+
+            if (page != ApplicationPage.ContactPage && CurrentApplicationPage == ApplicationPage.ContactPage)
+            {
+                Friends.FirstOrDefault(x => x.FriendId == CurrentFriendId).IsSelected = false;
+                ViewModelApplication.CurrentFriendId = "";
+
             }
 
             //If it is the same page and view model return
@@ -163,7 +185,10 @@ namespace Toute
                 return;
 
             //If page is LoginPage or RegisterPage...
-            if ((page == ApplicationPage.LoginPage) || (page == ApplicationPage.RegisterPage))
+            if ((page == ApplicationPage.LoginPage) ||
+                (page == ApplicationPage.RegisterPage) ||
+                (page == ApplicationPage.RestartPasswordPage) ||
+                ViewModelApplication.ApplicationUser == null)
             {
                 //Hide side menu
                 SideMenuHidden = true;

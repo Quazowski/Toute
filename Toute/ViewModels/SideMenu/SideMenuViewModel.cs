@@ -2,9 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Toute.Core;
 using Toute.Core.Routes;
@@ -22,6 +24,7 @@ namespace Toute
         #region Private members
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private bool _isAnyFriendsTxtHidden;
 
         #endregion
 
@@ -44,13 +47,13 @@ namespace Toute
         /// Value that shows is friend block list
         /// open or close. If true, it is open.
         /// </summary>
-        public bool BlockListOpen { get; set; }
+        public bool BlockListHidden { get; set; } = true;
 
         /// <summary>
         /// Value that shows is friend request list
         /// open or close. If true, it is open.
         /// </summary>
-        public bool RequestListOpen { get; set; }
+        public bool RequestListHidden { get; set; }
 
         /// <summary>
         /// Value that shows is friend settings menu 
@@ -62,49 +65,68 @@ namespace Toute
         /// If <see cref="SendFriendRequestAsync"/> is running
         /// set this to true
         /// </summary>
-        public bool SendFriendRequestIsRunning { get; set;}
+        public bool SendFriendRequestIsRunning { get; set; }
+
+        /// <summary>
+        /// Determines if TextBox that show username friend
+        /// to add is shown. For true value it is shown
+        /// </summary>
+        public bool AddFriendTextBoxShown { get; set; } = false;
 
         /// <summary>
         /// If <see cref="AcceptFriendRequestAsync(object)"/> is running
         /// set this to true
         /// </summary>
-        public bool AcceptFriendIsRunning { get; set;}
+        public bool AcceptFriendIsRunning { get; set; }
 
         /// <summary>
         /// If <see cref="DeclineFriendRequestAsync(object)"/> is running
         /// set this to true
         /// </summary>
-        public bool DeclineFriendIsRunning { get; set;}
+        public bool DeclineFriendIsRunning { get; set; }
 
         /// <summary>
         /// If <see cref="DeleteFriendAsync"/> is running
         /// set this to true
         /// </summary>
-        public bool DeleteFriendIsRunning { get; set;}
+        public bool DeleteFriendIsRunning { get; set; }
 
         /// <summary>
-        /// If <see cref="UnblockFriend(object)"/> is running
+        /// If <see cref="UnblockFriendAsync(object)"/> is running
         /// set this to true
         /// </summary>
-        public bool UnblockFriendIsRunning { get; set;}
+        public bool UnblockFriendIsRunning { get; set; }
 
         /// <summary>
-        /// If <see cref="BlockFriend"/> is running
+        /// If <see cref="BlockFriendAsync"/> is running
         /// set this to true
         /// </summary>
-        public bool BlocFriendIsRunning { get; set;}
+        public bool BlocFriendIsRunning { get; set; }
 
         /// <summary>
         /// If <see cref="GamesIsRunning"/> is running
         /// set this to true
         /// </summary>
-        public bool GamesIsRunning { get; set;}
+        public bool GamesIsRunning { get; set; }
 
         /// <summary>
         /// If <see cref="SendFriendRequestAsync"/> is running
         /// set this to true
         /// </summary>
-        public bool LoadMoreMessagesIsRunning { get; set;}
+        public bool LoadMoreMessagesIsRunning { get; set; }
+
+        /// <summary>
+        /// If user have no friends i list, show a text
+        /// </summary>
+        public bool IsAnyFriendsTxtHidden 
+        {
+            get => _isAnyFriendsTxtHidden;
+            set
+            {
+                _isAnyFriendsTxtHidden = value;
+                OnPropertyChanged(nameof(IsAnyFriendsTxtHidden));
+            }
+        }
 
         /// <summary>
         /// Set the last page that is loaded
@@ -185,6 +207,11 @@ namespace Toute
         /// </summary>
         public ICommand SettingsCommand { get; set; }
 
+        /// <summary>
+        /// Command to clear TextBox if user press ESC
+        /// </summary>
+        public ICommand ClearTextBoxCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -196,26 +223,51 @@ namespace Toute
         {
             _logger.Info("Start setting up SideMenuViewModel");
 
+            if(ViewModelApplication?.Friends != null)
+            {
+                //If collection change, show TextBox if value if 0
+                ViewModelApplication.Friends.CollectionChanged += (sender, e) =>
+                {
+                    IsAnyFriendsTxtHidden = ViewModelApplication.Friends.Count() > 0;
+                };
+            }
+
             //Create commands
-            SendFriendRequestCommand = new RelayCommand(async() => await SendFriendRequestAsync());
+            SendFriendRequestCommand = new RelayCommand(async () => await SendFriendRequestAsync());
             AcceptFriendRequestCommand = new ParametrizedRelayCommand(async (FriendId) => await AcceptFriendRequestAsync(FriendId));
             DeclineFriendRequestCommand = new ParametrizedRelayCommand(async (FriendId) => await DeclineFriendRequestAsync(FriendId));
-            DeleteFriendCommand = new RelayCommand(async() => await DeleteFriendAsync());
-            BlockFriendCommand = new RelayCommand(async() => await BlockFriend());
-            UnblockFriendCommand = new ParametrizedRelayCommand(async (FriendId) => await UnblockFriend(FriendId));
-            GoToUserCommand = new ParametrizedRelayCommand((FriendId) =>  GoToUser(FriendId));
+            DeleteFriendCommand = new RelayCommand(async () => await DeleteFriendAsync());
+            BlockFriendCommand = new RelayCommand(async () => await BlockFriendAsync());
+            UnblockFriendCommand = new ParametrizedRelayCommand(async (FriendId) => await UnblockFriendAsync(FriendId));
+            GoToUserCommand = new ParametrizedRelayCommand((FriendId) => GoToUser(FriendId));
             OpenFriendSettingsCommand = new ParametrizedRelayCommand((FriendId) => OpenFriendSettings(FriendId));
             RequestListCommand = new RelayCommand(RequestListChangeStatus);
             BlockListCommand = new RelayCommand(BlockListStatusChangeStatus);
             GamesCommand = new RelayCommand(GoToGamesPage);
             SettingsCommand = new RelayCommand(GoToSettingsPage);
+            ClearTextBoxCommand = new ParametrizedRelayCommand((txt) => ClearTextBox(txt));
 
             _logger.Info("Done setting up SideMenuViewModel");
         }
-
         #endregion
 
-        #region Private helpers
+        #region Command methods
+
+        /// <summary>
+        /// Method to wipe out text, and lose focus from TextBox
+        /// </summary>
+        /// <param name="TextBox">TextBox on which do method</param>
+        private void ClearTextBox(object TextBox)
+        {
+            //Get the TextBox
+            var textBox = (TextBox as TextBox);
+            if (textBox == null)
+                return;
+
+            //Clear text and lose focus from TextBox
+            textBox.Clear();
+            textBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
 
         /// <summary>
         /// Method that will process sending friend request
@@ -223,18 +275,27 @@ namespace Toute
         /// </summary>
         private async Task SendFriendRequestAsync()
         {
-            await RunCommandAsync(() => SendFriendRequestIsRunning, async () => 
+            await RunCommandAsync(() => SendFriendRequestIsRunning, async () =>
             {
+                if(AddFriendTextBoxShown == false)
+                {
+                    AddFriendTextBoxShown = true;
+                    return;
+                }
                 //If user is not logged, or TextBox is empty...
                 if (string.IsNullOrEmpty(NameOfFriendToAdd))
+                {
+                    AddFriendTextBoxShown = false;
                     return;
+                }
+                    
                 _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to send friend request to {NameOfFriendToAdd}");
                 //Sets values of friend request
                 var userToAdd = new SendFriendRequest
                 {
                     FriendUsername = NameOfFriendToAdd
                 };
-                
+
                 var result = await HttpExtensions.HandleHttpRequestAsync(FriendRoutes.SendFriendRequest, userToAdd);
 
                 //If response is successful
@@ -243,12 +304,13 @@ namespace Toute
                     NameOfFriendToAdd = "";
                     PopupExtensions.NewInfoPopup("Friend request sent");
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} sent friend request to {NameOfFriendToAdd}");
+                    AddFriendTextBoxShown = false;
                 }
                 else
                 {
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} failed to send friend request to {NameOfFriendToAdd}");
                 }
-                    
+
             });
         }
 
@@ -258,7 +320,7 @@ namespace Toute
         /// <param name="FriendId">ID of friend to accept</param>
         private async Task AcceptFriendRequestAsync(object FriendId)
         {
-            await RunCommandAsync(() => AcceptFriendIsRunning, async() => 
+            await RunCommandAsync(() => AcceptFriendIsRunning, async () =>
             {
                 _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to accept friend request with ID: {FriendId}");
                 //Make a request Model
@@ -329,6 +391,8 @@ namespace Toute
             await RunCommandAsync(() => DeleteFriendIsRunning, async () =>
             {
                 _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is trying to delete friend with ID: {CurrentIdOfManagedFriend}");
+
+                IsFriendSettingsOpen = false;
                 //Make a request Model
                 var userToDelete = new AddFriendRequest
                 {
@@ -368,7 +432,7 @@ namespace Toute
         /// <summary>
         /// Method that handle blocking friend
         /// </summary>
-        private async Task BlockFriend()
+        private async Task BlockFriendAsync()
         {
             await RunCommandAsync(() => BlocFriendIsRunning, async () =>
             {
@@ -419,7 +483,7 @@ namespace Toute
         /// Method that handle unlocking friend
         /// </summary>
         /// <param name="FriendId"></param>
-        private async Task UnblockFriend(object FriendId)
+        private async Task UnblockFriendAsync(object FriendId)
         {
             await RunCommandAsync(() => UnblockFriendIsRunning, async () =>
             {
@@ -458,61 +522,51 @@ namespace Toute
         /// <param name="FriendId">ID of friend</param>
         private void GoToUser(object FriendId)
         {
+            //If user is on chat where ID is the same return
             if (ViewModelApplication.CurrentFriendId == FriendId.ToString())
                 return;
 
             _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}");
 
-            //_logger.Info("Deleted refreshing messages");
-            ////Remove previous refreshing
-            //TimerExtensions.RemoveRepetingMessagesFromApplicationUser();
-
             //Finds user of given if
             var chatUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
 
+            //If user was not found return
             if (chatUser == null)
             {
                 _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}, but user does not exist.");
                 return;
             }
-                
 
             //Create new ObservableCollection with messages
             chatUser.Messages = new ObservableCollection<MessageModel>();
 
-            //If StatusOfFriendship is not blocked or pending...
-            if (!(chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending))
-            {
-                //If any user is selected
-                if (!(string.IsNullOrEmpty(ViewModelApplication.CurrentFriendId)))
-                {
-                    //Find if he exists
-                    if(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId) != null)
-                    {
-                        //De-select him
-                        ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).IsSelected = false;
-                    }
-                }
-
-                //Select new user
-                chatUser.IsSelected = true;
-
-                //Set actual friend
-                ViewModelApplication.CurrentFriendId = FriendId.ToString();
-
-                //Set chatUser messages to new ObservableCollection and order them by date
-                ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
-                //}
-                IsMoreMessages = true;
-                LastPageLoaded = 1;
-                //Go to chat page with specific user of given id
-                ViewModelApplication.GoToPage(ApplicationPage.ContactPage, chatUser);
-            }
-            else
+            //If friend is blocked, or status of friendship is pending
+            if (chatUser.Status == StatusOfFriendship.Blocked || chatUser.Status == StatusOfFriendship.Pending)
             {
                 _logger.Debug($"Failed to go to chat with friend of ID: {FriendId}. User is blocked, or status of friendship is pending");
+                return;
             }
 
+            //Unselect previous user
+            if (ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId) != null)
+            {
+                ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId).IsSelected = false;
+            }
+
+            //Select new user
+            chatUser.IsSelected = true;
+
+            //Set actual friend
+            ViewModelApplication.CurrentFriendId = FriendId.ToString();
+
+            //Set chatUser messages to new ObservableCollection and order them by date
+            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
+            //}
+            IsMoreMessages = true;
+            LastPageLoaded = 1;
+            //Go to chat page with specific user of given id
+            ViewModelApplication.GoToPage(ApplicationPage.ContactPage, chatUser);
         }
 
         /// <summary>
@@ -541,7 +595,7 @@ namespace Toute
         private void RequestListChangeStatus()
         {
             //Toggle
-            RequestListOpen ^= true;
+            RequestListHidden ^= true;
         }
 
         /// <summary>
@@ -550,7 +604,7 @@ namespace Toute
         private void BlockListStatusChangeStatus()
         {
             //toggle
-            BlockListOpen ^= true;
+            BlockListHidden ^= true;
         }
 
         /// <summary>
@@ -571,59 +625,9 @@ namespace Toute
             ViewModelApplication.GoToPage(ApplicationPage.SettingsPage);
         }
 
-        /// <summary>
-        /// Method that load more messages from database with the friend
-        /// </summary>
-        /// <returns>More messages</returns>
-        public async Task LoadMoreMessagesAsync()
-        {
-            await RunCommandAsync(() => LoadMoreMessagesIsRunning, async () =>
-            {
-                //Gets user id
-                var FriendId = ViewModelApplication.CurrentFriendId;
+        #endregion
 
-                _logger.Debug($"Attempt to refresh messages with {FriendId}");
-
-                //Make a request to API
-                var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages + $"/{LastPageLoaded}", new GetMessagesRequest
-                {
-                    FriendId = FriendId
-                });
-
-                //If there is successful response
-                if (context?.Count > 0)
-                {
-                    _logger.Debug($"Found {context.Count} new messages. Now adding them into the message list");
-                    //If number is less that 20 (twenty, because its default number of
-                    //returning items from pagination)
-                    if (context.Count < 20)
-                        //Set there is no more messages
-                        IsMoreMessages = false;
-
-                    //Set last page loaded
-                    LastPageLoaded++;
-
-                    //Get friend
-                    var friendUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId);
-
-                    //For every message...
-                    foreach (var message in context)
-                    {
-                        friendUser.Messages.Insert(0, new MessageModel
-                        {
-                            Message = message.Message,
-                            SentByMe = message.SentByMe,
-                            DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                            FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
-                        });
-                    }
-                }
-                else
-                {
-                    _logger.Debug($"No new messages with friend of ID: {FriendId} were found");
-                }
-            });
-        }
+        #region Public helpers
 
         /// <summary>
         /// Method that is fired every x second, by timer.
@@ -706,11 +710,60 @@ namespace Toute
             }
             _logger.Debug("Done refreshing friend list");
         }
-        #endregion
 
-        #region Public helpers
+        /// <summary>
+        /// Method that load more messages from database with the friend
+        /// </summary>
+        /// <returns>More messages</returns>
+        public async Task LoadMoreMessagesAsync()
+        {
+            await RunCommandAsync(() => LoadMoreMessagesIsRunning, async () =>
+            {
+                //Gets user id
+                var FriendId = ViewModelApplication.CurrentFriendId;
 
+                _logger.Debug($"Attempt to refresh messages with {FriendId}");
 
+                //Make a request to API
+                var context = await HttpExtensions.HandleHttpRequestOfTResponseAsync<List<MessageDataModel>>(MessageRoutes.GetMessages + $"/{LastPageLoaded}", new GetMessagesRequest
+                {
+                    FriendId = FriendId
+                });
+
+                //If there is successful response
+                if (context?.Count > 0)
+                {
+                    _logger.Debug($"Found {context.Count} new messages. Now adding them into the message list");
+                    //If number is less that 20 (twenty, because its default number of
+                    //returning items from pagination)
+                    if (context.Count < 20)
+                        //Set there is no more messages
+                        IsMoreMessages = false;
+
+                    //Set last page loaded
+                    LastPageLoaded++;
+
+                    //Get friend
+                    var friendUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId);
+
+                    //For every message...
+                    foreach (var message in context)
+                    {
+                        friendUser.Messages.Insert(0, new MessageModel
+                        {
+                            Message = message.Message,
+                            SentByMe = message.SentByMe,
+                            DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
+                            FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                        });
+                    }
+                }
+                else
+                {
+                    _logger.Debug($"No new messages with friend of ID: {FriendId} were found");
+                }
+            });
+        }
 
         #endregion
     }

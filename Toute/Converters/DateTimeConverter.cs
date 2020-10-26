@@ -24,7 +24,7 @@ namespace Toute
                 return null;
 
             //If it is the same day...
-            if(datetime.ToUniversalTime().Day == DateTime.UtcNow.Day)
+            if (datetime.ToUniversalTime().Day == DateTime.UtcNow.Day)
                 //Show DateTime like "15:21"
                 return datetime.ToShortTimeString();
 

@@ -12,14 +12,17 @@
 
         //Register Page
         RegisterPage = 2,
-        
+
+        //Register Page
+        RestartPasswordPage = 3,
+
         //Games Page
-        GamesPage = 3,
+        GamesPage = 4,
 
         //Contact Page
-        ContactPage = 4,
+        ContactPage = 5,
 
         //Settings Page
-        SettingsPage = 5
+        SettingsPage = 6
     }
 }

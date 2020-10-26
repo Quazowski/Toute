@@ -80,7 +80,7 @@
                         <Binding Path="Username" ValidatesOnDataErrors="True" 
                                  UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
-                                <local:MinimumCharacterRule MinimumCharacters="3"/>
+                                <local:MinimumCharacterRule ValidatesOnTargetUpdated="True"  MinimumCharacters="3"/>
                             </Binding.ValidationRules>
                         </Binding>
                     </TextBox.Text>

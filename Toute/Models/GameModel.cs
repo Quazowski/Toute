@@ -1,4 +1,8 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using Toute.Core;
 
 namespace Toute
 {
@@ -29,8 +33,20 @@ namespace Toute
         public byte[] BytesImage { get; set; }
 
         /// <summary>
-        /// Full path to the file
+        /// Full path to the files
         /// </summary>
-        public string Path { get; set; }
+        public List<StringDataModel> Paths { get; set; }
+
+        /// <summary>
+        /// Marks if property is selected
+        /// </summary>
+        public bool IsSelected { get; set; }
+
+        public string FirstPath => Paths.FirstOrDefault().Value;
+
+        public GameModel()
+        {
+            Paths = new List<StringDataModel>();
+        }
     }
 }

@@ -58,7 +58,7 @@ namespace Toute.Core
         Task RemoveGameAsync(string Id);
 
         /// <summary>
-        /// Change path to the game
+        /// Change value of the file
         /// </summary>
         /// <returns></returns>
         Task ChangeValuesAsync(GameDataModel model);

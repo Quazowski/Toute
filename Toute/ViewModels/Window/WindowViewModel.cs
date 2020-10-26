@@ -1,7 +1,7 @@
 ﻿using NLog;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using static Toute.DI;
 
 namespace Toute
 {
@@ -32,7 +32,7 @@ namespace Toute
         /// Padding of the Toute Title text box
         /// </summary>
         public Thickness HeaderTitlePadding { get; set; } = new Thickness(25, 10, 25, 10);
-        
+
         /// <summary>
         /// Padding of drop shadow border
         /// Changes when windowState is changed
@@ -98,6 +98,11 @@ namespace Toute
         /// </summary>
         public WindowViewModel(Window window)
         {
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+            {
+
+            }
+
             _logger.Info("Start setting up WindowViewModel");
 
             //Assign main window to private member

@@ -88,8 +88,8 @@ namespace Toute
 
             //Create commands
             SaveChangesCommand = new ParametrizedRelayCommand(async (credentials) => await SaveChangesAsync(credentials));
-            LogoutCommand = new RelayCommand(async() => await Logout());
-            UploadNewPhotoCommand = new RelayCommand(async() => await UploadNewPhotoAsync());
+            LogoutCommand = new RelayCommand(async () => await Logout());
+            UploadNewPhotoCommand = new RelayCommand(async () => await UploadNewPhotoAsync());
 
             _logger.Info("Done setting up SettingsViewModel");
         }
@@ -104,7 +104,7 @@ namespace Toute
         /// <param name="credentials">New Credentials</param>
         private async Task SaveChangesAsync(object credentials)
         {
-            await RunCommandAsync(() => SaveChangesIsRunning, async() => 
+            await RunCommandAsync(() => SaveChangesIsRunning, async () =>
             {
                 //If username is changed...
                 if (Name != ViewModelApplication.ApplicationUser.Username)
@@ -117,7 +117,7 @@ namespace Toute
                         NewUsername = Name
                     });
 
-                    if(context != null)
+                    if (context != null)
                     {
                         _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Id} changed Username: {ViewModelApplication.ApplicationUser.Username} to {Name} successfully");
 
@@ -150,7 +150,7 @@ namespace Toute
                         NewEmail = Email
                     });
 
-                    if(context != null)
+                    if (context != null)
                     {
                         _logger.Info($"User with ID: {ViewModelApplication.ApplicationUser.Email} changed Email: {ViewModelApplication.ApplicationUser.Email} to {Email} successfully");
 
@@ -167,7 +167,7 @@ namespace Toute
                     {
                         _logger.Debug($"Failed to change user email from {ViewModelApplication.ApplicationUser.Email} to {Email}");
                     }
-                    
+
                 }
 
                 //If there is new password sent...
@@ -223,60 +223,28 @@ namespace Toute
         {
             await RunCommandAsync(() => UploadNewPhotoIsRunning, async () =>
             {
-                _logger.Debug("User attempt to change image");
-                //Create new OpenFileDialog
-                var Dialog = new OpenFileDialog();
 
-                //Open new dialog, await to choose a file, or close window
-                Dialog.ShowDialog();
+                var imageToChange = ImageExtension.GetImageFromPCinBytes();
 
-                //Set pathToImage to the given path...
-                var pathToImage = Dialog.FileName.ToUpper();
-
-                //If path is not empty or null...
-                if ((!(string.IsNullOrEmpty(pathToImage))))
+                if(imageToChange != null)
                 {
-                    //Create new Model, which will be sent to API
-                    var ImageToChange = new ChangeImageRequest();
-
-                    if (!pathToImage.EndsWith(".JPG") && !pathToImage.EndsWith(".JPE") && !pathToImage.EndsWith(".BMP") && !pathToImage.EndsWith(".GIF") && !pathToImage.EndsWith(".PNG"))
-                    {
-                        PopupExtensions.NewInfoPopup("Wrong format of photo. Acceptable extensions: .JPG, .JPE, .BMP, .GIF, .PNG");
-                        return;
-                    }
-                    
-                    try
-                    {
-                        //Take a image from PC
-                        Image imageFromPC = Image.FromFile(pathToImage);
-
-                        //Set Image in model, as byte[] image
-                        ImageToChange.Image = imageFromPC.ImageToBytes();
-                    }
-                    catch(Exception ex)
-                    {
-                        PopupExtensions.NewErrorPopup("Wrong format of photo. Acceptable extensions: .JPG, .JPE, .BMP, .GIF, .PNG");
-                        _logger.Warn(ex, "User tried to upload wrong image format");
-                    }
-
                     //Send request to the API
-                    var result = await HttpExtensions.HandleHttpRequestAsync(UserRoutes.ChangeImage, ImageToChange);
-                    
+                    var result = await HttpExtensions.HandleHttpRequestAsync(UserRoutes.ChangeImage, new ChangeImageRequest
+                    {
+                        Image = imageToChange
+                    });
+
                     //If ApiResponse is successful
                     if (result)
                     {
                         //Set ApplicationUser Image, to new image
-                        ViewModelApplication.ApplicationUser.Image = ImageToChange.Image;
+                        ViewModelApplication.ApplicationUser.Image = imageToChange;
 
                         //Set new image in settings page
-                        UserImage = ImageToChange.Image.BytesToBitMapImage();
+                        UserImage = imageToChange.BytesToBitMapImage();
 
                         _logger.Info($"User with [ID]: [{ViewModelApplication.ApplicationUser.Id}] changed photo");
                     }
-                }
-                else
-                {
-                    _logger.Debug("Did not changed Image.No new image was selected.");
                 }
             });
         }
