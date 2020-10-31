@@ -53,16 +53,19 @@
                                     <StackPanel Orientation="Horizontal">
                                         <!--Minimize button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemButton}"
-                                                    Content="{StaticResource FontAwesomeMinimalizeIcon}"
-                                                    Command="{Binding MinimizeCommand}" />
+                                                Style="{StaticResource SystemButton}"
+                                                Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                Command="{Binding MinimizeCommand}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemCloseButton}"
-                                                    Content="{StaticResource FontAwesomeCloseIcon}"
-                                                    Command="{Binding CloseCommand}"
-                                                    VerticalAlignment="Top" />
+                                                Style="{StaticResource SystemCloseButton}"
+                                                Content="{StaticResource FontAwesomeCloseIcon}"
+                                                Command="{Binding CloseCommand}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>

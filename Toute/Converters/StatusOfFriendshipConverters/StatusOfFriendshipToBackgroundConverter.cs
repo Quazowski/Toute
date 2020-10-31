@@ -22,8 +22,8 @@ namespace Toute
             return ((StatusOfFriendship)value) switch
             {
                 StatusOfFriendship.Accepted => "#aaaaaa",
-                StatusOfFriendship.Pending => "#eee83b",
-                StatusOfFriendship.Blocked => "#ea3540",
+                StatusOfFriendship.Pending => "#cabe1c",
+                StatusOfFriendship.Blocked => "#c32926",
                 _ => null,
             };
         }
@@ -60,7 +60,7 @@ namespace Toute
             return ((StatusOfFriendship)value) switch
             {
                 StatusOfFriendship.Accepted => "#999999",
-                StatusOfFriendship.Pending => "#ddd72a",
+                StatusOfFriendship.Pending => "#d8cc22",
                 StatusOfFriendship.Blocked => "#d92430",
                 _ => null,
             };
@@ -98,8 +98,8 @@ namespace Toute
             return ((StatusOfFriendship)value) switch
             {
                 StatusOfFriendship.Accepted => "#aaaaaa",
-                StatusOfFriendship.Pending => "#eee83b",
-                StatusOfFriendship.Blocked => "#ea3540",
+                StatusOfFriendship.Pending => "#cabe1c",
+                StatusOfFriendship.Blocked => "#c32926",
                 _ => null,
             };
         }

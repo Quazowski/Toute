@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:Toute"
              mc:Ignorable="d"
              d:DataContext="{x:Static local:ChatUserDesignModel.Instance}">
-
     <!--Border around User-->
     <Border x:Name="border"
             Opacity="{Binding IsSelected,
@@ -24,7 +23,7 @@
                                         Storyboard.TargetProperty="Background.Color"
                                         Storyboard.TargetName="border"/>
                     </Storyboard>
-                </BeginStoryboard>
+                </BeginStoryboard> 
             </EventTrigger>
             <EventTrigger RoutedEvent="MouseLeave">
                 <BeginStoryboard>
@@ -55,11 +54,12 @@
             </Grid.ColumnDefinitions>
 
             <!--Image-->
-            <Border Grid.Column="0" 
-                    CornerRadius="5" 
-                    Width="40"
-                    Margin="5">
-                <Image Source="{Binding Image}" />
+            <Border Grid.Column="0" >
+                <Image Source="{Binding Image}"                   
+                       Width="40"
+                       Height="40" 
+                       Stretch="UniformToFill"
+                       Margin="5"/>
             </Border>
 
             <!--Text-->
@@ -153,7 +153,7 @@
                         <!--=Block friend button-->
                         <Button Style="{StaticResource FriendManagmentButton}"
                                 Content="{StaticResource FontAwesomeDeclineIcon}"
-                                Foreground="{StaticResource BackgroundOrangeBrush}"
+                                Foreground="{StaticResource BackgroundWhiteBrush}"
                                 x:Name="buttonUnblock"
                                 Visibility="{Binding Status,
                                     Converter={local:StatusOfBlockToVisibilityConverter}}"
@@ -173,7 +173,7 @@
                                 <EventTrigger RoutedEvent="MouseLeave">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <ColorAnimation To="{StaticResource Orange}" 
+                                            <ColorAnimation To="{StaticResource White}" 
                                                             Duration="0:0:0.2" 
                                                             Storyboard.TargetProperty="Foreground.Color" 
                                                             Storyboard.TargetName="buttonUnblock"/>

@@ -51,11 +51,6 @@ namespace Toute
         public ObservableCollection<InfoControlViewModel> InformationsAndErrors { get; set; }
 
         /// <summary>
-        /// If user is logged, store Friends in a list
-        /// </summary>
-        public ObservableCollection<FriendModel> Friends { get; set; }
-
-        /// <summary>
         /// Information about user, that are already logged to application
         /// </summary>
         public ApplicationUserModel ApplicationUser { get; set; }
@@ -145,7 +140,7 @@ namespace Toute
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
             //Create new List of friends
-            Friends = new ObservableCollection<FriendModel>();
+            ViewModelSideMenu.Friends = new ObservableCollection<FriendModel>();
 
             _logger.Info("Done setting up ApplicationViewModel for a Application");
         }
@@ -175,7 +170,7 @@ namespace Toute
 
             if (page != ApplicationPage.ContactPage && CurrentApplicationPage == ApplicationPage.ContactPage)
             {
-                Friends.FirstOrDefault(x => x.FriendId == CurrentFriendId).IsSelected = false;
+                ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == CurrentFriendId).IsSelected = false;
                 ViewModelApplication.CurrentFriendId = "";
 
             }
@@ -234,7 +229,7 @@ namespace Toute
                 ViewModelApplication.ApplicationUser = null;
                 ViewModelSideMenu.NameOfFriendToAdd = "";
                 //Clear friends list
-                ViewModelApplication.Friends = new ObservableCollection<FriendModel>();
+                ViewModelSideMenu.Friends = new ObservableCollection<FriendModel>();
 
                 ViewModelGame.Items = new ObservableCollection<GameModel>();
 

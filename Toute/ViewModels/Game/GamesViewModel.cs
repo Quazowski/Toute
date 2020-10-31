@@ -97,12 +97,6 @@ namespace Toute
         /// </summary>
         public bool SetNewTitleIsRunning { get; set; }
 
-        /// <summary>
-        /// Indicate if TextBox that show user he have no games is shown
-        /// If true, its hidden
-        /// </summary>
-        public bool NoGamesHiddenTxt { get; set; }
-
         #endregion
 
         #region Public commands
@@ -172,11 +166,6 @@ namespace Toute
 
             //Creating new ObservableCollection to store Games
             Items = new ObservableCollection<GameModel>();
-
-            Items.CollectionChanged += (sender, e) =>
-            {
-                NoGamesHiddenTxt = Items.Count > 0;
-            };
 
             //Create commands
             RunCommand = new ParametrizedRelayCommand((Id) => RunGame((string)Id));

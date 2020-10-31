@@ -3,6 +3,7 @@ using NLog;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Toute.Extensions;
 
@@ -169,6 +170,27 @@ namespace Toute
                 _logger.Debug("Did not changed Image.No new image was selected.");
                 return null;
             }
+        }
+
+        public static byte[] GetImageFromClipboardAsByte()
+        {
+            BitmapSource bitmapSource = Clipboard.GetImage();
+
+            if(bitmapSource != null)
+            {
+                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                //encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.QualityLevel = 100;
+                // byte[] bit = new byte[0];
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                    encoder.Save(stream);
+                    byte[] bit = stream.ToArray();
+                    return bit;
+                }
+            }
+            return null;
         }
 
     }

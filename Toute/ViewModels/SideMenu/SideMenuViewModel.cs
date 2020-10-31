@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,11 +23,16 @@ namespace Toute
         #region Private members
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private bool _isAnyFriendsTxtHidden;
 
         #endregion
 
         #region Public properties
+
+        /// <summary>
+        /// If user is logged, store Friends in a list
+        /// </summary>
+        public ObservableCollection<FriendModel> Friends { get; set; }
+
 
         /// <summary>
         /// The name of friend, to which will be
@@ -116,19 +120,6 @@ namespace Toute
         public bool LoadMoreMessagesIsRunning { get; set; }
 
         /// <summary>
-        /// If user have no friends i list, show a text
-        /// </summary>
-        public bool IsAnyFriendsTxtHidden 
-        {
-            get => _isAnyFriendsTxtHidden;
-            set
-            {
-                _isAnyFriendsTxtHidden = value;
-                OnPropertyChanged(nameof(IsAnyFriendsTxtHidden));
-            }
-        }
-
-        /// <summary>
         /// Set the last page that is loaded
         /// with the friend we are currently chat
         /// </summary>
@@ -212,6 +203,11 @@ namespace Toute
         /// </summary>
         public ICommand ClearTextBoxCommand { get; set; }
 
+        /// <summary>
+        /// Command to open image in full width and height
+        /// </summary>
+        public ICommand ShowFullImageCommand { get; set; }
+
         #endregion
 
         #region Constructor
@@ -222,15 +218,6 @@ namespace Toute
         public SideMenuViewModel()
         {
             _logger.Info("Start setting up SideMenuViewModel");
-
-            if(ViewModelApplication?.Friends != null)
-            {
-                //If collection change, show TextBox if value if 0
-                ViewModelApplication.Friends.CollectionChanged += (sender, e) =>
-                {
-                    IsAnyFriendsTxtHidden = ViewModelApplication.Friends.Count() > 0;
-                };
-            }
 
             //Create commands
             SendFriendRequestCommand = new RelayCommand(async () => await SendFriendRequestAsync());
@@ -246,12 +233,27 @@ namespace Toute
             GamesCommand = new RelayCommand(GoToGamesPage);
             SettingsCommand = new RelayCommand(GoToSettingsPage);
             ClearTextBoxCommand = new ParametrizedRelayCommand((txt) => ClearTextBox(txt));
+            ShowFullImageCommand = new ParametrizedRelayCommand((image) => ShowFullImage(image));
 
             _logger.Info("Done setting up SideMenuViewModel");
         }
+
         #endregion
 
         #region Command methods
+
+        /// <summary>
+        /// Method to see image in full width
+        /// </summary>
+        /// <param name="image"></param>
+        private void ShowFullImage(object image)
+        {
+            var img = (image as Image);
+
+            ImageFullWindow imageWindow = new ImageFullWindow();
+            imageWindow.MainImage.Source = img.Source;
+            imageWindow.ShowDialog();
+        }
 
         /// <summary>
         /// Method to wipe out text, and lose focus from TextBox
@@ -337,7 +339,7 @@ namespace Toute
                     //Set value of StatusOfFiendship in ApplicationUser friends, to accepted with given friend
                     ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
                     //Set value of StatusOfFiendship in Friends list, to accepted with given friend
-                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
+                    ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Status = StatusOfFriendship.Accepted;
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is accepted friend request with ID: {FriendId}");
                 }
                 else
@@ -370,7 +372,7 @@ namespace Toute
                 if (result)
                 {
                     //Remove friend from friend list
-                    ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
+                    ViewModelSideMenu.Friends.Remove(ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
                     //Remove friend from friends in ApllicationUser
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()));
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} is declined friend request of friend ID: {FriendId}");
@@ -415,7 +417,7 @@ namespace Toute
                     }
 
                     //Remove friend from friend list
-                    ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
+                    ViewModelSideMenu.Friends.Remove(ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
                     //Remove friend form ApplicationUser friends
                     ViewModelApplication.ApplicationUser.Friends.Remove(ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend));
                     //Clear CurrentIdOfManagedFriend 
@@ -464,7 +466,7 @@ namespace Toute
                     }
 
                     //Set friend in friend list to blocked
-                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
+                    ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     //Set friend in application user to blocked
                     ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == CurrentIdOfManagedFriend).Status = StatusOfFriendship.Blocked;
                     //Set we are not managing this friend
@@ -504,7 +506,7 @@ namespace Toute
                     ViewModelApplication.ApplicationUser.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
 
                     //Change StatusOfFriendship in friends to accepted
-                    ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
+                    ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == friendToUnblock.FriendId).Status = StatusOfFriendship.Accepted;
                     _logger.Debug($"User of ID {ViewModelApplication.ApplicationUser.Id} unblocked friend with friend ID: {FriendId}");
 
                 }
@@ -529,7 +531,7 @@ namespace Toute
             _logger.Debug($"User is trying to go chat with friend of ID: {FriendId}");
 
             //Finds user of given if
-            var chatUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
+            var chatUser = ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString());
 
             //If user was not found return
             if (chatUser == null)
@@ -549,9 +551,9 @@ namespace Toute
             }
 
             //Unselect previous user
-            if (ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId) != null)
+            if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId) != null)
             {
-                ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId).IsSelected = false;
+                ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication?.CurrentFriendId).IsSelected = false;
             }
 
             //Select new user
@@ -561,7 +563,7 @@ namespace Toute
             ViewModelApplication.CurrentFriendId = FriendId.ToString();
 
             //Set chatUser messages to new ObservableCollection and order them by date
-            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
+            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages = new ObservableCollection<MessageModel>(chatUser.Messages.OrderBy(x => x.DateOfSent));
             //}
             IsMoreMessages = true;
             LastPageLoaded = 1;
@@ -668,7 +670,7 @@ namespace Toute
                     //Add to friends of Application
                     Application.Current.Dispatcher.Invoke(delegate
                     {
-                        ViewModelApplication.Friends.Add(new FriendModel
+                        ViewModelSideMenu.Friends.Add(new FriendModel
                         {
                             FriendId = friend.FriendId,
                             BytesImage = friend.BytesImage,
@@ -702,7 +704,7 @@ namespace Toute
                     //Remove from friends of Application
                     Application.Current.Dispatcher.Invoke(delegate
                     {
-                        ViewModelApplication.Friends.Remove(ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == friend));
+                        ViewModelSideMenu.Friends.Remove(ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == friend));
                     });
 
                     _logger.Debug($"Remove Friend with ID: {ViewModelApplication.CurrentFriendId} from friend list");
@@ -744,7 +746,7 @@ namespace Toute
                     LastPageLoaded++;
 
                     //Get friend
-                    var friendUser = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId);
+                    var friendUser = ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId);
 
                     //For every message...
                     foreach (var message in context)
@@ -753,8 +755,9 @@ namespace Toute
                         {
                             Message = message.Message,
                             SentByMe = message.SentByMe,
+                            IsImage = message.IsImage,
                             DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                            FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                            FriendsImage = ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                         });
                     }
                 }

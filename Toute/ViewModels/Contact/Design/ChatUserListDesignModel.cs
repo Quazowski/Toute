@@ -7,7 +7,7 @@ namespace Toute
     /// A design Model for <see cref="SideMenuControl"/>
     /// to display friends
     /// </summary>
-    public class ChatUserListDesignModel : ApplicationViewModel
+    public class ChatUserListDesignModel : SideMenuViewModel
     {
         /// <summary>
         /// Makes a static instance of this class

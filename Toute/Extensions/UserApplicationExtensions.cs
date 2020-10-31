@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Toute.Core;
@@ -72,8 +73,9 @@ namespace Toute
             //Run refreshing friend list
             ViewModelApplication.ApplicationUser.RefreshFriends = new Timer(async (e) =>
             {
-                await ViewModelSideMenu.RefreshFriendsAsync(ViewModelApplication.Friends);
+                await ViewModelSideMenu.RefreshFriendsAsync(ViewModelSideMenu.Friends);
             }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+
 
             _logger.Info("Refreshing friends of the user is running...");
         }

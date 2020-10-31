@@ -42,6 +42,7 @@
                Grid.Column="0"
                Visibility="{Binding SentByMe, Converter={local:BooleanToVisibilityConverter}}"
                Width="20"
+                   Height="20"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"/>
 
@@ -49,21 +50,53 @@
             <Border Background="{Binding BackgroundColorOfMessage}"
                     CornerRadius="10"
                     Padding="10 4"
-                    HorizontalAlignment="{Binding SentByMe, Converter={local:BooleanToHorizontalAligmentConverter}}"
+                    HorizontalAlignment="{Binding SentByMe,
+                    Converter={local:BooleanToHorizontalAligmentConverter}}"
                     VerticalAlignment="Center"
                     Grid.Column="1"
-                    Margin="10 0 0 0">
+                    Margin="10 0 0 0"
+                    Visibility="{Binding IsImage, Converter={local:BooleanToVisibilityConverter}}">
+                <Grid>
+                    <!--Text inside messageBox-->
+                    <TextBox Text="{Binding Message}"
+                             Style="{StaticResource TextBoxofTextblockStyle}"
+                             Foreground="{Binding ForegroundColorOfMessage}"
+                             Visibility="{Binding IsImage, Converter={local:BooleanToVisibilityConverter}}"
+                             Grid.Column="1"
+                             FontSize="18"
+                             TextWrapping="Wrap" />
 
-                <!--Text inside messageBox-->
-                <TextBox Text="{Binding Message}"
-                         Style="{StaticResource TextBoxofTextblockStyle}"
-                         Foreground="{Binding ForegroundColorOfMessage}"
-                         Grid.Column="1"
-                         FontSize="18"
-                         TextWrapping="Wrap"/>
-
-
+                </Grid>
             </Border>
+
+            <TextBlock Visibility="{Binding IsImage, 
+                   Converter={local:InvertedBooleanToVisibilityConverter}}">
+                <Hyperlink Command="{Binding ShowFullImageCommand, Source={x:Static local:ViewModelLocator.SideMenuViewModel}}"
+                           CommandParameter="{Binding ElementName=imageMessage}"
+                           TextDecorations="{x:Null}">
+                           <Image Source="{Binding ImageMessage}"
+                                  MaxWidth="600"
+                                  MaxHeight="300"
+                                  x:Name="imageMessage">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransformOrigin" Value="0.5, 0.5"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.01" ScaleY="1.01"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+                </Hyperlink>
+            </TextBlock>
+
+
             <TextBlock Text="{Binding DateOfSent, Converter={local:DateTimeConverter}}" 
                        Grid.Column="{Binding SentByMe, Converter={local:SentByMeBooleanToColumnConverter}}"
                        FontSize="{StaticResource FontSizeSmaller}"

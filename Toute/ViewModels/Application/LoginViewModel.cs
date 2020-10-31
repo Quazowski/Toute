@@ -205,7 +205,7 @@ namespace Toute
                     //foreach friend in Friends of user...
                     foreach (var friend in ViewModelApplication.ApplicationUser.Friends)
                     {
-                        ViewModelApplication.Friends.Add(new FriendModel
+                        ViewModelSideMenu.Friends.Add(new FriendModel
                         {
                             FriendId = friend.FriendId,
                             Name = friend.Name,
@@ -240,7 +240,7 @@ namespace Toute
                     //Start refreshing list of friends every x seconds.
                     ViewModelApplication.ApplicationUser.RefreshFriends = new Timer(async (e) =>
                     {
-                        await ViewModelSideMenu.RefreshFriendsAsync(ViewModelApplication.Friends);
+                        await ViewModelSideMenu.RefreshFriendsAsync(ViewModelSideMenu.Friends);
                     }, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
 
                     //Go to GamesPage page

@@ -25,6 +25,11 @@ namespace Toute.Core
         /// <summary>
         /// Is message sent by user
         /// </summary>
-        public virtual bool SentByMe { get; set; }      
+        public virtual bool SentByMe { get; set; }
+
+        /// <summary>
+        /// Indicate if message is image
+        /// </summary>
+        public virtual bool IsImage { get; set; } = false;
     }
 }

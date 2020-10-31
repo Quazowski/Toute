@@ -6,14 +6,13 @@ namespace Toute.Core
     /// <summary>
     /// Request to send a message
     /// </summary>
-    public class SendMessageRequest : RelationshipModel
+    public class SendImageRequest : RelationshipModel
     {
         /// <summary>
         /// Value of the message
         /// </summary>
-        [Required(ErrorMessage = "Message can not be empty")]
-        [MaxLength(402, ErrorMessage = "Message too long")]
-        public string Message { get; set; }
+        [Required(ErrorMessage = "Image can not be empty")]
+        public byte[] Image{ get; set; }
 
         /// <summary>
         /// Date when message was sent
@@ -21,5 +20,6 @@ namespace Toute.Core
         [Required(ErrorMessage = "You have to provide date!")]
         [DataType(DataType.Date, ErrorMessage = "Time must be of Date type!")]
         public DateTime DateOfSend { get; set; }
+
     }
 }

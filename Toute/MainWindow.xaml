@@ -171,8 +171,9 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Image Source="/Images/cancelIcon.png" 
-                               Grid.Column="0"
-                               Width="40"/>
+                                   Grid.Column="0"
+                                   Width="40"
+                                   Height="40"/>
 
                             <TextBlock Text="No internet connection"
                                    Padding="10"
@@ -198,8 +199,9 @@
                                 <ColumnDefinition Width="auto" />
                             </Grid.ColumnDefinitions>
                             <Image Source="/Images/cancelIcon.png" 
-                               Grid.Column="0"
-                               Width="40"/>
+                                   Grid.Column="0"
+                                   Width="40"
+                                   Height="40"/>
 
                             <TextBlock Text="Server is down"
                                    Padding="10"

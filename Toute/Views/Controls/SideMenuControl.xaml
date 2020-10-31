@@ -74,24 +74,18 @@
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
-                            <TextBlock Text="You have no friends! Maybe it is time, to add someone?"
-                                       Width="200"
-                                       TextWrapping="WrapWithOverflow"
-                                       TextAlignment="Center"
-                                       Margin="0 10"
-                                       FontStyle="Italic"
-                                       Visibility="{Binding IsAnyFriendsTxtHidden, 
-                                       Converter={local:BooleanToVisibilityConverter},
-                                       UpdateSourceTrigger=PropertyChanged}"/>
                             <!--ItemsControl with friends-->
-                            <ItemsControl d:DataContext="{x:Static local:ChatUserListDesignModel.Instance}"
-                                      ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}">
+                            <ItemsControl ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.SideMenuViewModel}}">
+                                <ItemsControl.DataContext>
+                                    <local:ChatUserListDesignModel/>
+                                </ItemsControl.DataContext>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <local:UserChatControl Visibility="{Binding Status, Converter={local:StatusOfAcceptedToVisibilityConverter}}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
+
 
                         </Grid>
 
@@ -108,7 +102,7 @@
                             <Button FontFamily="{StaticResource FontAwesome}"
                                     Grid.Row="0"
                                     x:Name="ExpandFriendRequestListButton"
-                                    Background="{StaticResource BackgroundYellowBrush}"
+                                    Background="#b7ac05"
                                     Command="{Binding RequestListCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
@@ -126,14 +120,14 @@
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource DarkYellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                                <ColorAnimation To="#c1b608" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>
                                     <EventTrigger RoutedEvent="MouseLeave">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource Yellow}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
+                                                <ColorAnimation To="#b7ac05" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandFriendRequestListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>
@@ -143,15 +137,12 @@
                             <!--Friend request ItemsSoruce-->
                             <Border Grid.Row="1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                                          VerticalScrollBarVisibility="Disabled">
-                                    <ItemsControl Grid.Row="0" 
-                                                  ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                                              VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.SideMenuViewModel}}"
                                                   local:TopFadeSlideAttachedProperty.Value="{Binding RequestListHidden}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <local:UserChatControl
-                                                           Visibility="{Binding Status, Converter={local:StatusOfPendingToVisibilityConverter}}"
-/>
+                                                <local:UserChatControl Visibility="{Binding Status, Converter={local:StatusOfPendingToVisibilityConverter}}"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -172,7 +163,7 @@
                             <Button FontFamily="{StaticResource FontAwesome}"
                                     Grid.Row="0"
                                     x:Name="ExpandBlockFriendListButton"
-                                    Background="{StaticResource BackgroundVeryLightRedBrush}"
+                                    Background="#aa1512"
                                     Command="{Binding BlockListCommand}">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource FriendExpandButton}">
@@ -190,14 +181,14 @@
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource LightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
+                                                <ColorAnimation To="#c12724" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>
                                     <EventTrigger RoutedEvent="MouseLeave">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="{StaticResource VeryLightRed}" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
+                                                <ColorAnimation To="#aa1512" Duration="0:0:0.2" Storyboard.TargetProperty="Background.Color" Storyboard.TargetName="ExpandBlockFriendListButton"/>
                                             </Storyboard>
                                         </BeginStoryboard>
                                     </EventTrigger>
@@ -207,13 +198,12 @@
                             <!--Blocked friends ItemsSoruce-->
                             <Border Grid.Row="1">
                                 <ScrollViewer HorizontalScrollBarVisibility="Disabled"
-                                                          VerticalScrollBarVisibility="Disabled">
-                                    <ItemsControl Grid.Row="0" ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.ApplicationViewModel}}"
+                                              VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding Friends, Source={x:Static local:ViewModelLocator.SideMenuViewModel}}"
                                                   local:TopFadeSlideAttachedProperty.Value="{Binding BlockListHidden}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <local:UserChatControl 
-                                                           Visibility="{Binding Status, Converter={local:StatusOfBlockToVisibilityConverter}}"/>
+                                                <local:UserChatControl Visibility="{Binding Status, Converter={local:StatusOfBlockToVisibilityConverter}}"/>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>

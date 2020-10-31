@@ -1,4 +1,7 @@
-﻿namespace Toute
+﻿using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace Toute
 {
     /// <summary>
     /// Interaction logic for ContactPage.xaml

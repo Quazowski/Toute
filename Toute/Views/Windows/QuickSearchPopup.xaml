@@ -54,16 +54,19 @@
                                     <StackPanel Orientation="Horizontal">
                                         <!--Minimize button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemButton}"
-                                                    Content="{StaticResource FontAwesomeMinimalizeIcon}"
-                                                    Command="{Binding MinimizeCommand}" />
+                                                Style="{StaticResource SystemButton}"
+                                                Content="{StaticResource FontAwesomeMinimalizeIcon}"
+                                                Command="{Binding MinimizeCommand}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
-                                                    Style="{StaticResource SystemCloseButton}"
-                                                    Content="{StaticResource FontAwesomeCloseIcon}"
-                                                    Command="{Binding CloseCommand}"
-                                                    VerticalAlignment="Top" />
+                                                Style="{StaticResource SystemCloseButton}"
+                                                Content="{StaticResource FontAwesomeCloseIcon}"
+                                                Command="{Binding CloseCommand}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>
@@ -162,11 +165,13 @@
                                             <Image Source="{Binding BitmapImage}"
                                                Margin="0 1 0 0"
                                                Width="15"
+                                               Height="15"
                                                VerticalAlignment="Top"/>
                                             <TextBlock Text="{Binding FirstPath}"
-                                                   TextWrapping="Wrap"
-                                                   MaxWidth="500"
-                                                   Padding="5 0"/>
+                                                       TextWrapping="Wrap"
+                                                       MaxWidth="500"
+                                                       Foreground="{StaticResource BackgroundWhiteBrush}"
+                                                       Padding="5 0"/>
                                         </StackPanel>
                                     </CheckBox>
                                 </DataTemplate>

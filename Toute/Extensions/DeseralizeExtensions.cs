@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Toute
 {
@@ -14,10 +15,10 @@ namespace Toute
         /// <typeparam name="T">Type of returning response</typeparam>
         /// <param name="httpResponse">HttpResponseMessage</param>
         /// <returns></returns>
-        public static T DeseralizeHttpResponse<T>(this HttpResponseMessage httpResponse)
+        public static async Task<T> DeseralizeHttpResponse<T>(this HttpResponseMessage httpResponse)
         {
             //Takes a context from a response, and read it as json string.
-            var httpContext = httpResponse.Content.ReadAsStringAsync().Result;
+            var httpContext = await httpResponse.Content.ReadAsStringAsync();
 
             //Converts json string, to the model of T
             T deserializedResult = JsonConvert.DeserializeObject<T>(httpContext);

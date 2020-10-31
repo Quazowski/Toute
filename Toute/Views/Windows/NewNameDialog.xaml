@@ -55,16 +55,17 @@
                                         <Button FontFamily="{StaticResource FontAwesome}"
                                                 Style="{StaticResource SystemButton}"
                                                 Content="{StaticResource FontAwesomeMinimalizeIcon}"
-                                                Foreground="White"
-                                                Command="{Binding MinimizeCommand}" />
+                                                Command="{Binding MinimizeCommand}"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
 
                                         <!--Close button-->
                                         <Button FontFamily="{StaticResource FontAwesome}"
                                                 Style="{StaticResource SystemCloseButton}"
                                                 Content="{StaticResource FontAwesomeCloseIcon}"
                                                 Command="{Binding CloseCommand}"
-                                                Foreground="White"
-                                                VerticalAlignment="Top" />
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"/>
                                     </StackPanel>
                                 </Border>
                             </Grid>

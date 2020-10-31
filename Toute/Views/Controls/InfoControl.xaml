@@ -19,9 +19,10 @@
             </Grid.ColumnDefinitions>
 
             <Image Source="{Binding ImageToDisplay}" 
-               Grid.Column="0"
-               Width="20"
-               Margin="10 0"/>
+                   Grid.Column="0"
+                   Width="30"
+                   Height="30"
+                   Margin="10 0"/>
 
             <TextBlock Text="{Binding Message}"
                    Grid.Column="1" 
@@ -33,9 +34,10 @@
                    TextWrapping="Wrap"/>
 
             <Image Source="{Binding ImageToDisplay}" 
-               Grid.Column="2" 
-               Width="30"
-               Margin="10 0"/>
+                   Grid.Column="2" 
+                   Width="30"
+                   Height="30"
+                   Margin="10 0"/>
 
 
         </Grid>

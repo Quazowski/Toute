@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using Toute.Core;
-using static Toute.DI;
+﻿using static Toute.DI;
 
 namespace Toute
 {

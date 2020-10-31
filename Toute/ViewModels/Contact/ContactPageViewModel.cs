@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using Toute.Core;
 using Toute.Core.Routes;
 using static Toute.DI;
@@ -43,9 +44,24 @@ namespace Toute
         public bool SendMessageIsRunning { get; set; }
 
         /// <summary>
-        /// Status of <see cref="RefreshMessagesWithTheUserAsync(string, int)"/>
+        /// Status of <see cref="RefreshMessagesWithTheUserAsync"/>
         /// </summary>
         public bool RefreshMessagesWithTheUserIsRunning { get; set; }
+
+        /// <summary>
+        /// Status of <see cref="AddFileImageAsync(string, int)"/>
+        /// </summary>
+        public bool SendingImageFromFileIsRunning { get; set; }
+
+        /// <summary>
+        /// Status of <see cref="AddClipboardImageAsync"/>
+        /// </summary>
+        public bool SendingImageFromClipboardIsRunning { get; set; }
+
+        /// <summary>
+        /// If <see cref="ImagePopup"/> is open
+        /// </summary>
+        public bool IsOpenImage { get; set; } = false;
 
         #endregion
 
@@ -55,6 +71,21 @@ namespace Toute
         /// Command that is fired, when user send message
         /// </summary>
         public ICommand SendMessageCommand { get; set; }
+
+        /// <summary>
+        /// Toggle if popup is open
+        /// </summary>
+        public ICommand OpenImageCommand { get; set; }
+
+        /// <summary>
+        /// Command to send image from PC
+        /// </summary>
+        public ICommand ClipboardImageCommand { get; set; }
+
+        /// <summary>
+        /// Command to send image from clipboard
+        /// </summary>
+        public ICommand FileImageCommand { get; set; }
 
         #endregion
 
@@ -71,6 +102,9 @@ namespace Toute
 
             //Create command
             SendMessageCommand = new ParametrizedRelayCommand(async (message) => await SendMessageAsync(message));
+            OpenImageCommand = new RelayCommand(ToggleImagePopup);
+            ClipboardImageCommand = new RelayCommand(async() => await AddClipboardImageAsync());
+            FileImageCommand = new RelayCommand(async() => await AddFileImageAsync());
 
             _logger.Info("Done setting up base constructor of ContactPageViewModel");
         }
@@ -106,6 +140,118 @@ namespace Toute
         #region Helpers
 
         /// <summary>
+        /// Method to add image from a file, and send it to the friend
+        /// </summary>
+        private async Task AddFileImageAsync()
+        {
+            await RunCommandAsync(() => SendingImageFromFileIsRunning, async () =>
+            {
+                var imageToChange = ImageExtension.GetImageFromPCinBytes();
+
+                if (imageToChange != null)
+                {
+                    _logger.Debug("Starts to send image");
+
+                    //Send request to API
+                    var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendImage, new SendImageRequest
+                    {
+                        FriendId = ViewModelApplication.CurrentFriendId,
+                        Image = imageToChange,
+                        DateOfSend = DateTime.UtcNow
+                    });
+
+                    //If response is successful
+                    if (result)
+                    {
+                        if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
+                        {
+                            await ViewModelSideMenu.LoadMoreMessagesAsync();
+                        }
+                        else
+                        {
+                            //Add message to Message list
+                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                            {
+                                SentByMe = true,
+                                IsImage = true,
+                                Message = Convert.ToBase64String(imageToChange),
+                                DateOfSent = DateTime.Now
+                            });
+                        }
+
+                        _logger.Debug("Message successfully sent");
+
+                    }
+                    else
+                    {
+                        _logger.Debug("Message not sent. Problem occurred when sending a message.");
+                    }
+                }
+            });
+
+        }
+
+        /// <summary>
+        /// Method to add image from a clipboard, and send it to the friend
+        /// </summary>
+        private async Task AddClipboardImageAsync()
+        {
+            await RunCommandAsync(() => SendingImageFromClipboardIsRunning, async () =>
+            {
+                byte[] image = ImageExtension.GetImageFromClipboardAsByte();
+
+                if (image != null)
+                {
+                    _logger.Debug("Starts to send image");
+
+                    //Send request to API
+                    var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendImage, new SendImageRequest
+                    {
+                        FriendId = ViewModelApplication.CurrentFriendId,
+                        Image = image,
+                        DateOfSend = DateTime.UtcNow
+                    });
+
+                    //If response is successful
+                    if (result)
+                    {
+                        if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
+                        {
+                            await ViewModelSideMenu.LoadMoreMessagesAsync();
+                        }
+                        else
+                        {
+                            //Add message to Message list
+                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                            {
+                                SentByMe = true,
+                                IsImage = true,
+                                Message = Convert.ToBase64String(image),
+                                DateOfSent = DateTime.Now
+                            });
+                        }
+
+                        _logger.Debug("Message successfully sent");
+
+                    }
+                    else
+                    {
+                        _logger.Debug("Message not sent. Problem occurred when sending a message.");
+                    }
+                }
+            });
+
+        }
+
+        /// <summary>
+        /// Method to toggle visibility of <see cref="ImagePopup"/>
+        /// </summary>
+        private void ToggleImagePopup()
+        {
+            IsOpenImage ^= true;
+        }
+
+        /// <summary>
         /// Method that send message
         /// </summary>
         /// <param name="Textbox">TextBox with values</param>
@@ -135,14 +281,14 @@ namespace Toute
                     //If response is successful
                     if (result)
                     {
-                        if (ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
+                        if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
                         {
                             await ViewModelSideMenu.LoadMoreMessagesAsync();
                         }
                         else
                         {
                             //Add message to Message list
-                            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
                             {
                                 SentByMe = true,
                                 Message = textBox.Text,
@@ -197,12 +343,13 @@ namespace Toute
                     Application.Current.Dispatcher.Invoke(delegate
                     {
                         if (!message.SentByMe)
-                            ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages.Add(new MessageModel
+                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId.ToString()).Messages.Add(new MessageModel
                             {
                                 Message = message.Message,
                                 SentByMe = message.SentByMe,
+                                IsImage = message.IsImage,
                                 DateOfSent = TimeZoneInfo.ConvertTimeFromUtc(message.DateOfSent, TimeZoneInfo.Local),
-                                FriendsImage = ViewModelApplication.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
+                                FriendsImage = ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == FriendId).Image
                             });
 
                     });

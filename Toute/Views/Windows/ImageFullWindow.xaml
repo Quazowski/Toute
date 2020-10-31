@@ -1,0 +1,121 @@
+﻿<Window x:Class="Toute.ImageFullWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Toute"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="ImageFullWindow"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Height="450"
+        Width="800"
+        KeyDown="Window_KeyDown">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="6"
+                      CaptionHeight="25"
+                      GlassFrameThickness="0"
+                      CornerRadius="0"
+                      />
+    </WindowChrome.WindowChrome>
+
+    <Window.Template>
+        <ControlTemplate TargetType="{x:Type Window}">
+            <Grid Panel.ZIndex="4">
+                <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Top"
+                    Panel.ZIndex="5"
+                    Margin="6"
+                    HorizontalAlignment="Right">
+                    <Button Content="[ ]" 
+                    Command="{Binding MaximizeCommand}"
+                    Foreground="Yellow"
+                    x:Name="FirstButton">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <TextBlock Text="{TemplateBinding Content}"
+                                               Padding="10"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Orange"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="FirstButton"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Yellow"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="FirstButton"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Content="X" 
+                    Command="{Binding CloseCommand}"
+                    Foreground="Yellow"
+                    x:Name="SecondButton">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type Button}">
+                                            <TextBlock Text="{TemplateBinding Content}"
+                                               Padding="10"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Red"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="SecondButton"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <ColorAnimation To="Yellow"
+                                                Duration="0:0:0.2"
+                                                Storyboard.TargetProperty="(Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="SecondButton"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </StackPanel>
+                <ContentPresenter Content="{TemplateBinding Content}" />
+            </Grid>
+        </ControlTemplate>
+    </Window.Template>
+
+
+    <Image x:Name="MainImage"
+               Stretch="Fill"/>
+</Window>

@@ -54,19 +54,8 @@
                         Command="{Binding SearchFilesOpenCommand}"/>
             </Grid>
         </Border>
-        
+
         <Grid Grid.Row="1">
-            <TextBlock Text="No games in library! You can add them by clicking on buttons bellow!"
-                       Width="450"
-                       TextWrapping="WrapWithOverflow"
-                       TextAlignment="Center"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
-                       Foreground="White"
-                       FontSize="{StaticResource FontSizeXLarge}"
-                       Visibility="{Binding NoGamesHiddenTxt, 
-                       Converter={local:BooleanToVisibilityConverter}, 
-                       UpdateSourceTrigger=PropertyChanged}"/>
             <ScrollViewer  d:DataContext="{x:Static local:GameModelListItemDesignModel.Instance}">
                 <ItemsControl Background="Transparent"
                           ItemsSource="{Binding FilteredItems}"
@@ -79,7 +68,7 @@
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <BeginStoryboard>
                                             <Storyboard>
-                                                <ColorAnimation To="#c4bfbe"
+                                                <ColorAnimation To="#575353"
                                                             Duration="0:0:0.2"
                                                             Storyboard.TargetProperty="Background.Color"
                                                             Storyboard.TargetName="grid"/>
@@ -104,6 +93,7 @@
                                               CommandParameter="{Binding FileId}" />
                                 </Grid.InputBindings>
 
+                                <!--Line between files-->
                                 <Border Background="Black" Opacity="0.05"/>
 
                                 <!--Content of single item-->
@@ -119,7 +109,7 @@
 
                                     <!--Image-->
                                     <Border Grid.Column="0" Margin="5">
-                                        <Image Source="{Binding BitmapImage}" Width="30"/>
+                                        <Image Source="{Binding BitmapImage}" Width="30" Height="30"/>
                                     </Border>
 
                                     <!--Name of game-->
