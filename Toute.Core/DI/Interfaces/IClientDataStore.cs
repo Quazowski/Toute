@@ -43,7 +43,7 @@ namespace Toute.Core
         /// Adds game to the list of games
         /// </summary>
         /// <returns></returns>
-        Task<List<GameDataModel>> GetGames(string UserId);
+        Task<List<GameDataModel>> GetGamesAsync(string UserId);
 
         /// <summary>
         /// Adds game to the list of games
@@ -69,6 +69,22 @@ namespace Toute.Core
         /// <param name="Token">JWToken</param>
         /// <param name="RefreshToken">Refresh token</param>
         /// <returns></returns>
-        Task ChangeUserTokens(string Token, string RefreshToken);
+        Task ChangeUserTokensAsync(string Token, string RefreshToken);
+
+        /// <summary>
+        /// Change user username and token
+        /// </summary>
+        /// <param name="newUsername">New username for a user</param>
+        /// <param name="newToken">New token</param>
+        /// <returns></returns>
+        Task ChangeUserUsernameAsync(string newUsername, string newToken);
+
+        /// <summary>
+        /// Change user email and token
+        /// </summary>
+        /// <param name="newUsername">New username for a user</param>
+        /// <param name="newToken">New token</param>
+        /// <returns></returns>
+        Task ChangeUserEmailAsync(string newEmail, string newToken);
     }
 }

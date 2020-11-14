@@ -10,7 +10,7 @@ namespace Toute.Core
         /// <summary>
         /// Email of the user
         /// </summary>
-        [Required(ErrorMessage = "Email is required")]
+        [Required(ErrorMessage = "Email cannot be empty")]
         [RegularExpression(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*" + "@" + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$", ErrorMessage = "Email is not valid")]
         public string NewEmail { get; set; }
     }

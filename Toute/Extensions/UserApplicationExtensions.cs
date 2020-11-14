@@ -51,7 +51,7 @@ namespace Toute
 
             _logger.Trace($"Trying to get all files from local DB");
             //Loads all files that were added
-            var items = await SqliteDb.GetGames(ViewModelApplication.ApplicationUser?.Id);
+            var items = await SqliteDb.GetGamesAsync(ViewModelApplication.ApplicationUser?.Id);
 
             //For every file, that were added.... 
             foreach (var file in items)

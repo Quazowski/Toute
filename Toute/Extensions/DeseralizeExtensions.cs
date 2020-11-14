@@ -15,7 +15,7 @@ namespace Toute
         /// <typeparam name="T">Type of returning response</typeparam>
         /// <param name="httpResponse">HttpResponseMessage</param>
         /// <returns></returns>
-        public static async Task<T> DeseralizeHttpResponse<T>(this HttpResponseMessage httpResponse)
+        public static async Task<T> DeseralizeHttpResponseOfT<T>(this HttpResponseMessage httpResponse)
         {
             //Takes a context from a response, and read it as json string.
             var httpContext = await httpResponse.Content.ReadAsStringAsync();
@@ -25,6 +25,19 @@ namespace Toute
 
             //returns a model as T type
             return deserializedResult;
+        }
+
+        /// <summary>
+        /// Deseralize HttpResponse from json context to response of T.
+        /// </summary>
+        /// <param name="httpResponse">HttpResponseMessage</param>
+        /// <returns></returns>
+        public static async Task<string> DeseralizeHttpResponse(this HttpResponseMessage httpResponse)
+        {
+            //Takes a context from a response, and read it as json string.
+            var httpContext = await httpResponse.Content.ReadAsStringAsync();
+
+            return httpContext;
         }
     }
 }

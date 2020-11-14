@@ -53,8 +53,6 @@ namespace Toute.Core.Routes
     {
         public const string SendMessage = BaseUrl + "api/Chat/SendMessage";
 
-        public const string SendImage = BaseUrl + "api/Chat/SendImage";
-
         public const string GetMessages = BaseUrl + "api/Chat/GetMessage";
     }
 }

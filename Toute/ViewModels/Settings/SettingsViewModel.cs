@@ -130,6 +130,8 @@ namespace Toute
                         //Get new JWTToken
                         ViewModelApplication.ApplicationUser.Token = context.Token;
 
+                        await SqliteDb.ChangeUserUsernameAsync(Name, context.Token);
+
                         //Show message
                         PopupExtensions.NewInfoPopup($"Name changed successfully.");
                     }
@@ -160,6 +162,8 @@ namespace Toute
                         //Get new JWTToken
                         ViewModelApplication.ApplicationUser.Token = context.Token;
 
+                        await SqliteDb.ChangeUserEmailAsync(Email, context.Token);
+
                         //Show message
                         PopupExtensions.NewInfoPopup("Email changed successfully.");
                     }
@@ -189,6 +193,10 @@ namespace Toute
                         {
                             //Get new JWTToken
                             ViewModelApplication.ApplicationUser.Token = context.Token;
+
+                            (credentials as SettingsPage).CurrentPassword.Clear();
+                            (credentials as SettingsPage).Password.Clear();
+                            (credentials as SettingsPage).ConfirmPassword.Clear();
 
                             //Show message
                             PopupExtensions.NewInfoPopup("Password changed successfully.");

@@ -293,10 +293,17 @@
                             Margin="{TemplateBinding Margin}"
                             Name="border"
                             SnapsToDevicePixels="True">
-                        <TextBlock Text="{TemplateBinding Content}" 
+                        <Grid>
+                            <TextBlock Text="{TemplateBinding Content}" 
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"
-                                   FontSize="{TemplateBinding FontSize}"/>
+                                   FontSize="{TemplateBinding FontSize}" 
+                                       Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:BooleanToVisibilityConverter}}"/>
+                            <TextBlock Visibility="{TemplateBinding local:IsButtonBusy.Value, Converter={local:InvertedBooleanToVisibilityConverter}}"
+                                       Style="{StaticResource SpinningText}"
+                                       Padding="27 3">
+                            </TextBlock>
+                        </Grid>
                         <Border.Triggers>
                             <EventTrigger RoutedEvent="MouseEnter">
                                 <BeginStoryboard>

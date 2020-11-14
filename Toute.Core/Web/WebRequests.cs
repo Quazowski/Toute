@@ -40,5 +40,32 @@ namespace Toute.Core
             
             return response;
         }
+
+        /// <summary>
+        /// Method that make asynchronous requests to API
+        /// from given client
+        /// </summary>
+        /// <param name="client">Http client</param>
+        /// <param name="url">URL</param>
+        /// <param name="body">Message that contains model of the request</param>
+        /// <param name="JWTToken">Authorization token, if user is logged</param>
+        /// <returns></returns>
+        public static async Task<HttpResponseMessage> PostAsync(this HttpClient client, string url, object body, string JWTToken = null)
+        {
+            //Create content, by serializing body to JsonString
+            var content = new StringContent(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
+
+            //If token is not null...
+            if (!(string.IsNullOrEmpty(JWTToken)))
+            {
+                //Add token to header
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", JWTToken);
+            }
+
+            //Make request to API
+            var response = await client.PostAsync(url, content);
+
+            return response;
+        }
     }
 }

@@ -186,7 +186,7 @@ namespace Toute.Relational
         /// </summary>
         /// <param name="UserId">User that added games</param>
         /// <returns>List of games as task result</returns>
-        public Task<List<GameDataModel>> GetGames(string UserId)
+        public Task<List<GameDataModel>> GetGamesAsync(string UserId)
         {
             //Make a list, and add to this list all games, that were added by the user
             var games = new List<GameDataModel>();
@@ -210,7 +210,7 @@ namespace Toute.Relational
         /// <param name="Token">JWTToken</param>
         /// <param name="RefreshToken">RefreshToken</param>
         /// <returns>Task when finish</returns>
-        public async Task ChangeUserTokens(string Token, string RefreshToken)
+        public async Task ChangeUserTokensAsync(string Token, string RefreshToken)
         {
             //Find user
             var user = DbContext.LoginCredentials.FirstOrDefault();
@@ -218,6 +218,30 @@ namespace Toute.Relational
             //Set tokens for the user
             user.RefreshToken = RefreshToken;
             user.Token = Token;
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task ChangeUserUsernameAsync(string newUsername, string newToken)
+        {
+            //Find user
+            var user = DbContext.LoginCredentials.FirstOrDefault();
+
+            //Set token and username for a user
+            user.Username = newUsername;
+            user.Token = newToken;
+
+            await DbContext.SaveChangesAsync();
+        }
+
+        public async Task ChangeUserEmailAsync(string newEmail, string newToken)
+        {
+            //Find user
+            var user = DbContext.LoginCredentials.FirstOrDefault();
+
+            //Set tokens for the user
+            user.Email = newEmail;
+            user.Token = newToken;
 
             await DbContext.SaveChangesAsync();
         }

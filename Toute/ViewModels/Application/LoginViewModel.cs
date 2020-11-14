@@ -29,7 +29,7 @@ namespace Toute
         /// <summary>
         /// Username of user
         /// </summary>
-        public string Username { get; set; } = "wardls";
+        public string Username { get; set; }
 
         /// <summary>
         /// Status of <see cref="LoginAsync(object)"/>
@@ -105,7 +105,7 @@ namespace Toute
                 ViewModelApplication.ServerHealth = false;
 
                 //Get games from DB for not logged user
-                var items = await SqliteDb.GetGames("");
+                var items = await SqliteDb.GetGamesAsync("");
 
                 //For every file, that were added.... 
                 foreach (var file in items)
@@ -218,7 +218,7 @@ namespace Toute
 
                     _logger.Debug("Trying to get user files from LocalDB");
                     //Loads all files that were added
-                    var items = SqliteDb.GetGames(ViewModelApplication.ApplicationUser?.Id).Result;
+                    var items = SqliteDb.GetGamesAsync(ViewModelApplication.ApplicationUser?.Id).Result;
 
                     _logger.Debug("Got user files from LocalDB");
 

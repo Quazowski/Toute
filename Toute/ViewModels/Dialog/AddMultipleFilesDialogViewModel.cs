@@ -153,8 +153,6 @@ namespace Toute
         /// </summary>
         private void ChangeImageAsync()
         {
-
-
             if (FromImageChecked)
             {
                 var imageInBytes = ImageExtension.GetImageFromPCinBytes();

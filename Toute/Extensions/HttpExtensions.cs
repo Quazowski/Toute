@@ -46,7 +46,7 @@ namespace Toute
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     //Read context as ApiResponse
-                    var context = await response.DeseralizeHttpResponse<ApiResponse>();
+                    var context = await response.DeseralizeHttpResponseOfT<ApiResponse>();
 
                     //If there is successful response
                     if (context.IsSuccessful)
@@ -148,7 +148,7 @@ namespace Toute
                 {
                     
                     //Read context as ApiResponse<T>
-                    var context = await response.DeseralizeHttpResponse<ApiResponse<T>>();
+                    var context = await response.DeseralizeHttpResponseOfT<ApiResponse<T>>();
 
                     //If there is successful response
                     if (context.IsSuccessful)
@@ -247,7 +247,7 @@ namespace Toute
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         //If user responded OK, deseralize response
-                        var AuthContext = await response.DeseralizeHttpResponse<ApiResponse<TokenResponse>>();
+                        var AuthContext = await response.DeseralizeHttpResponseOfT<ApiResponse<TokenResponse>>();
 
                         //If response contain new tokens...
                         if (AuthContext.IsSuccessful)
@@ -257,7 +257,7 @@ namespace Toute
                             ViewModelApplication.ApplicationUser.Token = AuthContext.TResponse.Token;
 
                             //Set new refresh token for a user
-                            await SqliteDb.ChangeUserTokens(AuthContext.TResponse.Token, AuthContext.TResponse.RefreshToken);
+                            await SqliteDb.ChangeUserTokensAsync(AuthContext.TResponse.Token, AuthContext.TResponse.RefreshToken);
 
                             return true;
                         }

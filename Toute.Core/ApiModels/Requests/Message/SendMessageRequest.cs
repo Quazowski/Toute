@@ -21,5 +21,10 @@ namespace Toute.Core
         [Required(ErrorMessage = "You have to provide date!")]
         [DataType(DataType.Date, ErrorMessage = "Time must be of Date type!")]
         public DateTime DateOfSend { get; set; }
+
+        /// <summary>
+        /// Determines if message is image
+        /// </summary>
+        public bool IsImage { get; set; }
     }
 }

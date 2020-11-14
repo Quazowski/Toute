@@ -196,6 +196,7 @@
                     <Button Grid.Column="1"
                             Style="{StaticResource AddFullWidthButton}"
                             FontSize="{StaticResource FontSizeRegular}"
+                            local:IsButtonBusy.Value="{Binding AddFilesIsRunning, FallbackValue=False}"
                             IsDefault="True"
                             Command="{Binding AddFilesCommand}"
                             Content="Add selected games"/>

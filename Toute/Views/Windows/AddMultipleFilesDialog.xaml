@@ -132,7 +132,7 @@
                                 <Trigger Property="Validation.HasError" Value="true">
                                     <Setter Property="Control.ToolTip" 
                                             Value="{Binding RelativeSource={RelativeSource Self},
-                                            Path=(Validation.Errors)[0].ErrorContent}"/>
+                                            Path=(Validation.Errors).Count}"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>

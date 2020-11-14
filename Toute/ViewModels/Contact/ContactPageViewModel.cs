@@ -146,46 +146,13 @@ namespace Toute
         {
             await RunCommandAsync(() => SendingImageFromFileIsRunning, async () =>
             {
-                var imageToChange = ImageExtension.GetImageFromPCinBytes();
+                //Get image from PC
+                var image = ImageExtension.GetImageFromPCinBytes();
 
-                if (imageToChange != null)
+                if (image != null)
                 {
-                    _logger.Debug("Starts to send image");
-
-                    //Send request to API
-                    var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendImage, new SendImageRequest
-                    {
-                        FriendId = ViewModelApplication.CurrentFriendId,
-                        Image = imageToChange,
-                        DateOfSend = DateTime.UtcNow
-                    });
-
-                    //If response is successful
-                    if (result)
-                    {
-                        if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
-                        {
-                            await ViewModelSideMenu.LoadMoreMessagesAsync();
-                        }
-                        else
-                        {
-                            //Add message to Message list
-                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
-                            {
-                                SentByMe = true,
-                                IsImage = true,
-                                Message = Convert.ToBase64String(imageToChange),
-                                DateOfSent = DateTime.Now
-                            });
-                        }
-
-                        _logger.Debug("Message successfully sent");
-
-                    }
-                    else
-                    {
-                        _logger.Debug("Message not sent. Problem occurred when sending a message.");
-                    }
+                    //Send it
+                    await SendImageAsync(image);
                 }
             });
 
@@ -198,46 +165,13 @@ namespace Toute
         {
             await RunCommandAsync(() => SendingImageFromClipboardIsRunning, async () =>
             {
+                //Get image from the PC(clipboard)
                 byte[] image = ImageExtension.GetImageFromClipboardAsByte();
 
                 if (image != null)
                 {
-                    _logger.Debug("Starts to send image");
-
-                    //Send request to API
-                    var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendImage, new SendImageRequest
-                    {
-                        FriendId = ViewModelApplication.CurrentFriendId,
-                        Image = image,
-                        DateOfSend = DateTime.UtcNow
-                    });
-
-                    //If response is successful
-                    if (result)
-                    {
-                        if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
-                        {
-                            await ViewModelSideMenu.LoadMoreMessagesAsync();
-                        }
-                        else
-                        {
-                            //Add message to Message list
-                            ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
-                            {
-                                SentByMe = true,
-                                IsImage = true,
-                                Message = Convert.ToBase64String(image),
-                                DateOfSent = DateTime.Now
-                            });
-                        }
-
-                        _logger.Debug("Message successfully sent");
-
-                    }
-                    else
-                    {
-                        _logger.Debug("Message not sent. Problem occurred when sending a message.");
-                    }
+                    //Send it
+                    await SendImageAsync(image);
                 }
             });
 
@@ -275,6 +209,7 @@ namespace Toute
                     {
                         FriendId = ViewModelApplication.CurrentFriendId,
                         Message = textBox.Text,
+                        IsImage = false,
                         DateOfSend = DateTime.UtcNow
                     });
 
@@ -358,6 +293,50 @@ namespace Toute
             }
             _logger.Debug("Did not find any new messages");
         }
+        #endregion
+
+        #region Private Helpers
+
+        private async Task SendImageAsync(byte[] image)
+        {
+            _logger.Debug("Starts to send image");
+
+            //Send request to API
+            var result = await HttpExtensions.HandleHttpRequestAsync(MessageRoutes.SendMessage, new SendImageRequest
+            {
+                FriendId = ViewModelApplication.CurrentFriendId,
+                Image = image,
+                DateOfSend = DateTime.UtcNow
+            });
+
+            //If response is successful
+            if (result)
+            {
+                if (ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Count == 0)
+                {
+                    await ViewModelSideMenu.LoadMoreMessagesAsync();
+                }
+                else
+                {
+                    //Add message to Message list
+                    ViewModelSideMenu.Friends.FirstOrDefault(x => x.FriendId == ViewModelApplication.CurrentFriendId).Messages.Add(new MessageModel
+                    {
+                        SentByMe = true,
+                        IsImage = true,
+                        Message = Convert.ToBase64String(image),
+                        DateOfSent = DateTime.Now
+                    });
+                }
+
+                _logger.Debug("Message successfully sent");
+
+            }
+            else
+            {
+                _logger.Debug("Message not sent. Problem occurred when sending a message.");
+            }
+        }
+
         #endregion
     }
 }
