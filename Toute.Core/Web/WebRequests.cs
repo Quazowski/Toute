@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,11 +35,21 @@ namespace Toute.Core
                 //Add token to header
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", JWTToken);
             }
+            try
+            {
+                //Make request to API
+                var response = await client.PostAsync(url, content);
 
+                return response;
+            }
+            catch(Exception ex)
+            {
+
+            }
             //Make request to API
-            var response = await client.PostAsync(url, content);
+            var response1 = await client.PostAsync(url, content);
             
-            return response;
+            return response1;
         }
 
         /// <summary>
