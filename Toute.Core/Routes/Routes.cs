@@ -7,7 +7,7 @@ namespace Toute.Core.Routes
     public class BaseRoute
     {
         //Base IP for toute server
-        protected const string BaseUrl = "http://20.52.59.128:200/";
+        protected const string BaseUrl = "https://toute.website:2053/";
     }
 
     public class UserRoutes : BaseRoute
